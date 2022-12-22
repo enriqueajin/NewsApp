@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/mainNewsFragment">
+
+    <fragment
+        android:id="@+id/mainNewsFragment"
+        android:name="com.enriqueajin.newsapp.ui.view.fragments.MainNewsFragment"
+        android:label="fragment_main_news"
+        tools:layout="@layout/fragment_main_news" />
+
+</navigation>
