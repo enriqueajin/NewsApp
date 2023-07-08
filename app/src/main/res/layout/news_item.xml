@@ -64,12 +64,12 @@
 
             <ImageButton
                 android:id="@+id/ib_bookmark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="10dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:src="@drawable/ic_bookmark"
+                android:background="@null"
+                android:src="@drawable/ic_inactive_bookmark"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_news" />
 
