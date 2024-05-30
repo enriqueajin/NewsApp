@@ -18,9 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.enriqueajin.newsapp.ui.NewsViewModel
 
 @Composable
-fun TopTabRow(tabIndex: Int, tabs: List<String>, onTabIndexChanged: (Int) -> Unit) {
+fun TopTabRow(
+    tabIndex: Int,
+    tabs: List<String>,
+    newsViewModel: NewsViewModel,
+    onTabIndexChanged: (Int) -> Unit
+) {
     ScrollableTabRow(
         selectedTabIndex = tabIndex,
         containerColor = Color.White,
@@ -49,7 +55,7 @@ fun TopTabRow(tabIndex: Int, tabs: List<String>, onTabIndexChanged: (Int) -> Uni
     }
 
     when (tabIndex) {
-        0 -> News()
+        0 -> News(newsViewModel)
         1 -> Events()
         2 -> Weather()
     }
@@ -60,7 +66,7 @@ fun TopTabRow(tabIndex: Int, tabs: List<String>, onTabIndexChanged: (Int) -> Uni
 fun TopTabRowPreview() {
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf("News", "Events", "Weather")
-    TopTabRow(tabIndex = tabIndex, tabs = tabs) { index ->
+    TopTabRow(tabIndex = tabIndex, tabs = tabs, newsViewModel = NewsViewModel()) { index ->
         tabIndex = index
     }
 }

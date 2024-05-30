@@ -8,19 +8,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.enriqueajin.newsapp.utils.CategoryProvider.getCategories
+import com.enriqueajin.newsapp.ui.NewsViewModel
 
 @Composable
-fun News() {
+fun News(newsViewModel: NewsViewModel) {
     val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
-    val options = getCategories(categories)
 
     Column(
         Modifier
             .fillMaxSize()
             .padding(top = 40.dp),
     ) {
-        ChipGroup(categories = options)
+        val selected = newsViewModel.chipSelected.value
+        ChipGroup(
+            categories = categories,
+            selected = selected,
+            onChipSelected = { category -> newsViewModel.setChipSelected(category) }
+        )
     }
 }
 
@@ -31,5 +35,5 @@ fun News() {
 )
 @Composable
 fun NewsPreview() {
-    News()
+    News(NewsViewModel())
 }

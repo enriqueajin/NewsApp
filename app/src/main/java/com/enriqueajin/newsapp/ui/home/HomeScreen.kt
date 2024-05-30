@@ -10,15 +10,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.components.TopTabRow
 
 @Composable
-fun Home() {
+fun Home(newsViewModel: NewsViewModel) {
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf("News", "Events", "Weather")
 
     Box(modifier = Modifier.fillMaxSize()) {
-        TopTabRow(tabIndex = tabIndex, tabs = tabs) { index ->
+        TopTabRow(tabIndex = tabIndex, tabs = tabs, newsViewModel = newsViewModel) { index ->
             tabIndex = index
         }
     }
@@ -31,5 +32,5 @@ fun Home() {
 )
 @Composable
 fun HomePreview() {
-    Home()
+    Home(NewsViewModel())
 }
