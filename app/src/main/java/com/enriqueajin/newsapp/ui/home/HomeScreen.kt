@@ -18,7 +18,7 @@ fun Home() {
     val tabs = listOf("News", "Events", "Weather")
 
     Box(modifier = Modifier.fillMaxSize()) {
-        TopTabRow(tabIndex = tabIndex, tabs = tabs) {index ->
+        TopTabRow(tabIndex = tabIndex, tabs = tabs) { index ->
             tabIndex = index
         }
     }

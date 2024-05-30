@@ -10,8 +10,13 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -47,5 +52,15 @@ fun TopTabRow(tabIndex: Int, tabs: List<String>, onTabIndexChanged: (Int) -> Uni
         0 -> News()
         1 -> Events()
         2 -> Weather()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TopTabRowPreview() {
+    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
+    val tabs = listOf("News", "Events", "Weather")
+    TopTabRow(tabIndex = tabIndex, tabs = tabs) { index ->
+        tabIndex = index
     }
 }
