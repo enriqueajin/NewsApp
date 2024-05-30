@@ -42,4 +42,10 @@ fun TopTabRow(tabIndex: Int, tabs: List<String>, onTabIndexChanged: (Int) -> Uni
             )
         }
     }
+
+    when (tabIndex) {
+        0 -> News()
+        1 -> Events()
+        2 -> Weather()
+    }
 }
