@@ -9,17 +9,17 @@ import javax.inject.Inject
 @HiltViewModel
 class NewsViewModel @Inject constructor() : ViewModel() {
 
-    private val _tabRowIndex = mutableStateOf(0)
-    val tabRowIndex: State<Int> = _tabRowIndex
-
     private val _chipSelected = mutableStateOf("All")
     val chipSelected: State<String> = _chipSelected
 
-    fun setTabRowIndex(index: Int) {
-        _tabRowIndex.value = index
-    }
+    private val _selectedNavIndex = mutableStateOf(0)
+    val selectedNavIndex: State<Int> = _selectedNavIndex
 
     fun setChipSelected(category: String) {
         _chipSelected.value = category
+    }
+
+    fun setSelectedNavIndex(index: Int) {
+        _selectedNavIndex.value = index
     }
 }

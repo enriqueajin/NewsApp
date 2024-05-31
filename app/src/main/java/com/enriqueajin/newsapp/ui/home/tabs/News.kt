@@ -31,11 +31,7 @@ fun News(newsViewModel: NewsViewModel) {
     val latestNews = getLatestNewsItems()
     val allNewsTop = getAllNewsItems()
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 40.dp),
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         val selected = newsViewModel.chipSelected.value
 
         ChipGroup(

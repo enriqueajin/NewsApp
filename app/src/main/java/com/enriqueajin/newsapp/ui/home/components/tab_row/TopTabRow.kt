@@ -1,19 +1,22 @@
 package com.enriqueajin.newsapp.ui.home.components.tab_row
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,57 +25,72 @@ import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.tabs.Events
 import com.enriqueajin.newsapp.ui.home.tabs.News
 import com.enriqueajin.newsapp.ui.home.tabs.Weather
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopTabRow(
-    tabIndex: Int,
     tabs: List<String>,
-    newsViewModel: NewsViewModel,
-    onTabIndexChanged: (Int) -> Unit
+    newsViewModel: NewsViewModel
 ) {
-    ScrollableTabRow(
-        selectedTabIndex = tabIndex,
-        containerColor = Color.White,
-        edgePadding = 0.dp,
-        contentColor = Color.Black,
-        indicator = { tabPositions ->
-            TabRowDefaults.apply {
-                Box(
-                    modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[tabIndex])
-                        .height(4.dp)
-                        .padding(horizontal = 28.dp)
-                        .background(Color.Black, RoundedCornerShape(8.dp))
+    val tabRowPagerState = rememberPagerState(pageCount = {
+        tabs.size
+    })
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        TabRow(
+            selectedTabIndex = tabRowPagerState.currentPage,
+            containerColor = Color.White,
+            contentColor = Color.Black,
+            indicator = { tabPositions ->
+                TabRowDefaults.apply {
+                    Box(
+                        modifier = Modifier
+                            .tabIndicatorOffset(tabPositions[tabRowPagerState.currentPage])
+                            .height(4.dp)
+                            .padding(horizontal = 28.dp)
+                            .background(Color.Black, RoundedCornerShape(8.dp))
+                    )
+                }
+            },
+            divider = {}
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    text = { Text(text = title) },
+                    selected = true,
+                    onClick = {
+                        coroutineScope.launch {
+                            tabRowPagerState.animateScrollToPage(index)
+                        }
+                    }
                 )
             }
-        },
-        divider = {}
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                text = { Text(text = title) },
-                selected = tabIndex == index,
-                onClick = { onTabIndexChanged(index) }
-            )
         }
-    }
-
-    when (tabIndex) {
-        0 -> News(newsViewModel)
-        1 -> Events()
-        2 -> Weather()
+        HorizontalPager(
+            state = tabRowPagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {index ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (index) {
+                    0 -> News(newsViewModel)
+                    1 -> Events()
+                    2 -> Weather()
+                }
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun TopTabRowPreview() {
-    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf("News", "Events", "Weather")
     TopTabRow(
-        tabIndex = tabIndex,
         tabs = tabs,
-        newsViewModel = NewsViewModel(),
-        onTabIndexChanged = { index -> tabIndex = index }
+        newsViewModel = NewsViewModel()
     )
 }
