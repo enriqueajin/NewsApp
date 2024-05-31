@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components
+package com.enriqueajin.newsapp.ui.home.tabs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun Events() {
+fun Weather() {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Events")
+        Text(text = "Weather")
     }
 }

@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components
+package com.enriqueajin.newsapp.ui.home.components.latest_news_carousel
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.enriqueajin.newsapp.ui.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.Purple80
+import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 
 @Composable
-fun CarouselNewsItem(title: String, datetime: String) {
+fun LatestNewsItem(newsItem: NewsItem) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,6 +41,8 @@ fun CarouselNewsItem(title: String, datetime: String) {
                     top = 20.dp,
                     bottom = 20.dp
                 ), verticalArrangement = Arrangement.SpaceBetween) {
+                val title = newsItem.title ?: "Item without title"
+                val publishedAt = newsItem.publishedAt ?: "May, 31st - 2024"
             Text(
                 text = title,
                 fontSize = 28.sp,
@@ -46,7 +50,7 @@ fun CarouselNewsItem(title: String, datetime: String) {
                 lineHeight = 40.sp
             )
             Text(
-                text = datetime,
+                text = publishedAt,
                 fontSize = 16.sp
             )
         }
@@ -56,5 +60,6 @@ fun CarouselNewsItem(title: String, datetime: String) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CarouselNewsItemPreview() {
-    CarouselNewsItem("Noticia de última hora", "17 de mayo de 2024")
+    val item = getLatestNewsItems().first()
+    LatestNewsItem(item)
 }

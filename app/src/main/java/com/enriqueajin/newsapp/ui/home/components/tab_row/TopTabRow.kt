@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components
+package com.enriqueajin.newsapp.ui.home.components.tab_row
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enriqueajin.newsapp.ui.NewsViewModel
+import com.enriqueajin.newsapp.ui.home.tabs.Events
+import com.enriqueajin.newsapp.ui.home.tabs.News
+import com.enriqueajin.newsapp.ui.home.tabs.Weather
 
 @Composable
 fun TopTabRow(
@@ -66,7 +69,10 @@ fun TopTabRow(
 fun TopTabRowPreview() {
     var tabIndex by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf("News", "Events", "Weather")
-    TopTabRow(tabIndex = tabIndex, tabs = tabs, newsViewModel = NewsViewModel()) { index ->
-        tabIndex = index
-    }
+    TopTabRow(
+        tabIndex = tabIndex,
+        tabs = tabs,
+        newsViewModel = NewsViewModel(),
+        onTabIndexChanged = { index -> tabIndex = index }
+    )
 }

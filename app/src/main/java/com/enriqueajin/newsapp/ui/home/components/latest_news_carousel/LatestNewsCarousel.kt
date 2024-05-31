@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components
+package com.enriqueajin.newsapp.ui.home.components.latest_news_carousel
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -14,11 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NewsCarousel(news: List<NewsItem>) {
+fun LatestNewsCarousel(news: List<NewsItem>) {
     val pagerState = rememberPagerState(pageCount = {
         news.size
     })
@@ -50,9 +51,8 @@ fun NewsCarousel(news: List<NewsItem>) {
                 fraction = 1f - pageOffset.coerceIn(0f, 1f)
             )
         }) {
-            val title = news[index].title ?: ""
-            val datetime = news[index].publishedAt ?: ""
-            CarouselNewsItem(title = title, datetime = datetime)
+            val item = news[index]
+            LatestNewsItem(item)
         }
     }
 }
@@ -60,11 +60,5 @@ fun NewsCarousel(news: List<NewsItem>) {
 @Preview(showBackground = true)
 @Composable
 fun NewsCarouselPreview() {
-    val carouselItems = listOf(
-        NewsItem(title = "Real Madrid champion of UEFA Champions League", publishedAt = "June 1st - 2024"),
-        NewsItem(title = "Summer about to come in Poland", publishedAt = "May 31st - 2024"),
-        NewsItem(title = "Chaos in traffic in Guatemala", publishedAt = "May 28th - 2024"),
-        NewsItem(title = "Government offering loans to anyone", publishedAt = "June 3rd - 2024")
-    )
-    NewsCarousel(carouselItems)
+    LatestNewsCarousel(getLatestNewsItems())
 }
