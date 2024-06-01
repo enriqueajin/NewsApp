@@ -35,5 +35,5 @@ fun Home(newsViewModel: NewsViewModel) {
 )
 @Composable
 fun HomePreview() {
-    Home(NewsViewModel())
+//    Home(NewsViewModel())
 }

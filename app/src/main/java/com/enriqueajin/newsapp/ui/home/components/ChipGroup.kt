@@ -1,6 +1,5 @@
 package com.enriqueajin.newsapp.ui.home.components
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,21 +18,23 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChipGroup(categories: List<String>, selected: String, onChipSelected: (String) -> Unit) {
-    Row(
+fun ChipGroup(
+    categories: List<String>,
+    selected: String,
+    onChipSelected: (String) -> Unit,
+) {
+    LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp, vertical = 25.dp)
     ) {
-        LazyRow {
-            items(categories) { category ->
-                FilterChip(
-                    selected = selected == category,
-                    onClick = { onChipSelected(category) },
-                    label = { Text(text = category) },
-                    modifier = Modifier.padding(horizontal = 5.dp)
-                )
-            }
+        items(categories) { category ->
+            FilterChip(
+                selected = selected == category,
+                onClick = { onChipSelected(category) },
+                label = { Text(text = category) },
+                modifier = Modifier.padding(horizontal = 5.dp)
+            )
         }
     }
 }

@@ -60,5 +60,5 @@ fun getBottomNavItems(): List<BottomNavItem> {
 @Preview(showBackground = true)
 @Composable
 fun BottomNavPreview() {
-    BottomNav(NewsViewModel())
+//    BottomNav(NewsViewModel())
 }

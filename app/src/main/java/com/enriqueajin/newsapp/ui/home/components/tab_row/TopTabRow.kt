@@ -88,9 +88,9 @@ fun TopTabRow(
 @Preview(showBackground = true)
 @Composable
 fun TopTabRowPreview() {
-    val tabs = listOf("News", "Events", "Weather")
-    TopTabRow(
-        tabs = tabs,
-        newsViewModel = NewsViewModel()
-    )
+//    val tabs = listOf("News", "Events", "Weather")
+//    TopTabRow(
+//        tabs = tabs,
+//        newsViewModel = NewsViewModel()
+//    )
 }

@@ -1,6 +1,5 @@
 package com.enriqueajin.newsapp.ui.home.tabs
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,10 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.components.ChipGroup
@@ -34,87 +33,84 @@ import com.enriqueajin.newsapp.ui.home.components.all_news_carousel.AllNewsCarou
 import com.enriqueajin.newsapp.ui.home.components.latest_news_carousel.LatestNewsCarousel
 import com.enriqueajin.newsapp.ui.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.DarkGray
-import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
-import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 
 @Composable
 fun News(newsViewModel: NewsViewModel) {
     val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
-    val latestNews = getLatestNewsItems()
-    val allTopNews = getAllNewsItems()
+    val latestNews = newsViewModel.allTopNews.collectAsStateWithLifecycle(initialValue = emptyList())
 
-    Column(modifier = Modifier
+    LazyColumn(modifier = Modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState())
     ) {
         val selected = newsViewModel.chipSelected.value
 
-        ChipGroup(
-            categories = categories,
-            selected = selected,
-            onChipSelected = { category -> newsViewModel.setChipSelected(category) }
-        )
+        item {
+            ChipGroup(
+                categories = categories,
+                selected = selected,
+                onChipSelected = { category -> newsViewModel.setChipSelected(category) }
+            )
+        }
 
         when(selected) {
-            "All" -> AllNews(latestNews = latestNews, allTopNews = allTopNews)
-            else -> NewsByCategory(news = allTopNews)
+            "All" -> allNews(latestNews = latestNews.value, allTopNews = latestNews.value)
+            else -> newsByCategory(news = latestNews.value)
         }
     }
 }
 
-@Composable
-fun AllNews(latestNews: List<NewsItem>, allTopNews: List<NewsItem>) {
-    Text(
-        text = "Latest news",
-        fontSize = 20.sp,
-        modifier = Modifier.padding(start = 30.dp),
-        fontWeight = FontWeight.Bold
-    )
-    Spacer(modifier = Modifier.height(20.dp))
-    LatestNewsCarousel(news = latestNews)
-    Spacer(modifier = Modifier.height(30.dp))
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 30.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Bottom
-    ) {
+fun LazyListScope.allNews(
+    latestNews: List<NewsItem>,
+    allTopNews: List<NewsItem>,
+) {
+    item {
         Text(
-            text = "All news",
+            text = "Latest news",
             fontSize = 20.sp,
+            modifier = Modifier.padding(start = 30.dp),
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = "See All",
-            fontSize = 16.sp,
-            modifier = Modifier.padding(start = 30.dp),
-            fontWeight = FontWeight.Bold,
-            color = DarkGray
-        )
+        Spacer(modifier = Modifier.height(20.dp))
+        LatestNewsCarousel(news = latestNews)
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = "All news",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "See All",
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 30.dp),
+                fontWeight = FontWeight.Bold,
+                color = DarkGray
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        AllNewsCarousel(news = allTopNews)
     }
-    Spacer(modifier = Modifier.height(20.dp))
-    AllNewsCarousel(news = allTopNews)
 }
 
-@Composable
-fun NewsByCategory(news: List<NewsItem>) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp)
-    ) {
-        LazyColumn {
-            items(news) { item ->
-                NewsListItem(item = item)
-            }
-        }
+fun LazyListScope.newsByCategory(news: List<NewsItem>) {
+    items(news) { item ->
+        NewsListItem(item = item)
     }
 }
 
 @Composable
 fun NewsListItem(item: NewsItem) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 30.dp)
+    ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = item.urlToImage,
@@ -173,5 +169,5 @@ fun NewsListItem(item: NewsItem) {
 )
 @Composable
 fun NewsPreview() {
-    News(NewsViewModel())
+//    News(NewsViewModel())
 }
