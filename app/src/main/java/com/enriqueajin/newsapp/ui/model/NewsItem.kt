@@ -2,7 +2,7 @@ package com.enriqueajin.newsapp.ui.model
 
 data class NewsItem(
     val source: NewsSource = NewsSource("",""),
-    val author: String? = "",
+    val author: String? = "No author",
     val title: String?,
     val description: String = "",
     val url: String = "",
