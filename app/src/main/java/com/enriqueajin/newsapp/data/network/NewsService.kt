@@ -12,4 +12,11 @@ class NewsService @Inject constructor(private val api: NewsApiClient) {
             response.body()?.articles ?: emptyList()
         }
     }
+
+    suspend fun getNewsByKeyword(keyword: String): List<NewsItem> {
+        return withContext(Dispatchers.IO) {
+            val response = api.getNewsByKeyword(keyword)
+            response.body()?.articles ?: emptyList()
+        }
+    }
 }

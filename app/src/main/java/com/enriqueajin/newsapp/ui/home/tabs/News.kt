@@ -38,6 +38,7 @@ import com.enriqueajin.newsapp.ui.theme.DarkGray
 fun News(newsViewModel: NewsViewModel) {
     val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
     val latestNews = newsViewModel.allTopNews.collectAsStateWithLifecycle(initialValue = emptyList())
+    val newsByKeyword = newsViewModel.newsByKeyword.collectAsStateWithLifecycle(initialValue = emptyList())
 
     LazyColumn(modifier = Modifier
         .fillMaxSize()
@@ -53,7 +54,7 @@ fun News(newsViewModel: NewsViewModel) {
         }
 
         when(selected) {
-            "All" -> allNews(latestNews = latestNews.value, allTopNews = latestNews.value)
+            "All" -> allNews(latestNews = latestNews.value, allTopNews = newsByKeyword.value)
             else -> newsByCategory(news = latestNews.value)
         }
     }

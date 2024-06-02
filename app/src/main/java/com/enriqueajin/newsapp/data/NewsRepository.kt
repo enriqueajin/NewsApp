@@ -10,4 +10,8 @@ class NewsRepository @Inject constructor(private val newsService: NewsService) {
     suspend fun getAllTopNews(): List<NewsItem> {
         return newsService.getAllTopNews()
     }
+
+    suspend fun getNewsByKeyword(keyword: String): List<NewsItem> {
+        return newsService.getNewsByKeyword(keyword)
+    }
 }
