@@ -1,22 +1,9 @@
 package com.enriqueajin.newsapp.data.network
 
-import com.enriqueajin.newsapp.ui.model.NewsItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.enriqueajin.newsapp.data.response.NewsResponse
 import javax.inject.Inject
 
 class NewsService @Inject constructor(private val api: NewsApiClient) {
-    suspend fun getAllTopNews(): List<NewsItem> {
-        return withContext(Dispatchers.IO) {
-            val response = api.getAllTopNews()
-            response.body()?.articles ?: emptyList()
-        }
-    }
-
-    suspend fun getNewsByKeyword(keyword: String): List<NewsItem> {
-        return withContext(Dispatchers.IO) {
-            val response = api.getNewsByKeyword(keyword)
-            response.body()?.articles ?: emptyList()
-        }
-    }
+    suspend fun getAllTopNews(): NewsResponse = api.getAllTopNews()
+    suspend fun getNewsByKeyword(keyword: String): NewsResponse = api.getNewsByKeyword(keyword)
 }

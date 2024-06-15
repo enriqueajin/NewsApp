@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.components.ChipGroup
@@ -37,8 +37,7 @@ import com.enriqueajin.newsapp.ui.theme.DarkGray
 @Composable
 fun News(newsViewModel: NewsViewModel) {
     val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
-    val latestNews = newsViewModel.allTopNews.collectAsStateWithLifecycle(initialValue = emptyList())
-    val newsByKeyword = newsViewModel.newsByKeyword.collectAsStateWithLifecycle(initialValue = emptyList())
+    val state = newsViewModel.uiState.value
 
     LazyColumn(modifier = Modifier
         .fillMaxSize()
@@ -54,8 +53,8 @@ fun News(newsViewModel: NewsViewModel) {
         }
 
         when(selected) {
-            "All" -> allNews(latestNews = latestNews.value, allTopNews = newsByKeyword.value)
-            else -> newsByCategory(news = latestNews.value)
+            "All" -> allNews(latestNews = state.allTopNewsList, allTopNews = state.newsByKeywordList, viewModel = newsViewModel)
+            else -> newsByCategory(news = state.allTopNewsList)
         }
     }
 }
@@ -63,7 +62,10 @@ fun News(newsViewModel: NewsViewModel) {
 fun LazyListScope.allNews(
     latestNews: List<NewsItem>,
     allTopNews: List<NewsItem>,
+    viewModel: NewsViewModel
 ) {
+    val state = viewModel.uiState.value
+
     item {
         Text(
             text = "Latest news",
@@ -96,6 +98,13 @@ fun LazyListScope.allNews(
         }
         Spacer(modifier = Modifier.height(20.dp))
         AllNewsCarousel(news = allTopNews)
+
+        if (state.error.isNotBlank()) {
+            Text(text = "An error occurred. Please try again.")
+        }
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        }
     }
 }
 
