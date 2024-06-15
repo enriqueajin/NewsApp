@@ -2,9 +2,12 @@ package com.enriqueajin.newsapp.ui.home.tabs
 
 import com.enriqueajin.newsapp.ui.model.NewsItem
 
-data class NewsUiState(
-    val isLoading: Boolean = false,
-    val allTopNewsList: List<NewsItem> = emptyList(),
-    val newsByKeywordList: List<NewsItem> = emptyList(),
-    val error: String = ""
-)
+sealed interface NewsUiState {
+    object Loading: NewsUiState
+    data class Success(
+        val latestNews: List<NewsItem>? = null,
+        val newsByKeyword: List<NewsItem>? = null
+    ): NewsUiState
+    data class Error(val throwable: Throwable): NewsUiState
+
+}

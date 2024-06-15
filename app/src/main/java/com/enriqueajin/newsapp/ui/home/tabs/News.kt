@@ -1,6 +1,7 @@
 package com.enriqueajin.newsapp.ui.home.tabs
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,15 +18,20 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.components.ChipGroup
@@ -37,12 +43,33 @@ import com.enriqueajin.newsapp.ui.theme.DarkGray
 @Composable
 fun News(newsViewModel: NewsViewModel) {
     val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
-    val state = newsViewModel.uiState.value
 
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val uiState by produceState<NewsUiState>(
+        initialValue = NewsUiState.Loading,
+        key1 = lifecycle,
+        key2 = newsViewModel,
     ) {
-        val selected = newsViewModel.chipSelected.value
+        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+            newsViewModel.uiState.collect { value = it }
+        }
+    }
+
+    when(uiState) {
+        is NewsUiState.Error -> Text(text = "There is an error.")
+        NewsUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        }
+        is NewsUiState.Success -> {
+            val latestNews = (uiState as NewsUiState.Success).latestNews ?: emptyList()
+            val newsByKeyword = (uiState as NewsUiState.Success).newsByKeyword ?: emptyList()
+
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+            ) {
+                val selected = newsViewModel.chipSelected.value
 
         item {
             ChipGroup(
@@ -52,9 +79,11 @@ fun News(newsViewModel: NewsViewModel) {
             )
         }
 
-        when(selected) {
-            "All" -> allNews(latestNews = state.allTopNewsList, allTopNews = state.newsByKeywordList, viewModel = newsViewModel)
-            else -> newsByCategory(news = state.allTopNewsList)
+                when(selected) {
+                    "All" -> allNews(latestNews = latestNews, allTopNews = newsByKeyword)
+                    else -> newsByCategory(news = newsByKeyword)
+                }
+            }
         }
     }
 }
@@ -62,9 +91,7 @@ fun News(newsViewModel: NewsViewModel) {
 fun LazyListScope.allNews(
     latestNews: List<NewsItem>,
     allTopNews: List<NewsItem>,
-    viewModel: NewsViewModel
 ) {
-    val state = viewModel.uiState.value
 
     item {
         Text(
@@ -98,13 +125,6 @@ fun LazyListScope.allNews(
         }
         Spacer(modifier = Modifier.height(20.dp))
         AllNewsCarousel(news = allTopNews)
-
-        if (state.error.isNotBlank()) {
-            Text(text = "An error occurred. Please try again.")
-        }
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
     }
 }
 

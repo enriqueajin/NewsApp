@@ -7,20 +7,21 @@ import androidx.lifecycle.viewModelScope
 import com.enriqueajin.newsapp.domain.GetAllTopNewsUseCase
 import com.enriqueajin.newsapp.domain.GetNewsByKeywordUseCase
 import com.enriqueajin.newsapp.ui.home.tabs.NewsUiState
-import com.enriqueajin.newsapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    private val getAllTopNewsUseCase: GetAllTopNewsUseCase,
-    private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
+    getAllTopNewsUseCase: GetAllTopNewsUseCase,
+    getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
     private val _chipSelected = mutableStateOf("All")
-    val chipSelected: State<String> = _chipSelected
+    var chipSelected: State<String> = _chipSelected
 
     private val _selectedNavIndex = mutableStateOf(0)
     val selectedNavIndex: State<Int> = _selectedNavIndex
@@ -28,33 +29,20 @@ class NewsViewModel @Inject constructor(
     private val _keywordSearch = mutableStateOf("Real Madrid")
     val keywordSearch: State<String> = _keywordSearch
 
-    private val _uiState = mutableStateOf(NewsUiState())
-    val uiState: State<NewsUiState> = _uiState
-
-    init {
-        getAllTopNews()
-        getNewsByKeyword(_keywordSearch.value)
-    }
-
-    private fun getAllTopNews() {
-        getAllTopNewsUseCase().onEach { result ->
-            when (result) {
-                is Resource.Error -> _uiState.value = _uiState.value.copy(error = result.message ?: "An unexpected error occurred.")
-                is Resource.Loading -> _uiState.value = _uiState.value.copy(isLoading = true)
-                is Resource.Success -> _uiState.value = _uiState.value.copy(allTopNewsList = result.data ?: emptyList(), isLoading = false)
+    val uiState: StateFlow<NewsUiState> =
+        combine(getAllTopNewsUseCase(), getNewsByKeywordUseCase(_keywordSearch.value)) { latestNews, newsByKeyword ->
+            when {
+                latestNews.isNullOrEmpty() && newsByKeyword.isNullOrEmpty() -> NewsUiState.Error(Throwable("Error occurred when retrieving all of the news."))
+                latestNews.isNullOrEmpty() -> NewsUiState.Success(newsByKeyword = newsByKeyword)
+                newsByKeyword.isEmpty() -> NewsUiState.Success(latestNews = latestNews)
+                else -> NewsUiState.Success(latestNews, newsByKeyword)
             }
-        }.launchIn(viewModelScope)
-    }
 
-    private fun getNewsByKeyword(keyword: String) {
-        getNewsByKeywordUseCase(keyword).onEach { result ->
-            when (result) {
-                is Resource.Error -> _uiState.value = _uiState.value.copy(error = result.message ?: "An unexpected error occurred.")
-                is Resource.Loading -> _uiState.value = _uiState.value.copy(isLoading = true)
-                is Resource.Success -> _uiState.value = _uiState.value.copy(newsByKeywordList = result.data ?: emptyList(), isLoading = false)
-            }
-        }.launchIn(viewModelScope)
-    }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = NewsUiState.Loading
+        )
 
     fun setChipSelected(category: String) {
         _chipSelected.value = category
