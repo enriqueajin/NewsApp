@@ -71,14 +71,13 @@ fun News(newsViewModel: NewsViewModel) {
             ) {
                 val selected = newsViewModel.chipSelected.value
 
-        item {
-            ChipGroup(
-                categories = categories,
-                selected = selected,
-                onChipSelected = { category -> newsViewModel.setChipSelected(category) }
-            )
-        }
-
+                item {
+                    ChipGroup(
+                        categories = categories,
+                        selected = selected,
+                        onChipSelected = { category -> newsViewModel.setChipSelected(category) }
+                    )
+                }
                 when(selected) {
                     "All" -> allNews(latestNews = latestNews, allTopNews = newsByKeyword)
                     else -> newsByCategory(news = newsByKeyword)
@@ -92,7 +91,6 @@ fun LazyListScope.allNews(
     latestNews: List<NewsItem>,
     allTopNews: List<NewsItem>,
 ) {
-
     item {
         Text(
             text = "Latest news",
