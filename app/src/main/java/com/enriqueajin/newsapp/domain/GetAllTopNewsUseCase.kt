@@ -9,8 +9,8 @@ import javax.inject.Inject
 class GetAllTopNewsUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
-    operator fun invoke():Flow<List<NewsItem>> = flow {
-        val news = newsRepository.getAllTopNews().articles
+    operator fun invoke(category: String = "general", pageSize: String):Flow<List<NewsItem>> = flow {
+        val news = newsRepository.getNews(category, pageSize).articles
         emit(news)
     }
 }

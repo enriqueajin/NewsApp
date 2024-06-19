@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,8 +42,8 @@ class NewsViewModel @Inject constructor(
 
     fun getMainNews() {
         combine(
-            getAllTopNewsUseCase(),
-            getNewsByKeywordUseCase(_keywordSearch.value)
+            getAllTopNewsUseCase(pageSize = "10"),
+            getNewsByKeywordUseCase(keyword = _keywordSearch.value)
         ) { latestNews, newsByKeyword ->
             when {
                 latestNews.isNullOrEmpty() -> _uiState.value = NewsUiState.Success(newsByKeyword = newsByKeyword)
@@ -52,6 +54,22 @@ class NewsViewModel @Inject constructor(
         }.catch {
             _uiState.value = NewsUiState.Error(it)
 
+        }.launchIn(viewModelScope)
+    }
+
+    fun getNewsByCategory(category: String, pageSize: String) {
+        val currentState = (_uiState.value as? NewsUiState.Success)
+
+        getAllTopNewsUseCase(category, pageSize).onStart {
+            _uiState.value = NewsUiState.Loading
+        }.onEach { news ->
+            _uiState.value = NewsUiState.Success(
+                latestNews = currentState?.latestNews,
+                newsByKeyword = currentState?.newsByKeyword,
+                newsByCategory = news
+            )
+        }.catch { error ->
+            _uiState.value = NewsUiState.Error(error)
         }.launchIn(viewModelScope)
     }
 

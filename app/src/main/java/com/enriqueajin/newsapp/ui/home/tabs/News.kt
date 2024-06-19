@@ -42,7 +42,7 @@ import com.enriqueajin.newsapp.ui.theme.DarkGray
 
 @Composable
 fun News(newsViewModel: NewsViewModel) {
-    val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
+    val categories = listOf("All", "Science", "Technology", "Sports", "Health", "Business", "Entertainment")
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState<NewsUiState>(
@@ -65,6 +65,7 @@ fun News(newsViewModel: NewsViewModel) {
         is NewsUiState.Success -> {
             val latestNews = (uiState as NewsUiState.Success).latestNews ?: emptyList()
             val newsByKeyword = (uiState as NewsUiState.Success).newsByKeyword ?: emptyList()
+            val newsByCategory = (uiState as NewsUiState.Success).newsByCategory ?: emptyList()
 
             LazyColumn(modifier = Modifier
                 .fillMaxSize()
@@ -75,12 +76,19 @@ fun News(newsViewModel: NewsViewModel) {
                     ChipGroup(
                         categories = categories,
                         selected = selected,
-                        onChipSelected = { category -> newsViewModel.setChipSelected(category) }
+                        onChipSelected = { category ->
+                            newsViewModel.setChipSelected(category)
+                            if (category == "All") {
+                                newsViewModel.getMainNews()
+                            } else {
+                                newsViewModel.getNewsByCategory(category, "50")
+                            }
+                        }
                     )
                 }
                 when(selected) {
                     "All" -> allNews(latestNews = latestNews, allTopNews = newsByKeyword)
-                    else -> newsByCategory(news = newsByKeyword)
+                    else -> newsByCategory(news = newsByCategory)
                 }
             }
         }
