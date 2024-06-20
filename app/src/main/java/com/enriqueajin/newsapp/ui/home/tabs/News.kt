@@ -39,6 +39,7 @@ import com.enriqueajin.newsapp.ui.home.components.all_news_carousel.AllNewsCarou
 import com.enriqueajin.newsapp.ui.home.components.latest_news_carousel.LatestNewsCarousel
 import com.enriqueajin.newsapp.ui.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.DarkGray
+import kotlinx.coroutines.flow.update
 
 @Composable
 fun News(newsViewModel: NewsViewModel) {
@@ -70,18 +71,19 @@ fun News(newsViewModel: NewsViewModel) {
             LazyColumn(modifier = Modifier
                 .fillMaxSize()
             ) {
-                val selected = newsViewModel.chipSelected.value
+                val selected = newsViewModel.localState.value.categorySelected
 
                 item {
                     ChipGroup(
                         categories = categories,
                         selected = selected,
                         onChipSelected = { category ->
-                            newsViewModel.setChipSelected(category)
-                            if (category == "All") {
-                                newsViewModel.getMainNews()
-                            } else {
-                                newsViewModel.getNewsByCategory(category, "50")
+                            newsViewModel.localState.update { currentState ->
+                                currentState.copy(categorySelected = category)
+                            }
+                            when (category) {
+                                "All" -> newsViewModel.getMainNews()
+                                else ->newsViewModel.getNewsByCategory(category, "50")
                             }
                         }
                     )

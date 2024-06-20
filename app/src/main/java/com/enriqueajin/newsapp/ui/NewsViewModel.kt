@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enriqueajin.newsapp.domain.GetAllTopNewsUseCase
 import com.enriqueajin.newsapp.domain.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.ui.home.tabs.LocalUiState
 import com.enriqueajin.newsapp.ui.home.tabs.NewsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,14 +25,10 @@ class NewsViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
-    private val _chipSelected = mutableStateOf("All")
-    var chipSelected: State<String> = _chipSelected
-
     private val _selectedNavIndex = mutableStateOf(0)
     val selectedNavIndex: State<Int> = _selectedNavIndex
 
-    private val _keywordSearch = mutableStateOf("Real Madrid")
-    val keywordSearch: State<String> = _keywordSearch
+    var localState = MutableStateFlow(LocalUiState())
 
     private val _uiState = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
@@ -43,7 +40,7 @@ class NewsViewModel @Inject constructor(
     fun getMainNews() {
         combine(
             getAllTopNewsUseCase(pageSize = "10"),
-            getNewsByKeywordUseCase(keyword = _keywordSearch.value)
+            getNewsByKeywordUseCase(keyword = localState.value.keyword)
         ) { latestNews, newsByKeyword ->
             when {
                 latestNews.isNullOrEmpty() -> _uiState.value = NewsUiState.Success(newsByKeyword = newsByKeyword)
@@ -73,15 +70,7 @@ class NewsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun setChipSelected(category: String) {
-        _chipSelected.value = category
-    }
-
     fun setSelectedNavIndex(index: Int) {
         _selectedNavIndex.value = index
-    }
-
-    fun setKeywordSearch(keyword: String) {
-        _keywordSearch.value = keyword
     }
 }
