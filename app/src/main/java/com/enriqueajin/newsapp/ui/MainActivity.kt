@@ -4,17 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.ui.home.Home
+import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.ui.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,9 +53,11 @@ class MainActivity : ComponentActivity() {
                                 deserializer = ListSerializer(NewsItem.serializer()),
                                 string = args.news
                             )
-                            Column(Modifier.fillMaxSize()) {
-                                Text(text = "$news")
-                            }
+                            KeywordNewsScreen(
+                                news = news,
+                                onItemClicked = {},
+                                onBackPressed = { navController.popBackStack() }
+                            )
                         }
                     }
                 }
