@@ -11,9 +11,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.components.bottom_navigation.BottomNav
 import com.enriqueajin.newsapp.ui.home.components.tab_row.TopTabRow
+import com.enriqueajin.newsapp.ui.model.NewsItem
 
 @Composable
-fun Home(newsViewModel: NewsViewModel) {
+fun Home(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit) {
     val tabs = listOf("News", "Events", "Weather")
 
     Scaffold(
@@ -22,7 +23,8 @@ fun Home(newsViewModel: NewsViewModel) {
         Box(modifier = Modifier.fillMaxSize().padding(it)) {
             TopTabRow(
                 tabs = tabs,
-                newsViewModel = newsViewModel
+                newsViewModel = newsViewModel,
+                onSeeAllClicked = { onSeeAllClicked(it) }
             )
         }
     }

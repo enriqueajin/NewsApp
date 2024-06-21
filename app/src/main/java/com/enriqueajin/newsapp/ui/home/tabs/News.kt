@@ -1,5 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.tabs
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.ui.NewsViewModel
@@ -39,10 +40,11 @@ import com.enriqueajin.newsapp.ui.home.components.all_news_carousel.AllNewsCarou
 import com.enriqueajin.newsapp.ui.home.components.latest_news_carousel.LatestNewsCarousel
 import com.enriqueajin.newsapp.ui.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.DarkGray
+import com.enriqueajin.newsapp.util.DummyDataProvider
 import kotlinx.coroutines.flow.update
 
 @Composable
-fun News(newsViewModel: NewsViewModel) {
+fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit) {
     val categories = listOf("All", "Science", "Technology", "Sports", "Health", "Business", "Entertainment")
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -65,7 +67,7 @@ fun News(newsViewModel: NewsViewModel) {
         }
         is NewsUiState.Success -> {
             val latestNews = (uiState as NewsUiState.Success).latestNews ?: emptyList()
-            val newsByKeyword = (uiState as NewsUiState.Success).newsByKeyword ?: emptyList()
+            val previewKeywordNews = (uiState as NewsUiState.Success).newsByKeyword ?: emptyList()
             val newsByCategory = (uiState as NewsUiState.Success).newsByCategory ?: emptyList()
 
             LazyColumn(modifier = Modifier
@@ -89,8 +91,8 @@ fun News(newsViewModel: NewsViewModel) {
                     )
                 }
                 when(selected) {
-                    "All" -> allNews(latestNews = latestNews, allTopNews = newsByKeyword)
-                    else -> newsByCategory(news = newsByCategory)
+                    "All" -> allNews(latestNews, previewKeywordNews) { onSeeAllClicked(it) }
+                    else -> newsByCategory(newsByCategory)
                 }
             }
         }
@@ -99,7 +101,8 @@ fun News(newsViewModel: NewsViewModel) {
 
 fun LazyListScope.allNews(
     latestNews: List<NewsItem>,
-    allTopNews: List<NewsItem>,
+    previewKeywordNews: List<NewsItem>,
+    onSeeAllClicked: (List<NewsItem>) -> Unit
 ) {
     item {
         Text(
@@ -126,13 +129,13 @@ fun LazyListScope.allNews(
             Text(
                 text = "See All",
                 fontSize = 16.sp,
-                modifier = Modifier.padding(start = 30.dp),
                 fontWeight = FontWeight.Bold,
-                color = DarkGray
+                color = DarkGray,
+                modifier = Modifier.padding(start = 30.dp).clickable { onSeeAllClicked(DummyDataProvider.getAllNewsItems()) },
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
-        AllNewsCarousel(news = allTopNews)
+        AllNewsCarousel(previewKeywordNews)
     }
 }
 

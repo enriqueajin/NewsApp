@@ -1,6 +1,5 @@
 package com.enriqueajin.newsapp.ui.home.components.tab_row
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,13 +24,14 @@ import com.enriqueajin.newsapp.ui.NewsViewModel
 import com.enriqueajin.newsapp.ui.home.tabs.Events
 import com.enriqueajin.newsapp.ui.home.tabs.News
 import com.enriqueajin.newsapp.ui.home.tabs.Weather
+import com.enriqueajin.newsapp.ui.model.NewsItem
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopTabRow(
     tabs: List<String>,
-    newsViewModel: NewsViewModel
+    newsViewModel: NewsViewModel,
+    onSeeAllClicked: (List<NewsItem>) -> Unit
 ) {
     val tabRowPagerState = rememberPagerState(pageCount = {
         tabs.size
@@ -76,7 +76,7 @@ fun TopTabRow(
         ) {index ->
             Box(modifier = Modifier.fillMaxSize()) {
                 when (index) {
-                    0 -> News(newsViewModel)
+                    0 -> News(newsViewModel) { onSeeAllClicked(it) }
                     1 -> Events()
                     2 -> Weather()
                 }

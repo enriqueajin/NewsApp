@@ -4,13 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.ui.home.Home
+import com.enriqueajin.newsapp.ui.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -21,12 +30,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NewsAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Home(newsViewModel)
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Home
+                    ) {
+                        composable<Home> {
+                            Home(newsViewModel) {
+                                val news = Json.encodeToString(
+                                    serializer = ListSerializer(NewsItem.serializer()),
+                                    value = it
+                                )
+                                navController.navigate(KeywordNews(news))
+                            }
+                        }
+                        composable<KeywordNews> {
+                            val args = it.toRoute<KeywordNews>()
+                            val news = Json.decodeFromString(
+                                deserializer = ListSerializer(NewsItem.serializer()),
+                                string = args.news
+                            )
+                            Column(Modifier.fillMaxSize()) {
+                                Text(text = "$news")
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -1,5 +1,8 @@
 package com.enriqueajin.newsapp.ui.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class NewsItem(
     val source: NewsSource = NewsSource("",""),
     val author: String? = "No author",
@@ -11,6 +14,7 @@ data class NewsItem(
     val content: String = ""
 )
 
+@Serializable
 data class NewsSource(
     val id: String?,
     val name: String?
