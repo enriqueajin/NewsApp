@@ -9,9 +9,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.enriqueajin.newsapp.ui.home.tabs.NewsListItem
+import com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.ui.keyword_news.components.KeywordNewsTopBarApp
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 
 @Composable
 fun KeywordNewsScreen(

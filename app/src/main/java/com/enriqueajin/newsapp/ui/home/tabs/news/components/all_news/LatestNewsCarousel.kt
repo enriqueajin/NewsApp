@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components.latest_news_carousel
+package com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 import kotlin.math.absoluteValue
 

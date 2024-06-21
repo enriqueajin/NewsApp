@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.model
+package com.enriqueajin.newsapp.data.network.model
 
 import kotlinx.serialization.Serializable
 

@@ -1,7 +1,7 @@
 package com.enriqueajin.newsapp.data.network
 
 import com.enriqueajin.newsapp.BuildConfig
-import com.enriqueajin.newsapp.data.response.NewsResponse
+import com.enriqueajin.newsapp.data.network.response.NewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

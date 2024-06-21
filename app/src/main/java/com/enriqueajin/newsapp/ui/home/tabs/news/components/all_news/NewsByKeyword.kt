@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components.all_news_carousel
+package com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
 
 @Composable
-fun AllNewsCarousel(news: List<NewsItem>) {
+fun NewsByKeyword(news: List<NewsItem>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -21,7 +21,7 @@ fun AllNewsCarousel(news: List<NewsItem>) {
     ) {
         LazyRow {
             items(news) { item ->
-                AllNewsItem(item)
+                NewsByKeywordItem(item)
             }
         }
     }
@@ -29,6 +29,6 @@ fun AllNewsCarousel(news: List<NewsItem>) {
 
 @Preview(showBackground = true)
 @Composable
-fun AllNewsCarouselPreview() {
-    AllNewsCarousel(getAllNewsItems())
+fun NewsByKeywordPreview() {
+    NewsByKeyword(getAllNewsItems())
 }

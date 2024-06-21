@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.model
+package com.enriqueajin.newsapp.ui.home.components
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

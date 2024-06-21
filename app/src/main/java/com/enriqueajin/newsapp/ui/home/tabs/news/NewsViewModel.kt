@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui
+package com.enriqueajin.newsapp.ui.home.tabs.news
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enriqueajin.newsapp.domain.GetAllTopNewsUseCase
 import com.enriqueajin.newsapp.domain.GetNewsByKeywordUseCase
-import com.enriqueajin.newsapp.ui.home.tabs.LocalUiState
-import com.enriqueajin.newsapp.ui.home.tabs.NewsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +26,7 @@ class NewsViewModel @Inject constructor(
     private val _selectedNavIndex = mutableStateOf(0)
     val selectedNavIndex: State<Int> = _selectedNavIndex
 
-    var localState = MutableStateFlow(LocalUiState())
+    var localState = MutableStateFlow(NewsLocalUiState())
 
     private val _uiState = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()

@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components.bottom_navigation
+package com.enriqueajin.newsapp.ui.home.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -12,8 +12,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.enriqueajin.newsapp.ui.NewsViewModel
-import com.enriqueajin.newsapp.ui.model.BottomNavItem
+import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
 
 @Composable
 fun BottomNav(newsViewModel: NewsViewModel) {

@@ -1,6 +1,6 @@
-package com.enriqueajin.newsapp.data.response
+package com.enriqueajin.newsapp.data.network.response
 
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.google.gson.annotations.SerializedName
 
 data class NewsResponse(

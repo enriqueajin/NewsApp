@@ -1,7 +1,7 @@
 package com.enriqueajin.newsapp.domain
 
 import com.enriqueajin.newsapp.data.NewsRepository
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

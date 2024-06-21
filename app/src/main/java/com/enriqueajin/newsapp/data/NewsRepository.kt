@@ -1,7 +1,7 @@
 package com.enriqueajin.newsapp.data
 
 import com.enriqueajin.newsapp.data.network.NewsService
-import com.enriqueajin.newsapp.data.response.NewsResponse
+import com.enriqueajin.newsapp.data.network.response.NewsResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 

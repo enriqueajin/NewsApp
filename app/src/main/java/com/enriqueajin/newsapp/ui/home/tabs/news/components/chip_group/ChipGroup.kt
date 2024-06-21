@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components
+package com.enriqueajin.newsapp.ui.home.tabs.news.components.chip_group
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

@@ -1,6 +1,6 @@
-package com.enriqueajin.newsapp.ui.home.tabs
+package com.enriqueajin.newsapp.ui.home.tabs.news
 
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 
 sealed interface NewsUiState {
     object Loading: NewsUiState

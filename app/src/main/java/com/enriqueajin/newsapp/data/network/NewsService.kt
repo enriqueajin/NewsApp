@@ -1,6 +1,6 @@
 package com.enriqueajin.newsapp.data.network
 
-import com.enriqueajin.newsapp.data.response.NewsResponse
+import com.enriqueajin.newsapp.data.network.response.NewsResponse
 import javax.inject.Inject
 
 class NewsService @Inject constructor(private val api: NewsApiClient) {

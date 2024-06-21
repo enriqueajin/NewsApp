@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.components.all_news_carousel
+package com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,12 +19,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.LightGray
 import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
 
 @Composable
-fun AllNewsItem(newsItem: NewsItem) {
+fun NewsByKeywordItem(newsItem: NewsItem) {
     Card(
         modifier = Modifier
             .width(170.dp)
@@ -73,5 +73,5 @@ fun AllNewsItem(newsItem: NewsItem) {
 @Composable
 fun AllNewsItemPreview() {
     val item = getAllNewsItems().first()
-    AllNewsItem(item)
+    NewsByKeywordItem(item)
 }

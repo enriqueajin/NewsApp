@@ -13,8 +13,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.ui.home.Home
+import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
 import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsScreen
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.builtins.ListSerializer

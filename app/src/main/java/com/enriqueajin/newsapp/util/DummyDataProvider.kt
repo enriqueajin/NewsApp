@@ -1,6 +1,6 @@
 package com.enriqueajin.newsapp.util
 
-import com.enriqueajin.newsapp.ui.model.NewsItem
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 
 object DummyDataProvider {
 
