@@ -15,14 +15,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
 import com.enriqueajin.newsapp.ui.theme.DarkGray
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 fun LazyListScope.AllNews(
     latestNews: List<NewsItem>,
     previewKeywordNews: List<NewsItem>,
-    onSeeAllClicked: (List<NewsItem>) -> Unit
+    newsViewModel: NewsViewModel,
+    onSeeAllClicked: (List<NewsItem>, String) -> Unit
 ) {
+    val keyword = newsViewModel.localState.value.keyword
     item {
         Text(
             text = "Latest news",
@@ -41,7 +44,7 @@ fun LazyListScope.AllNews(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = "All news",
+                text = keyword,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -50,11 +53,16 @@ fun LazyListScope.AllNews(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = DarkGray,
-                modifier = Modifier.padding(start = 30.dp).clickable { onSeeAllClicked(
-                    DummyDataProvider.getAllNewsItems()) },
+                modifier = Modifier
+                    .padding(start = 30.dp)
+                    .clickable {
+                        val news = DummyDataProvider.getAllNewsItems()
+                        onSeeAllClicked(news, keyword)
+                    },
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
         NewsByKeyword(previewKeywordNews)
+        Spacer(modifier = Modifier.height(30.dp))
     }
 }

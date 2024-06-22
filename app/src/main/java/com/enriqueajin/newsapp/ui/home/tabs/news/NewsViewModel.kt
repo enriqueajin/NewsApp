@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enriqueajin.newsapp.domain.GetAllTopNewsUseCase
 import com.enriqueajin.newsapp.domain.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.util.KeywordProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,7 @@ class NewsViewModel @Inject constructor(
     private val _selectedNavIndex = mutableStateOf(0)
     val selectedNavIndex: State<Int> = _selectedNavIndex
 
-    var localState = MutableStateFlow(NewsLocalUiState())
+    var localState = MutableStateFlow(NewsLocalUiState(keyword = KeywordProvider.getRandomKeyword()))
 
     private val _uiState = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
@@ -38,14 +39,36 @@ class NewsViewModel @Inject constructor(
     fun getMainNews() {
         combine(
             getAllTopNewsUseCase(pageSize = "10"),
-            getNewsByKeywordUseCase(keyword = localState.value.keyword)
-        ) { latestNews, newsByKeyword ->
+            getNewsByKeywordUseCase(keyword = localState.value.keyword, pageSize = "15"),
+            localState
+        ) { latestNews, newsByKeyword, localState ->
             when {
-                latestNews.isNullOrEmpty() -> _uiState.value = NewsUiState.Success(newsByKeyword = newsByKeyword)
-                newsByKeyword.isNullOrEmpty() -> _uiState.value = NewsUiState.Success(latestNews = latestNews)
-                else -> _uiState.value = NewsUiState.Success(latestNews, newsByKeyword)
+                latestNews.isNullOrEmpty() -> {
+                    _uiState.value = NewsUiState.Success(
+                        newsByKeyword = newsByKeyword,
+                        categorySelected = localState.categorySelected,
+                        keywords = localState.keyword
+                    )
+                }
+                newsByKeyword.isNullOrEmpty() -> {
+                    _uiState.value = NewsUiState.Success(
+                        latestNews = latestNews,
+                        categorySelected = localState.categorySelected,
+                        keywords = localState.keyword
+                    )
+                }
+                else -> {
+                    _uiState.value = NewsUiState.Success(
+                        latestNews = latestNews,
+                        newsByKeyword = newsByKeyword,
+                        categorySelected = localState.categorySelected,
+                        keywords = localState.keyword
+                    )
+                }
             }
 
+        }.onStart {
+            _uiState.value = NewsUiState.Loading
         }.catch {
             _uiState.value = NewsUiState.Error(it)
 
@@ -61,7 +84,9 @@ class NewsViewModel @Inject constructor(
             _uiState.value = NewsUiState.Success(
                 latestNews = currentState?.latestNews,
                 newsByKeyword = currentState?.newsByKeyword,
-                newsByCategory = news
+                newsByCategory = news,
+                categorySelected = category,
+                keywords = currentState?.keywords
             )
         }.catch { error ->
             _uiState.value = NewsUiState.Error(error)

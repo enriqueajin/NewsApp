@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 fun TopTabRow(
     tabs: List<String>,
     newsViewModel: NewsViewModel,
-    onSeeAllClicked: (List<NewsItem>) -> Unit
+    onSeeAllClicked: (List<NewsItem>, String) -> Unit
 ) {
     val tabRowPagerState = rememberPagerState(pageCount = {
         tabs.size
@@ -76,7 +76,7 @@ fun TopTabRow(
         ) {index ->
             Box(modifier = Modifier.fillMaxSize()) {
                 when (index) {
-                    0 -> News(newsViewModel) { onSeeAllClicked(it) }
+                    0 -> News(newsViewModel) { news, keyword -> onSeeAllClicked(news, keyword) }
                     1 -> Events()
                     2 -> Weather()
                 }

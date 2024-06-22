@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 object Home
 
 @Serializable
-data class KeywordNews(val news: String)
+data class KeywordNews(val news: String, val keyword: String)

@@ -8,5 +8,5 @@ import javax.inject.Singleton
 @Singleton
 class NewsRepository @Inject constructor(private val newsService: NewsService) {
     suspend fun getNews(category: String, pageSize: String): NewsResponse = newsService.getNews(category, pageSize)
-    suspend fun getNewsByKeyword(keyword: String): NewsResponse = newsService.getNewsByKeyword(keyword)
+    suspend fun getNewsByKeyword(keyword: String, pageSize: String): NewsResponse = newsService.getNewsByKeyword(keyword, pageSize)
 }

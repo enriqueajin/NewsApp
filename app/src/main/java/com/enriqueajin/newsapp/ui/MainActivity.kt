@@ -12,10 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.enriqueajin.newsapp.ui.home.Home
+import com.enriqueajin.newsapp.ui.home.HomeScreen
 import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
 import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsViewModel
 import com.enriqueajin.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.builtins.ListSerializer
@@ -25,6 +26,7 @@ import kotlinx.serialization.json.Json
 class MainActivity : ComponentActivity() {
 
     private val newsViewModel: NewsViewModel by viewModels()
+    private val keywordNewsViewModel: KeywordNewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,24 +42,22 @@ class MainActivity : ComponentActivity() {
                         startDestination = Home
                     ) {
                         composable<Home> {
-                            Home(newsViewModel) {
-                                val news = Json.encodeToString(
+                            HomeScreen(newsViewModel) { news, keyword ->
+                                val newsArg = Json.encodeToString(
                                     serializer = ListSerializer(NewsItem.serializer()),
-                                    value = it
+                                    value = news
                                 )
-                                navController.navigate(KeywordNews(news))
+                                navController.navigate(KeywordNews(newsArg, keyword))
                             }
                         }
                         composable<KeywordNews> {
                             val args = it.toRoute<KeywordNews>()
-                            val news = Json.decodeFromString(
-                                deserializer = ListSerializer(NewsItem.serializer()),
-                                string = args.news
-                            )
+
                             KeywordNewsScreen(
-                                news = news,
+                                keywordNewsViewModel = keywordNewsViewModel,
+                                args = args,
                                 onItemClicked = {},
-                                onBackPressed = { navController.popBackStack() }
+                                onBackPressed = { navController.navigateUp() }
                             )
                         }
                     }

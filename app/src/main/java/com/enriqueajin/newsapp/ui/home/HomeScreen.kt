@@ -14,7 +14,7 @@ import com.enriqueajin.newsapp.ui.home.components.TopTabRow
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 
 @Composable
-fun Home(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit) {
+fun HomeScreen(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>, String) -> Unit) {
     val tabs = listOf("News", "Events", "Weather")
 
     Scaffold(
@@ -24,7 +24,7 @@ fun Home(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit
             TopTabRow(
                 tabs = tabs,
                 newsViewModel = newsViewModel,
-                onSeeAllClicked = { onSeeAllClicked(it) }
+                onSeeAllClicked = { news, keyword -> onSeeAllClicked(news, keyword) }
             )
         }
     }

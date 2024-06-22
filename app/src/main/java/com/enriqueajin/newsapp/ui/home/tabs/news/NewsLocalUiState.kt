@@ -1,6 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.tabs.news
 
-data class NewsLocalUiState(
+data class NewsLocalUiState (
     val categorySelected: String = "All",
-    val keyword: String = "Tesla"
+    val keyword: String
 )

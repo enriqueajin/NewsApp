@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeywordNewsTopBarApp(onBackPressed: () -> Unit) {
+fun KeywordNewsTopBarApp(title: String, onBackPressed: () -> Unit) {
     TopAppBar(
-        title = { Text(text = "News by keyword") },
+        title = { Text(text = title) },
         navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)

@@ -7,37 +7,23 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
-import com.enriqueajin.newsapp.ui.home.tabs.news.components.chip_group.ChipGroup
-import com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news.AllNews
-import com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news.NewsByCategory
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import kotlinx.coroutines.flow.update
+import com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news.AllNews
+import com.enriqueajin.newsapp.ui.home.tabs.news.components.chip_group.ChipGroup
+import com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news.NewsByCategory
 
 @Composable
-fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit) {
+fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>, String) -> Unit) {
     val categories = listOf("All", "Science", "Technology", "Sports", "Health", "Business", "Entertainment")
-
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState<NewsUiState>(
-        initialValue = NewsUiState.Loading,
-        key1 = lifecycle,
-        key2 = newsViewModel,
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            newsViewModel.uiState.collect { value = it }
-        }
-    }
+    val uiState by newsViewModel.uiState.collectAsStateWithLifecycle()
 
     when(uiState) {
-        is NewsUiState.Error -> Text(text = "There is an error.")
+        is NewsUiState.Error -> Text(text = "${(uiState as NewsUiState.Error).throwable}")
         NewsUiState.Loading -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -58,9 +44,7 @@ fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit
                         categories = categories,
                         selected = selected,
                         onChipSelected = { category ->
-                            newsViewModel.localState.update { currentState ->
-                                currentState.copy(categorySelected = category)
-                            }
+                            newsViewModel.localState.value = newsViewModel.localState.value.copy(categorySelected = category)
                             when (category) {
                                 "All" -> newsViewModel.getMainNews()
                                 else -> newsViewModel.getNewsByCategory(category, "50")
@@ -69,7 +53,7 @@ fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>) -> Unit
                     )
                 }
                 when(selected) {
-                    "All" -> AllNews(latestNews, previewKeywordNews) { onSeeAllClicked(it) }
+                    "All" -> AllNews(latestNews, previewKeywordNews, newsViewModel) { news, keyword -> onSeeAllClicked(news, keyword) }
                     else -> NewsByCategory(newsByCategory)
                 }
             }
