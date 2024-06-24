@@ -12,18 +12,18 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
+import com.enriqueajin.newsapp.ui.home.HomeViewModel
 
 @Composable
-fun BottomNav(newsViewModel: NewsViewModel) {
+fun BottomNav(homeViewModel: HomeViewModel) {
     val items = getBottomNavItems()
-    val selectedItemIndex = newsViewModel.selectedNavIndex.value
+    val selectedItemIndex = homeViewModel.selectedNavIndex.value
 
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedItemIndex == index,
-                onClick = { newsViewModel.setSelectedNavIndex(index) },
+                onClick = { homeViewModel.setSelectedNavIndex(index) },
                 icon = {
                     val icon = if (selectedItemIndex == index) item.selectedIcon else item.unselectedIcon
                     Icon(

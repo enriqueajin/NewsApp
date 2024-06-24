@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
+import com.enriqueajin.newsapp.ui.home.HomeViewModel
 import com.enriqueajin.newsapp.ui.home.tabs.Events
 import com.enriqueajin.newsapp.ui.home.tabs.news.News
 import com.enriqueajin.newsapp.ui.home.tabs.Weather
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TopTabRow(
     tabs: List<String>,
-    newsViewModel: NewsViewModel,
+    homeViewModel: HomeViewModel,
     onSeeAllClicked: (List<NewsItem>, String) -> Unit,
     onItemClicked: (NewsItem) -> Unit
 ) {
@@ -79,7 +79,7 @@ fun TopTabRow(
                 when (index) {
                     0 -> {
                         News(
-                            newsViewModel = newsViewModel,
+                            homeViewModel = homeViewModel,
                             onSeeAllClicked = { news, keyword -> onSeeAllClicked(news, keyword) },
                             onItemClicked = { newsItem -> onItemClicked(newsItem) }
                         )

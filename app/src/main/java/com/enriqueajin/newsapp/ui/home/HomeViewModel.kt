@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.tabs.news
+package com.enriqueajin.newsapp.ui.home
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val getAllTopNewsUseCase: GetAllTopNewsUseCase,
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
@@ -27,10 +27,10 @@ class NewsViewModel @Inject constructor(
     private val _selectedNavIndex = mutableStateOf(0)
     val selectedNavIndex: State<Int> = _selectedNavIndex
 
-    var localState = MutableStateFlow(NewsLocalUiState(keyword = KeywordProvider.getRandomKeyword()))
+    var localState = MutableStateFlow(HomeLocalUiState(keyword = KeywordProvider.getRandomKeyword()))
 
-    private val _uiState = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
-    val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
         getMainNews()
@@ -44,21 +44,21 @@ class NewsViewModel @Inject constructor(
         ) { latestNews, newsByKeyword, localState ->
             when {
                 latestNews.isNullOrEmpty() -> {
-                    _uiState.value = NewsUiState.Success(
+                    _uiState.value = HomeUiState.Success(
                         newsByKeyword = newsByKeyword,
                         categorySelected = localState.categorySelected,
                         keywords = localState.keyword
                     )
                 }
                 newsByKeyword.isNullOrEmpty() -> {
-                    _uiState.value = NewsUiState.Success(
+                    _uiState.value = HomeUiState.Success(
                         latestNews = latestNews,
                         categorySelected = localState.categorySelected,
                         keywords = localState.keyword
                     )
                 }
                 else -> {
-                    _uiState.value = NewsUiState.Success(
+                    _uiState.value = HomeUiState.Success(
                         latestNews = latestNews,
                         newsByKeyword = newsByKeyword,
                         categorySelected = localState.categorySelected,
@@ -68,20 +68,20 @@ class NewsViewModel @Inject constructor(
             }
 
         }.onStart {
-            _uiState.value = NewsUiState.Loading
+            _uiState.value = HomeUiState.Loading
         }.catch {
-            _uiState.value = NewsUiState.Error(it)
+            _uiState.value = HomeUiState.Error(it)
 
         }.launchIn(viewModelScope)
     }
 
     fun getNewsByCategory(category: String, pageSize: String) {
-        val currentState = (_uiState.value as? NewsUiState.Success)
+        val currentState = (_uiState.value as? HomeUiState.Success)
 
         getAllTopNewsUseCase(category, pageSize).onStart {
-            _uiState.value = NewsUiState.Loading
+            _uiState.value = HomeUiState.Loading
         }.onEach { news ->
-            _uiState.value = NewsUiState.Success(
+            _uiState.value = HomeUiState.Success(
                 latestNews = currentState?.latestNews,
                 newsByKeyword = currentState?.newsByKeyword,
                 newsByCategory = news,
@@ -89,7 +89,7 @@ class NewsViewModel @Inject constructor(
                 keywords = currentState?.keywords
             )
         }.catch { error ->
-            _uiState.value = NewsUiState.Error(error)
+            _uiState.value = HomeUiState.Error(error)
         }.launchIn(viewModelScope)
     }
 

@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news
+package com.enriqueajin.newsapp.ui.home.components.keyword_news
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items

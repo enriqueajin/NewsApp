@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news
+package com.enriqueajin.newsapp.ui.home.components.all_news
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

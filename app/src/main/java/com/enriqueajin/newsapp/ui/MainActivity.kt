@@ -14,7 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.ui.home.HomeScreen
-import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
+import com.enriqueajin.newsapp.ui.home.HomeViewModel
 import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsViewModel
@@ -27,7 +27,7 @@ import kotlinx.serialization.json.Json
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val newsViewModel: NewsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private val keywordNewsViewModel: KeywordNewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<Home> {
                             HomeScreen(
-                                newsViewModel = newsViewModel,
+                                homeViewModel = homeViewModel,
                                 onSeeAllClicked = { news, keyword ->
                                     val newsArg = Json.encodeToString(
                                         serializer = ListSerializer(NewsItem.serializer()),

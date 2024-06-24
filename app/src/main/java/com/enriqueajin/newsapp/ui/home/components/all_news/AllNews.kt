@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.home.tabs.news.components.all_news
+package com.enriqueajin.newsapp.ui.home.components.all_news
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,17 +15,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
+import com.enriqueajin.newsapp.ui.home.HomeViewModel
 import com.enriqueajin.newsapp.ui.theme.DarkGray
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 fun LazyListScope.AllNews(
     latestNews: List<NewsItem>,
     previewKeywordNews: List<NewsItem>,
-    newsViewModel: NewsViewModel,
+    homeViewModel: HomeViewModel,
     onSeeAllClicked: (List<NewsItem>, String) -> Unit
 ) {
-    val keyword = newsViewModel.localState.value.keyword
+    val keyword = homeViewModel.localState.value.keyword
     item {
         Text(
             text = "Latest news",

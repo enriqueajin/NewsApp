@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.KeywordNews
-import com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news.NewsListItem
+import com.enriqueajin.newsapp.ui.home.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.ui.keyword_news.components.KeywordNewsTopBarApp
 
 @Composable
