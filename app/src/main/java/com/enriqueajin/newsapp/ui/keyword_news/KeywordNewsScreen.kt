@@ -42,8 +42,10 @@ fun KeywordNewsScreen(
                 is KeywordNewsUiState.Success -> {
                     val news = (uiState as KeywordNewsUiState.Success).newsByKeyword ?: emptyList()
                     LazyColumn {
-                        items(news) { item ->
-                            NewsListItem(item)
+                        items(news) {  item ->
+                            NewsListItem(item) { newsItem ->
+                                onItemClicked(newsItem)
+                            }
                         }
                     }
                 }

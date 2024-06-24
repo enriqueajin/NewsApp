@@ -1,5 +1,7 @@
 package com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,29 +18,44 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.DarkGray
 
 @Composable
-fun NewsListItem(item: NewsItem) {
+fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp)
+            .clickable { onItemClicked(item) }
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            AsyncImage(
-                model = item.urlToImage,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
+            if (item.urlToImage == null) {
+                Image(
+                    painter = painterResource(id = R.drawable.no_image_available),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+            } else {
+                AsyncImage(
+                    model = item.urlToImage,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

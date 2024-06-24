@@ -1,6 +1,7 @@
 package com.enriqueajin.newsapp.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,6 +18,7 @@ import com.enriqueajin.newsapp.ui.home.tabs.news.NewsViewModel
 import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.keyword_news.KeywordNewsViewModel
+import com.enriqueajin.newsapp.ui.news_detail.NewsDetailScreen
 import com.enriqueajin.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.builtins.ListSerializer
@@ -42,13 +44,22 @@ class MainActivity : ComponentActivity() {
                         startDestination = Home
                     ) {
                         composable<Home> {
-                            HomeScreen(newsViewModel) { news, keyword ->
-                                val newsArg = Json.encodeToString(
-                                    serializer = ListSerializer(NewsItem.serializer()),
-                                    value = news
-                                )
-                                navController.navigate(KeywordNews(newsArg, keyword))
-                            }
+                            HomeScreen(
+                                newsViewModel = newsViewModel,
+                                onSeeAllClicked = { news, keyword ->
+                                    val newsArg = Json.encodeToString(
+                                        serializer = ListSerializer(NewsItem.serializer()),
+                                        value = news
+                                    )
+                                    navController.navigate(KeywordNews(newsArg, keyword))
+                                },
+                                onItemClicked = { newsItem ->
+                                    Log.i("TAG", "NewsItem value $newsItem")
+                                    val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
+
+                                    navController.navigate(NewsDetail(newsArg))
+                                }
+                            )
                         }
                         composable<KeywordNews> {
                             val args = it.toRoute<KeywordNews>()
@@ -56,7 +67,19 @@ class MainActivity : ComponentActivity() {
                             KeywordNewsScreen(
                                 keywordNewsViewModel = keywordNewsViewModel,
                                 args = args,
-                                onItemClicked = {},
+                                onItemClicked = { newsItem ->
+                                    Log.i("TAG", "NewsItem value $newsItem")
+                                    val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
+                                    navController.navigate(NewsDetail(newsArg))
+                                },
+                                onBackPressed = { navController.navigateUp() }
+                            )
+                        }
+                        composable<NewsDetail> {
+                            val args = it.toRoute<NewsDetail>()
+                            val newsItem = Json.decodeFromString(NewsItem.serializer(), args.newsItem)
+                            NewsDetailScreen(
+                                newsItem = newsItem,
                                 onBackPressed = { navController.navigateUp() }
                             )
                         }

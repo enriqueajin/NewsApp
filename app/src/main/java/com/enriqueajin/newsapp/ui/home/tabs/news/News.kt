@@ -18,7 +18,11 @@ import com.enriqueajin.newsapp.ui.home.tabs.news.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.ui.home.tabs.news.components.keyword_news.NewsByCategory
 
 @Composable
-fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>, String) -> Unit) {
+fun News(
+    newsViewModel: NewsViewModel,
+    onSeeAllClicked: (List<NewsItem>, String) -> Unit,
+    onItemClicked: (NewsItem) -> Unit
+) {
     val categories = listOf("All", "Science", "Technology", "Sports", "Health", "Business", "Entertainment")
     val uiState by newsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -54,7 +58,7 @@ fun News(newsViewModel: NewsViewModel, onSeeAllClicked: (List<NewsItem>, String)
                 }
                 when(selected) {
                     "All" -> AllNews(latestNews, previewKeywordNews, newsViewModel) { news, keyword -> onSeeAllClicked(news, keyword) }
-                    else -> NewsByCategory(newsByCategory)
+                    else -> NewsByCategory(newsByCategory) { newsItem -> onItemClicked(newsItem) }
                 }
             }
         }

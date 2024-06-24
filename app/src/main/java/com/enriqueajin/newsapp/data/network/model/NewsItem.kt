@@ -4,18 +4,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NewsItem(
-    val source: NewsSource = NewsSource("",""),
-    val author: String? = "No author",
+    val source: NewsSource?,
+    val author: String?,
     val title: String?,
-    val description: String = "",
-    val url: String = "",
-    val urlToImage: String = "",
+    val description: String?,
+    val url: String?,
+    val urlToImage: String?,
     val publishedAt: String?,
-    val content: String = ""
+    val content: String?,
 )
 
 @Serializable
 data class NewsSource(
     val id: String?,
-    val name: String?
+    val name: String?,
 )
