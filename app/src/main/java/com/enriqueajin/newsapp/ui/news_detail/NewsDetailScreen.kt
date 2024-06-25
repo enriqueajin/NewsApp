@@ -59,7 +59,14 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                 ) {
                     AssistChip(
                         onClick = {},
-                        label = { Text(text = newsItem.author ?: NEWS_ITEM_AUTHOR, maxLines = 1) },
+                        label = {
+                            val text = newsItem.author ?: NEWS_ITEM_AUTHOR
+                            val maxLength = 30
+                            Text(
+                                text = if (text.length <= maxLength) text else text.substring(0, maxLength),
+                                maxLines = 1,
+                            )
+                        },
                         enabled = false,
                         colors = AssistChipDefaults.assistChipColors(
                             disabledContainerColor = Purple80,
