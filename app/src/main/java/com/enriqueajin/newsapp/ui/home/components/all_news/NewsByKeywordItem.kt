@@ -1,5 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.components.all_news
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +25,13 @@ import com.enriqueajin.newsapp.ui.theme.LightGray
 import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
 
 @Composable
-fun NewsByKeywordItem(newsItem: NewsItem) {
+fun NewsByKeywordItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     Card(
         modifier = Modifier
             .width(170.dp)
             .height(200.dp)
-            .padding(end = 15.dp),
+            .padding(end = 15.dp)
+            .clickable { onItemClicked(newsItem) },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         )
@@ -73,5 +75,5 @@ fun NewsByKeywordItem(newsItem: NewsItem) {
 @Composable
 fun AllNewsItemPreview() {
     val item = getAllNewsItems().first()
-    NewsByKeywordItem(item)
+    NewsByKeywordItem(item) {}
 }

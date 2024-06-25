@@ -1,6 +1,5 @@
 package com.enriqueajin.newsapp.ui.home.components.all_news
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.pager.HorizontalPager
@@ -17,9 +16,8 @@ import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LatestNewsCarousel(news: List<NewsItem>) {
+fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
         news.size
     })
@@ -52,7 +50,7 @@ fun LatestNewsCarousel(news: List<NewsItem>) {
             )
         }) {
             val item = news[index]
-            LatestNewsItem(item)
+            LatestNewsItem(item) { newsItem -> onItemClicked(newsItem) }
         }
     }
 }
@@ -60,5 +58,5 @@ fun LatestNewsCarousel(news: List<NewsItem>) {
 @Preview(showBackground = true)
 @Composable
 fun NewsCarouselPreview() {
-    LatestNewsCarousel(getLatestNewsItems())
+    LatestNewsCarousel(getLatestNewsItems()) {}
 }

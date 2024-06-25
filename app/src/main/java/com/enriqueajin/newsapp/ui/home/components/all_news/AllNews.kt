@@ -23,7 +23,8 @@ fun LazyListScope.AllNews(
     latestNews: List<NewsItem>,
     previewKeywordNews: List<NewsItem>,
     homeViewModel: HomeViewModel,
-    onSeeAllClicked: (List<NewsItem>, String) -> Unit
+    onSeeAllClicked: (List<NewsItem>, String) -> Unit,
+    onItemClicked: (NewsItem) -> Unit,
 ) {
     val keyword = homeViewModel.localState.value.keyword
     item {
@@ -34,7 +35,7 @@ fun LazyListScope.AllNews(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(20.dp))
-        LatestNewsCarousel(news = latestNews)
+        LatestNewsCarousel(news = latestNews) { newsItem -> onItemClicked(newsItem) }
         Spacer(modifier = Modifier.height(30.dp))
         Row(
             modifier = Modifier
@@ -62,7 +63,7 @@ fun LazyListScope.AllNews(
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
-        NewsByKeyword(previewKeywordNews)
+        NewsByKeyword(previewKeywordNews) { newsItem -> onItemClicked(newsItem) }
         Spacer(modifier = Modifier.height(30.dp))
     }
 }

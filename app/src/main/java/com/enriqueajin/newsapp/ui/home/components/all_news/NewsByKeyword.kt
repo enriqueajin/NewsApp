@@ -13,7 +13,7 @@ import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
 
 @Composable
-fun NewsByKeyword(news: List<NewsItem>) {
+fun NewsByKeyword(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -21,7 +21,7 @@ fun NewsByKeyword(news: List<NewsItem>) {
     ) {
         LazyRow {
             items(news) { item ->
-                NewsByKeywordItem(item)
+                NewsByKeywordItem(item) { newsItem -> onItemClicked(newsItem) }
             }
         }
     }
@@ -30,5 +30,5 @@ fun NewsByKeyword(news: List<NewsItem>) {
 @Preview(showBackground = true)
 @Composable
 fun NewsByKeywordPreview() {
-    NewsByKeyword(getAllNewsItems())
+    NewsByKeyword(getAllNewsItems()) {}
 }

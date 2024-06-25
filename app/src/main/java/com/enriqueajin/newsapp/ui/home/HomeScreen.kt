@@ -64,7 +64,20 @@ fun HomeScreen(
                             )
                         }
                         when(selected) {
-                            "All" -> AllNews(latestNews, previewKeywordNews, homeViewModel) { news, keyword -> onSeeAllClicked(news, keyword) }
+                            "All" -> {
+                                AllNews(
+                                    latestNews = latestNews,
+                                    previewKeywordNews = previewKeywordNews,
+                                    homeViewModel = homeViewModel,
+                                    onSeeAllClicked = { news, keyword ->
+                                        onSeeAllClicked(
+                                            news,
+                                            keyword
+                                        )
+                                    },
+                                    onItemClicked = { newsItem -> onItemClicked(newsItem) }
+                                )
+                            }
                             else -> NewsByCategory(newsByCategory) { newsItem -> onItemClicked(newsItem) }
                         }
                     }

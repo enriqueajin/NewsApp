@@ -1,5 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.components.all_news
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,11 +22,12 @@ import com.enriqueajin.newsapp.ui.theme.Purple80
 import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 
 @Composable
-fun LatestNewsItem(newsItem: NewsItem) {
+fun LatestNewsItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp),
+            .height(250.dp)
+            .clickable { onItemClicked(newsItem) },
         elevation = CardDefaults.cardElevation(3.dp),
         colors = CardDefaults.cardColors(
             containerColor = Purple80,
@@ -61,5 +63,5 @@ fun LatestNewsItem(newsItem: NewsItem) {
 @Composable
 fun CarouselNewsItemPreview() {
     val item = getLatestNewsItems().first()
-    LatestNewsItem(item)
+    LatestNewsItem(item) {}
 }
