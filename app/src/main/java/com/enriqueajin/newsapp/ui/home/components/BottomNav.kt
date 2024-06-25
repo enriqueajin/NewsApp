@@ -2,6 +2,7 @@ package com.enriqueajin.newsapp.ui.home.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Favorite
@@ -51,7 +52,7 @@ fun getBottomNavItems(): List<BottomNavItem> {
         BottomNavItem(
             title = "Favorites",
             selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Outlined.Favorite
+            unselectedIcon = Icons.Default.FavoriteBorder
         )
     )
 }
