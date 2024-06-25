@@ -14,18 +14,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.DarkGray
+import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_AUTHOR
+import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_PUBLISHED_AT
+import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_TITLE
+import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
 fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
@@ -41,7 +45,7 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                     painter = painterResource(id = R.drawable.no_image_available),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(110.dp)
                         .clip(RoundedCornerShape(10.dp)),
                     contentScale = ContentScale.Crop
                 )
@@ -51,36 +55,36 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                     model = item.urlToImage,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(110.dp)
                         .clip(RoundedCornerShape(10.dp)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(id = R.drawable.no_image_available)
                 )
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(10.dp),
+                    .height(110.dp)
+                    .padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = item.title ?: "No title",
+                    text = item.title ?: NEWS_ITEM_TITLE,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    maxLines = 3
                 )
-                Row(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
-                        text = item.author ?: "No author",
+                        text = item.author ?: NEWS_ITEM_AUTHOR,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
                         color = DarkGray
                     )
                     Text(
-                        text = item.publishedAt ?: "No date",
+                        text = item.publishedAt ?: NEWS_ITEM_PUBLISHED_AT,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
                         color = DarkGray
@@ -93,6 +97,10 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
             .fillMaxWidth()
             .height(1.dp))
         Spacer(modifier = Modifier.height(10.dp))
-
     }
+}
+@Preview(showBackground = true)
+@Composable
+fun NewsListItemPreview() {
+    NewsListItem(item = DummyDataProvider.getAllNewsItems().first(),) {}
 }

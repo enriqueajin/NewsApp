@@ -11,6 +11,6 @@ object Constants {
     const val NEWS_ITEM_DESCRIPTION = "No description"
     const val NEWS_ITEM_URL = "No url"
     const val NEWS_ITEM_URL_TO_IMAGE = "No url to image"
-    const val NEWS_ITEM_PUBLISHED_AT = "No published at"
+    const val NEWS_ITEM_PUBLISHED_AT = "No date"
     const val NEWS_ITEM_CONTENT = "No content"
 }

@@ -49,7 +49,8 @@ fun LatestNewsItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                 text = title,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                lineHeight = 40.sp
+                lineHeight = 40.sp,
+                maxLines = 4
             )
             Text(
                 text = publishedAt,
