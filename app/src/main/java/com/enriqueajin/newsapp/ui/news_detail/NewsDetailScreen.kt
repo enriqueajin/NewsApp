@@ -59,7 +59,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                 ) {
                     AssistChip(
                         onClick = {},
-                        label = { Text(text = newsItem.author ?: NEWS_ITEM_AUTHOR) },
+                        label = { Text(text = newsItem.author ?: NEWS_ITEM_AUTHOR, maxLines = 1) },
                         enabled = false,
                         colors = AssistChipDefaults.assistChipColors(
                             disabledContainerColor = Purple80,
