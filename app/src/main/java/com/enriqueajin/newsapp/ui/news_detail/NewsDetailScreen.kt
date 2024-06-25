@@ -1,5 +1,6 @@
 package com.enriqueajin.newsapp.ui.news_detail
 
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,7 +49,20 @@ import com.enriqueajin.newsapp.util.DummyDataProvider
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
-    Scaffold(topBar = { NewsDetailsTopBar { onBackPressed() }}) {
+    val context = LocalContext.current
+    Scaffold(topBar = {
+        NewsDetailsTopBar(
+            newsItem = newsItem,
+            onShareArticle = {
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_TEXT, it.url)
+                intent.type = "text/plain"
+                context.startActivity(intent)
+            },
+            onBackPressed = { onBackPressed() }
+        )
+    }) {
         Box(modifier = Modifier
             .padding(it)
             .padding(horizontal = 30.dp)

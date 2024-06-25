@@ -12,10 +12,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.enriqueajin.newsapp.data.network.model.NewsItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsDetailsTopBar(onBackPressed: () -> Unit) {
+fun NewsDetailsTopBar(newsItem: NewsItem, onShareArticle: (NewsItem) -> Unit, onBackPressed: () -> Unit) {
     TopAppBar(
         modifier = Modifier.padding(horizontal = 13.dp),
         title = { },
@@ -25,7 +26,7 @@ fun NewsDetailsTopBar(onBackPressed: () -> Unit) {
             }
         },
         actions = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = { onShareArticle(newsItem) }) {
                 Icon(imageVector = Icons.Default.Share, contentDescription = null)
             }
             IconButton(onClick = {}) {
