@@ -58,6 +58,7 @@ fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) 
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewsCarouselPreview() {
