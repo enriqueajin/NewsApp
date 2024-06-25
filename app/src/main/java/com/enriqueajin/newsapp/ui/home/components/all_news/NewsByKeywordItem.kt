@@ -48,7 +48,8 @@ fun NewsByKeywordItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxHeight()
-                            .align(Alignment.TopCenter)
+                            .align(Alignment.TopCenter),
+                        error = painterResource(id = R.drawable.no_image_available)
                     )
                 } else -> {
                     Image(
