@@ -1,5 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.components.chip_group
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -26,7 +28,8 @@ fun ChipGroup(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp, vertical = 25.dp)
+            .background(Color.White)
+            .padding(horizontal = 25.dp, vertical = 15.dp)
     ) {
         items(categories) { category ->
             FilterChip(

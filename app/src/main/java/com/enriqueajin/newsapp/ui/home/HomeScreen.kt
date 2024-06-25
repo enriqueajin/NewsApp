@@ -1,5 +1,8 @@
 package com.enriqueajin.newsapp.ui.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +23,8 @@ import com.enriqueajin.newsapp.ui.home.components.all_news.AllNews
 import com.enriqueajin.newsapp.ui.home.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.ui.home.components.keyword_news.NewsByCategory
 
+@OptIn(ExperimentalFoundationApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
@@ -50,7 +55,7 @@ fun HomeScreen(
                     ) {
                         val selected = homeViewModel.localState.value.categorySelected
 
-                        item {
+                        stickyHeader {
                             ChipGroup(
                                 categories = categories,
                                 selected = selected,
