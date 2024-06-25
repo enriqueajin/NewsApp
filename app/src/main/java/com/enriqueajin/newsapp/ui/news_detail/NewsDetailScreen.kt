@@ -1,5 +1,7 @@
 package com.enriqueajin.newsapp.ui.news_detail
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,12 +37,14 @@ import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.news_detail.components.NewsDetailsTopBar
 import com.enriqueajin.newsapp.ui.theme.DarkGray
 import com.enriqueajin.newsapp.ui.theme.Purple80
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_AUTHOR
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_CONTENT
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_PUBLISHED_AT
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_TITLE
+import com.enriqueajin.newsapp.util.Constants.NO_AUTHOR
+import com.enriqueajin.newsapp.util.Constants.NO_CONTENT
+import com.enriqueajin.newsapp.util.Constants.NO_DATE
+import com.enriqueajin.newsapp.util.Constants.NO_TITLE
+import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
     Scaffold(topBar = { NewsDetailsTopBar { onBackPressed() }}) {
@@ -60,7 +64,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                     AssistChip(
                         onClick = {},
                         label = {
-                            val text = newsItem.author ?: NEWS_ITEM_AUTHOR
+                            val text = newsItem.author ?: NO_AUTHOR
                             val maxLength = 30
                             Text(
                                 text = if (text.length <= maxLength) text else text.substring(0, maxLength),
@@ -74,7 +78,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                         )
                     )
                     Text(
-                        text = newsItem.publishedAt ?: NEWS_ITEM_PUBLISHED_AT,
+                        text = formatDate(newsItem.publishedAt ?: NO_DATE),
                         color = DarkGray,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -82,7 +86,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(25.dp))
                 Text(
-                    text = newsItem.title ?: NEWS_ITEM_TITLE,
+                    text = newsItem.title ?: NO_TITLE,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 40.sp
@@ -113,7 +117,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(25.dp))
                 Text(
-                    text = newsItem.content ?: NEWS_ITEM_CONTENT,
+                    text = newsItem.content ?: NO_CONTENT,
                     fontSize = 18.sp
                 )
                 Spacer(modifier = Modifier.height(30.dp))
@@ -122,10 +126,9 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NewsDetailScreenPreview() {
-    NewsDetailScreen(DummyDataProvider.getAllNewsItems().first()) {
-
-    }
+    NewsDetailScreen(DummyDataProvider.getAllNewsItems().first()) {}
 }

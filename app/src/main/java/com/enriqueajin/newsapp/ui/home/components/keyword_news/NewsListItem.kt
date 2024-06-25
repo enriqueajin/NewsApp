@@ -1,5 +1,7 @@
 package com.enriqueajin.newsapp.ui.home.components.keyword_news
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,11 +28,13 @@ import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.theme.DarkGray
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_AUTHOR
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_PUBLISHED_AT
-import com.enriqueajin.newsapp.util.Constants.NEWS_ITEM_TITLE
+import com.enriqueajin.newsapp.util.Constants.NO_AUTHOR
+import com.enriqueajin.newsapp.util.Constants.NO_DATE
+import com.enriqueajin.newsapp.util.Constants.NO_TITLE
+import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     Column(
@@ -69,7 +73,7 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = item.title ?: NEWS_ITEM_TITLE,
+                    text = item.title ?: NO_TITLE,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                     maxLines = 3
@@ -78,13 +82,13 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = item.author ?: NEWS_ITEM_AUTHOR,
+                        text = item.author ?: NO_AUTHOR,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
                         color = DarkGray
                     )
                     Text(
-                        text = item.publishedAt ?: NEWS_ITEM_PUBLISHED_AT,
+                        text = formatDate(item.publishedAt ?: NO_DATE),
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
                         color = DarkGray
@@ -99,6 +103,7 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewsListItemPreview() {
