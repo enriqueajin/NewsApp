@@ -10,7 +10,7 @@ class GetNewsByKeywordUseCase @Inject constructor(
     private val repository: NewsRepository
 ) {
     operator fun invoke(keyword: String, pageSize: String): Flow<List<NewsItem>> = flow {
-        val news = repository.getNewsByKeyword(keyword, pageSize).articles
+        val news = repository.getNewsByKeyword(keyword, pageSize).articles.filter { it.title != "[Removed]" }
         emit(news)
     }
 }
