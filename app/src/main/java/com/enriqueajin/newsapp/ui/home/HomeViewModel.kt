@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -37,11 +38,7 @@ class HomeViewModel @Inject constructor(
     private val _newsByCategory: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-    val uiState: StateFlow<HomeUiState> = _uiState.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = HomeUiState.Loading
-    )
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
         getMainNews()
