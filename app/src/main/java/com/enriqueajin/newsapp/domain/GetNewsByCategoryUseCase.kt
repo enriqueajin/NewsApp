@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetAllTopNewsUseCase @Inject constructor(
+class GetNewsByCategoryUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
     operator fun invoke(category: String = "general", pageSize: String):Flow<List<NewsItem>> = flow {
