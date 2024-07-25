@@ -13,7 +13,8 @@ interface NewsApiClient {
             "sortBy=publishedAt")
     suspend fun getNews(
         @Query("category") category: String,
-        @Query("pageSize") pageSize: String
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
     ): NewsResponse
 
     @GET("everything?" +
@@ -23,6 +24,7 @@ interface NewsApiClient {
             "sortBy=publishedAt")
     suspend fun getNewsByKeyword(
         @Query("q") keyword: String,
-        @Query("pageSize") pageSize: String
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
     ): NewsResponse
 }

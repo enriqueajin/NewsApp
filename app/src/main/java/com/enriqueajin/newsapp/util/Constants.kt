@@ -1,6 +1,8 @@
 package com.enriqueajin.newsapp.util
 
 object Constants {
+    val CATEGORIES = listOf("All", "Science", "Technology", "Sports", "Health", "Business", "Entertainment")
+
     const val BASE_URL = "https://newsapi.org/v2/"
 
     // NewsItem default values
@@ -14,5 +16,5 @@ object Constants {
     const val NO_DATE = "No date"
     const val NO_CONTENT = "No content"
 
-
+    const val HTTP_ERROR_UPGRADE_REQUIRED = "HTTP 426"
 }

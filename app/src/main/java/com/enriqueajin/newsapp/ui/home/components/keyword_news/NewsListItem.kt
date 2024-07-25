@@ -34,7 +34,6 @@ import com.enriqueajin.newsapp.util.Constants.NO_TITLE
 import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     Column(

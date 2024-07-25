@@ -14,15 +14,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 import kotlin.math.absoluteValue
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) {
+fun LatestNewsCarousel(news: LazyPagingItems<NewsItem>, onItemClicked: (NewsItem) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
-        news.size
+        news.itemCount
     })
 
     HorizontalPager(
@@ -52,8 +52,9 @@ fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) 
                 fraction = 1f - pageOffset.coerceIn(0f, 1f)
             )
         }) {
-            val item = news[index]
-            LatestNewsItem(item) { newsItem -> onItemClicked(newsItem) }
+            val item = news[index]?.let { article ->
+                LatestNewsItem(article) { newsItem -> onItemClicked(newsItem) }
+            }
         }
     }
 }
@@ -62,5 +63,5 @@ fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) 
 @Preview(showBackground = true)
 @Composable
 fun NewsCarouselPreview() {
-    LatestNewsCarousel(getLatestNewsItems()) {}
+//    LatestNewsCarousel(getLatestNewsItems()) {}
 }
