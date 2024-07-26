@@ -2,12 +2,12 @@ package com.enriqueajin.newsapp.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.enriqueajin.newsapp.data.network.NewsService
+import com.enriqueajin.newsapp.data.network.NewsApiClient
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import javax.inject.Inject
 
 class NewsPagingSource @Inject constructor(
-     private val service: NewsService,
+     private val api: NewsApiClient,
      private val needsPagination: Boolean,
      private val keyword: String? = null,
      private val category: String? = null,
@@ -25,8 +25,8 @@ class NewsPagingSource @Inject constructor(
                val prevKey: Int?
                val nextKey: Int?
                val response = when {
-                    keyword != null -> service.getNewsByKeyword(keyword, page, pageSize)
-                    else -> service.getNews(category ?: "", page, pageSize)
+                    keyword != null -> api.getNewsByKeyword(keyword, page, pageSize)
+                    else -> api.getNews(category ?: "", page, pageSize)
                }
                val news = response.articles
 

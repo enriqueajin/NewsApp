@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import com.enriqueajin.newsapp.domain.GetNewsByCategoryUseCase
-import com.enriqueajin.newsapp.domain.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.domain.use_case.GetNewsByCategoryUseCase
+import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
 import com.enriqueajin.newsapp.util.KeywordProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
