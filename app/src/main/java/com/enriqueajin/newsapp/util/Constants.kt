@@ -17,4 +17,9 @@ object Constants {
     const val NO_CONTENT = "No content"
 
     const val HTTP_ERROR_UPGRADE_REQUIRED = "HTTP 426"
+
+    // NewsPagingSource
+    const val ALL_NEWS_PAGE_SIZE = 15
+    const val PAGE_SIZE = 25
+    const val PREFETCH_ITEMS = 3
 }

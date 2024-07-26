@@ -29,23 +29,12 @@ class HomeViewModel @Inject constructor(
 
     var localState = MutableStateFlow(HomeLocalUiState(keyword = KeywordProvider.getRandomKeyword()))
 
-    val latestNews: Flow<PagingData<NewsItem>> = getNewsByCategoryUseCase(pageSize = 10).cachedIn(viewModelScope)
-    val newsByKeyword: Flow<PagingData<NewsItem>> = getNewsByKeywordUseCase(keyword = localState.value.keyword, pageSize = 20).cachedIn(viewModelScope)
+    val latestNews: Flow<PagingData<NewsItem>> = getNewsByCategoryUseCase().cachedIn(viewModelScope)
+    val newsByKeyword: Flow<PagingData<NewsItem>> = getNewsByKeywordUseCase(keyword = localState.value.keyword).cachedIn(viewModelScope)
     val newsByCategory: Flow<PagingData<NewsItem>> = category.flatMapLatest { category ->
         when (category) {
-            "general" -> {
-                getNewsByCategoryUseCase(
-                    category = category,
-                    pageSize = 20,
-                ).cachedIn(viewModelScope)
-            }
-            else -> {
-                getNewsByCategoryUseCase(
-                    category = category,
-                    pageSize = 20,
-                    needsPagination = true
-                ).cachedIn(viewModelScope)
-            }
+            "general" -> getNewsByCategoryUseCase(category = category,).cachedIn(viewModelScope)
+            else -> getNewsByCategoryUseCase(category = category, needsPagination = true).cachedIn(viewModelScope)
         }
     }
 

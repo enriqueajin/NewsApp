@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetNewsByKeywordUseCase @Inject constructor(
     private val repository: NewsRepositoryImpl
 ) {
-    operator fun invoke(keyword: String, pageSize: Int, needsPagination: Boolean = false): Flow<PagingData<NewsItem>> {
-        return repository.getNewsByKeyword(keyword, pageSize, needsPagination)
+    operator fun invoke(keyword: String, needsPagination: Boolean = false): Flow<PagingData<NewsItem>> {
+        return repository.getNewsByKeyword(keyword, needsPagination)
     }
 }

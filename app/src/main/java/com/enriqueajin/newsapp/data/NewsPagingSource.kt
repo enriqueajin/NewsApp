@@ -4,6 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.enriqueajin.newsapp.data.network.NewsApiClient
 import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.util.Constants.ALL_NEWS_PAGE_SIZE
+import com.enriqueajin.newsapp.util.Constants.PAGE_SIZE
 import javax.inject.Inject
 
 class NewsPagingSource @Inject constructor(
@@ -11,8 +13,7 @@ class NewsPagingSource @Inject constructor(
      private val needsPagination: Boolean,
      private val keyword: String? = null,
      private val category: String? = null,
-):
-     PagingSource<Int, NewsItem>() {
+): PagingSource<Int, NewsItem>() {
 
      override fun getRefreshKey(state: PagingState<Int, NewsItem>): Int? {
           return state.anchorPosition
@@ -21,7 +22,7 @@ class NewsPagingSource @Inject constructor(
      override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NewsItem> {
           return try {
                val page = params.key ?: 1
-               val pageSize = 20
+               val pageSize = if (needsPagination) PAGE_SIZE else ALL_NEWS_PAGE_SIZE
                val prevKey: Int?
                val nextKey: Int?
                val response = when {
