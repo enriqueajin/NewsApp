@@ -1,7 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.components.all_news
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,6 @@ import com.enriqueajin.newsapp.util.Constants.NO_DATE
 import com.enriqueajin.newsapp.util.DateUtils
 import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LatestNewsItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     Card(
@@ -65,7 +63,6 @@ fun LatestNewsItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CarouselNewsItemPreview() {

@@ -1,7 +1,6 @@
 package com.enriqueajin.newsapp.ui.home.components.keyword_news
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -102,7 +101,6 @@ fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewsListItemPreview() {

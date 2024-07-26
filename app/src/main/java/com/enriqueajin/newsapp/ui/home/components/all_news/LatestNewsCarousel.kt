@@ -1,7 +1,5 @@
 package com.enriqueajin.newsapp.ui.home.components.all_news
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.pager.HorizontalPager
@@ -18,7 +16,6 @@ import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import kotlin.math.absoluteValue
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LatestNewsCarousel(news: LazyPagingItems<NewsItem>, onItemClicked: (NewsItem) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
@@ -59,7 +56,6 @@ fun LatestNewsCarousel(news: LazyPagingItems<NewsItem>, onItemClicked: (NewsItem
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewsCarouselPreview() {

@@ -1,7 +1,6 @@
 package com.enriqueajin.newsapp.ui.home
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import com.enriqueajin.newsapp.ui.home.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.ui.home.components.keyword_news.NewsByCategory
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,

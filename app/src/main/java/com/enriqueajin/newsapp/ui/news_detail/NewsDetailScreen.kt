@@ -2,7 +2,6 @@ package com.enriqueajin.newsapp.ui.news_detail
 
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +45,6 @@ import com.enriqueajin.newsapp.util.Constants.NO_TITLE
 import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
     val context = LocalContext.current
@@ -141,7 +139,6 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NewsDetailScreenPreview() {
