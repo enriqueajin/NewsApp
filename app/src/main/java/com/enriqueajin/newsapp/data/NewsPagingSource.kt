@@ -6,6 +6,7 @@ import com.enriqueajin.newsapp.data.network.NewsApiClient
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.util.Constants.ALL_NEWS_PAGE_SIZE
 import com.enriqueajin.newsapp.util.Constants.PAGE_SIZE
+import com.enriqueajin.newsapp.util.Constants.REMOVED
 import javax.inject.Inject
 
 class NewsPagingSource @Inject constructor(
@@ -39,8 +40,10 @@ class NewsPagingSource @Inject constructor(
                     nextKey = null
                }
 
+               val data = news.filter { it.title != REMOVED }.filter { it.content != null}
+
                LoadResult.Page(
-                    data = news.filter { it.title != "[Removed]" },
+                    data = data ,
                     prevKey = prevKey,
                     nextKey = nextKey
                )

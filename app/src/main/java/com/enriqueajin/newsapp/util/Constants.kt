@@ -15,6 +15,7 @@ object Constants {
     const val NO_PICTURE_URL = "No url to image"
     const val NO_DATE = "No date"
     const val NO_CONTENT = "No content"
+    const val REMOVED = "[Removed]"
 
     const val HTTP_ERROR_UPGRADE_REQUIRED = "HTTP 426"
 

@@ -14,7 +14,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.ui.home.components.BottomNav
 import com.enriqueajin.newsapp.ui.home.components.all_news.AllNews
+import com.enriqueajin.newsapp.ui.home.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.ui.home.components.keyword_news.NewsByCategory
+import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -23,38 +25,36 @@ fun HomeScreen(
     onSeeAllClicked: (List<NewsItem>, String) -> Unit,
     onItemClicked: (NewsItem) -> Unit
 ) {
+    val category = homeViewModel.category.collectAsStateWithLifecycle()
+
     Scaffold(
-        bottomBar = { BottomNav(homeViewModel) }
+        bottomBar = { BottomNav(homeViewModel) },
+        topBar = {
+            ChipGroup(
+                homeViewModel = homeViewModel,
+                categories = CATEGORIES,
+                selected = category.value,
+                onChipSelected = { category -> homeViewModel.setCategory(category) }
+            )
+        }
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
         ) {
-
-//            val selected = homeViewModel.localState.collectAsStateWithLifecycle().value.categorySelected
-            val category = homeViewModel.category.collectAsStateWithLifecycle().value
-
-            when (category) {
+            when (category.value) {
                 "All" -> {
                     AllNews(
                         homeViewModel = homeViewModel,
-                        onSeeAllClicked = { news, keyword ->
-                            onSeeAllClicked(
-                                news,
-                                keyword
-                            )
-                        },
+                        onSeeAllClicked = { news, keyword -> onSeeAllClicked(news, keyword) },
                         onItemClicked = { newsItem -> onItemClicked(newsItem) }
                     )
                 }
-                else -> {
-                    NewsByCategory(homeViewModel) { newsItem -> onItemClicked(newsItem) }
-                }
+                else -> NewsByCategory(homeViewModel) { newsItem -> onItemClicked(newsItem) }
+
             }
         }
-
-
     }
 }
 

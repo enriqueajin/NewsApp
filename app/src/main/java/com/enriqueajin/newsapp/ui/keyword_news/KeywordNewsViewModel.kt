@@ -24,7 +24,7 @@ class KeywordNewsViewModel @Inject constructor(
 
     fun getNewsByKeyword(keyword: String) {
         viewModelScope.launch {
-            getNewsByKeywordUseCase(keyword = keyword)
+            getNewsByKeywordUseCase(keyword = keyword, needsPagination = true)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _newsByKeyword.value = it
