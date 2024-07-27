@@ -40,7 +40,7 @@ class NewsPagingSource @Inject constructor(
                     nextKey = null
                }
 
-               val data = news.filter { it.title != REMOVED }.filter { it.content != null}
+               val data = news.filter { it.title != REMOVED }
 
                LoadResult.Page(
                     data = data ,
