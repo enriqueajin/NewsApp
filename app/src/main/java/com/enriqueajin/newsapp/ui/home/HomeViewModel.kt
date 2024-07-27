@@ -53,19 +53,8 @@ class HomeViewModel @Inject constructor(
         )
 
     val newsByCategory: StateFlow<PagingData<NewsItem>> = category.flatMapLatest { category ->
-
-        when (category) {
-            "general" -> {
-                getNewsByCategoryUseCase(category = category)
-                    .cachedIn(viewModelScope)
-
-            }
-            else -> {
-                getNewsByCategoryUseCase(category = category, needsPagination = true)
-                    .cachedIn(viewModelScope)
-
-            }
-        }
+        val needsPagination = category != "general"
+        getNewsByCategoryUseCase(category = category, needsPagination = needsPagination).cachedIn(viewModelScope)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
