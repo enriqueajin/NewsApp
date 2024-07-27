@@ -16,12 +16,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.home.HomeScreen
 import com.enriqueajin.newsapp.presentation.home.HomeViewModel
 import com.enriqueajin.newsapp.presentation.home.components.BottomNav
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
 import com.enriqueajin.newsapp.presentation.news_detail.NewsDetailScreen
+import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
 import com.enriqueajin.newsapp.presentation.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.builtins.ListSerializer
@@ -41,14 +43,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold(bottomBar = { BottomNav(homeViewModel) }) {
-                        val navController = rememberNavController()
+                    val navController = rememberNavController()
+
+                    Scaffold(bottomBar = { BottomNav(navController) }) {
                         NavHost(
                             navController = navController,
-                            startDestination = Home,
+                            startDestination = Route.Home,
                             Modifier.padding(it)
                         ) {
-                            composable<Home> {
+                            composable<Route.Home> {
                                 HomeScreen(
                                     homeViewModel = homeViewModel,
                                     onSeeAllClicked = { news, keyword ->
@@ -56,18 +59,18 @@ class MainActivity : ComponentActivity() {
                                             serializer = ListSerializer(NewsItem.serializer()),
                                             value = news
                                         )
-                                        navController.navigate(KeywordNews(newsArg, keyword))
+                                        navController.navigate(Route.KeywordNews(newsArg, keyword))
                                     },
                                     onItemClicked = { newsItem ->
                                         Log.i("TAG", "NewsItem value $newsItem")
                                         val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
 
-                                        navController.navigate(NewsDetail(newsArg))
+                                        navController.navigate(Route.NewsDetail(newsArg))
                                     }
                                 )
                             }
-                            composable<KeywordNews> {
-                                val args = it.toRoute<KeywordNews>()
+                            composable<Route.KeywordNews> {
+                                val args = it.toRoute<Route.KeywordNews>()
 
                                 KeywordNewsScreen(
                                     keywordNewsViewModel = keywordNewsViewModel,
@@ -75,18 +78,24 @@ class MainActivity : ComponentActivity() {
                                     onItemClicked = { newsItem ->
                                         Log.i("TAG", "NewsItem value $newsItem")
                                         val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
-                                        navController.navigate(NewsDetail(newsArg))
+                                        navController.navigate(Route.NewsDetail(newsArg))
                                     },
                                     onBackPressed = { navController.navigateUp() }
                                 )
                             }
-                            composable<NewsDetail> {
-                                val args = it.toRoute<NewsDetail>()
+                            composable<Route.NewsDetail> {
+                                val args = it.toRoute<Route.NewsDetail>()
                                 val newsItem = Json.decodeFromString(NewsItem.serializer(), args.newsItem)
                                 NewsDetailScreen(
                                     newsItem = newsItem,
                                     onBackPressed = { navController.navigateUp() }
                                 )
+                            }
+                            composable<Route.SearchNews> {
+                                SearchNewsScreen()
+                            }
+                            composable<Route.Favorites> {
+                                FavoritesScreen()
                             }
                         }
                     }

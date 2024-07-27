@@ -16,10 +16,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.enriqueajin.newsapp.presentation.home.HomeViewModel
+import androidx.navigation.NavController
+import com.enriqueajin.newsapp.presentation.Route
 
 @Composable
-fun BottomNav(homeViewModel: HomeViewModel) {
+fun BottomNav(navController: NavController) {
 
     val items = getBottomNavItems()
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -28,12 +29,15 @@ fun BottomNav(homeViewModel: HomeViewModel) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedTabIndex == index,
-                onClick = { selectedTabIndex = index },
+                onClick = {
+                    selectedTabIndex = index
+                    navController.navigate(item.route)
+                },
                 icon = {
                     val icon = if (selectedTabIndex == index) item.selectedIcon else item.unselectedIcon
                     Icon(
                         imageVector = icon,
-                        contentDescription = item.title
+                        contentDescription = null
                     )
                 }
             )
@@ -44,17 +48,17 @@ fun BottomNav(homeViewModel: HomeViewModel) {
 fun getBottomNavItems(): List<BottomNavItem> {
     return listOf(
         BottomNavItem(
-            title = "Home",
+            route = Route.Home,
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home
         ),
         BottomNavItem(
-            title = "Search",
+            route = Route.SearchNews,
             selectedIcon = Icons.Filled.Search,
             unselectedIcon = Icons.Outlined.Search
         ),
         BottomNavItem(
-            title = "Favorites",
+            route = Route.Favorites,
             selectedIcon = Icons.Filled.Favorite,
             unselectedIcon = Icons.Default.FavoriteBorder
         )
