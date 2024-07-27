@@ -1,6 +1,5 @@
 package com.enriqueajin.newsapp.ui.home
 
-import android.os.Build
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import com.enriqueajin.newsapp.ui.home.components.BottomNav
 import com.enriqueajin.newsapp.ui.home.components.all_news.AllNews
 import com.enriqueajin.newsapp.ui.home.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.ui.home.components.keyword_news.NewsByCategory
@@ -26,7 +24,6 @@ fun HomeScreen(
     val category = homeViewModel.category.collectAsStateWithLifecycle()
 
     Scaffold(
-        bottomBar = { BottomNav(homeViewModel) },
         topBar = {
             ChipGroup(
                 homeViewModel = homeViewModel,
@@ -50,7 +47,6 @@ fun HomeScreen(
                     )
                 }
                 else -> NewsByCategory(homeViewModel) { newsItem -> onItemClicked(newsItem) }
-
             }
         }
     }

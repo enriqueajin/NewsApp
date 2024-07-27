@@ -1,7 +1,5 @@
 package com.enriqueajin.newsapp.ui.home
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -24,9 +22,6 @@ class HomeViewModel @Inject constructor(
     private val getNewsByCategoryUseCase: GetNewsByCategoryUseCase,
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
-
-    private val _selectedNavIndex = mutableStateOf(0)
-    val selectedNavIndex: State<Int> = _selectedNavIndex
 
     private val _category = MutableStateFlow("All")
     val category = _category.asStateFlow()
@@ -63,10 +58,6 @@ class HomeViewModel @Inject constructor(
 
     fun setCategory(category: String) {
         _category.value = category
-    }
-
-    fun setSelectedNavIndex(index: Int) {
-        _selectedNavIndex.value = index
     }
 
     fun setScrollPosition(position: Int) {
