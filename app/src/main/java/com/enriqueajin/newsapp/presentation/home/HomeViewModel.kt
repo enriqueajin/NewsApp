@@ -31,6 +31,9 @@ class HomeViewModel @Inject constructor(
     private val _scrollPosition = MutableStateFlow(0)
     val scrollPosition = _scrollPosition.asStateFlow()
 
+    private val _selectedTabIndex = MutableStateFlow(0)
+    val selectedTabIndex = _selectedTabIndex.asStateFlow()
+
     val latestNews: StateFlow<PagingData<NewsItem>> = getNewsByCategoryUseCase()
         .cachedIn(viewModelScope)
         .stateIn(
@@ -62,6 +65,9 @@ class HomeViewModel @Inject constructor(
 
     fun setScrollPosition(position: Int) {
         _scrollPosition.value = position
+    }
 
+    fun setSelectedTabIndex(index: Int) {
+        _selectedTabIndex.value = index
     }
 }

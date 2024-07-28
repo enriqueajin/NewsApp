@@ -40,14 +40,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
+
             NewsAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-
-                    Scaffold(bottomBar = { BottomNav(navController) }) {
+                    Scaffold(bottomBar = { BottomNav(navController, homeViewModel) }) {
                         NavHost(
                             navController = navController,
                             startDestination = Route.Home,
@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.NewsDetail(newsArg))
                                     }
                                 )
+                                homeViewModel.setSelectedTabIndex(0)
                             }
                             composable<Route.KeywordNews> {
                                 val args = it.toRoute<Route.KeywordNews>()
@@ -98,9 +99,11 @@ class MainActivity : ComponentActivity() {
                                     val newsArg = Json.encodeToString(NewsItem.serializer(), article)
                                     navController.navigate(Route.NewsDetail(newsArg))
                                 }
+                                homeViewModel.setSelectedTabIndex(1)
                             }
                             composable<Route.Favorites> {
                                 FavoritesScreen()
+                                homeViewModel.setSelectedTabIndex(2)
                             }
                         }
                     }

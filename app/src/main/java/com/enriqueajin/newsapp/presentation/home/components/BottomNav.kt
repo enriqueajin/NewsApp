@@ -11,30 +11,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.enriqueajin.newsapp.presentation.Route
+import com.enriqueajin.newsapp.presentation.home.HomeViewModel
 
 @Composable
-fun BottomNav(navController: NavController) {
+fun BottomNav(navController: NavController, homeViewModel: HomeViewModel) {
 
     val items = getBottomNavItems()
-    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+    val selectedTabIndex = homeViewModel.selectedTabIndex.collectAsStateWithLifecycle()
 
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = selectedTabIndex == index,
+                selected = selectedTabIndex.value == index,
                 onClick = {
-                    selectedTabIndex = index
+                    homeViewModel.setSelectedTabIndex(index)
                     navController.navigate(item.route)
                 },
                 icon = {
-                    val icon = if (selectedTabIndex == index) item.selectedIcon else item.unselectedIcon
+                    val icon = if (selectedTabIndex.value == index) item.selectedIcon else item.unselectedIcon
                     Icon(
                         imageVector = icon,
                         contentDescription = null
