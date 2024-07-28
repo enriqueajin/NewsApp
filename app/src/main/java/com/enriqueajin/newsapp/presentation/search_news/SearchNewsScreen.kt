@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,41 +43,39 @@ fun SearchNewsScreen(
     key(isActive) {
         val articles = searchViewModel.articlesSearched.collectAsLazyPagingItems()
 
-        Scaffold {
-            SearchBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequest),
-                query = searchText.value,
-                onQueryChange = { searchViewModel.onSearchTextChange(it) },
-                onSearch = { isActive = false },
-                active = isActive,
-                onActiveChange = { isActive = it },
-                placeholder = { Text(text = "Search articles") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon"
-                    )
-                },
-                trailingIcon = {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            if (searchText.value.isNotEmpty()) {
-                                searchViewModel.onSearchTextChange("")
-                            }
-                            isActive = false
-                        },
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close Icon"
-                    )
-                },
-            ) {
-                LazyColumn {
-                    items(articles.itemCount) { index ->
-                        articles[index]?.let { article ->
-                            NewsListItem(item = article) { newsItem -> onItemClicked(newsItem) }
+        SearchBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequest),
+            query = searchText.value,
+            onQueryChange = { searchViewModel.onSearchTextChange(it) },
+            onSearch = { isActive = false },
+            active = isActive,
+            onActiveChange = { isActive = it },
+            placeholder = { Text(text = "Search articles") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Icon"
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.clickable {
+                        if (searchText.value.isNotEmpty()) {
+                            searchViewModel.onSearchTextChange("")
                         }
+                        isActive = false
+                    },
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close Icon"
+                )
+            },
+        ) {
+            LazyColumn {
+                items(articles.itemCount) { index ->
+                    articles[index]?.let { article ->
+                        NewsListItem(item = article) { newsItem -> onItemClicked(newsItem) }
                     }
                 }
             }
