@@ -24,6 +24,7 @@ import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
 import com.enriqueajin.newsapp.presentation.news_detail.NewsDetailScreen
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
+import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
 import com.enriqueajin.newsapp.presentation.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.builtins.ListSerializer
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val keywordNewsViewModel: KeywordNewsViewModel by viewModels()
+    private val searchNewsViewModel: SearchNewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +94,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<Route.SearchNews> {
-                                SearchNewsScreen()
+                                SearchNewsScreen(searchNewsViewModel) { article ->
+                                    val newsArg = Json.encodeToString(NewsItem.serializer(), article)
+                                    navController.navigate(Route.NewsDetail(newsArg))
+                                }
                             }
                             composable<Route.Favorites> {
                                 FavoritesScreen()
