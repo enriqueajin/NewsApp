@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.home.HomeScreen
@@ -34,7 +35,6 @@ class MainActivity : ComponentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val keywordNewsViewModel: KeywordNewsViewModel by viewModels()
-    private val searchNewsViewModel: SearchNewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,13 +101,20 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<Route.SearchNews> {
-                                SearchNewsScreen(searchNewsViewModel) { article ->
-                                    val newsArg = Json.encodeToString(NewsItem.serializer(), article)
-                                    navController.navigate(Route.NewsDetail(newsArg)) {
-                                        launchSingleTop = true
-                                        restoreState = true
+                                val searchNewsViewModel: SearchNewsViewModel by viewModels()
+                                val articles = searchNewsViewModel.articles.collectAsLazyPagingItems()
+
+                                SearchNewsScreen(
+                                    articles = articles,
+                                    event = searchNewsViewModel::onEvent,
+                                    onItemClicked = { article ->
+                                        val newsArg = Json.encodeToString(NewsItem.serializer(), article)
+                                        navController.navigate(Route.NewsDetail(newsArg)) {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
-                                }
+                                )
                                 homeViewModel.setSelectedTabIndex(1)
                             }
                             composable<Route.Favorites> {

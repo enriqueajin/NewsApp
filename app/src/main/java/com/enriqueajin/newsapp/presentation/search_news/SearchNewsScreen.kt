@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
@@ -40,11 +40,11 @@ import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchNewsScreen(
-    searchViewModel: SearchNewsViewModel,
+    articles: LazyPagingItems<NewsItem>,
+    event: (SearchNewsEvent) -> Unit,
     onItemClicked: (NewsItem) -> Unit,
 ) {
 
-    val articles = searchViewModel.articlesSearched.collectAsLazyPagingItems()
     var query by rememberSaveable { mutableStateOf("") }
     val focusRequest = FocusRequester()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -55,7 +55,7 @@ fun SearchNewsScreen(
 
     LaunchedEffect(query) {
         if (query.isNotBlank()) {
-            searchViewModel.queryNews(query)
+            event(SearchNewsEvent.OnQueryNews(query))
         }
     }
 

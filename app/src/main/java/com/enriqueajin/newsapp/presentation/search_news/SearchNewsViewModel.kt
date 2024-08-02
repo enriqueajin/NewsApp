@@ -20,8 +20,8 @@ class SearchNewsViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ): ViewModel() {
 
-    private val _articlesSearched = MutableStateFlow<PagingData<NewsItem>>(PagingData.empty())
-    val articlesSearched = _articlesSearched.asStateFlow()
+    private val _articles = MutableStateFlow<PagingData<NewsItem>>(PagingData.empty())
+    val articles = _articles.asStateFlow()
 
     @OptIn(FlowPreview::class)
     fun queryNews(query: String) {
@@ -30,8 +30,14 @@ class SearchNewsViewModel @Inject constructor(
                 .debounce(500L)
                 .cachedIn(viewModelScope)
                 .collectLatest {
-                    _articlesSearched.value = it
+                    _articles.value = it
                 }
+        }
+    }
+
+    fun onEvent(event: SearchNewsEvent) {
+        when (event) {
+            is SearchNewsEvent.OnQueryNews -> queryNews(event.query)
         }
     }
 }
