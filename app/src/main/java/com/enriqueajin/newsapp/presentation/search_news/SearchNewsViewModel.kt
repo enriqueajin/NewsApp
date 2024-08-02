@@ -7,32 +7,31 @@ import androidx.paging.cachedIn
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchNewsViewModel @Inject constructor(
-    getNewsByKeywordUseCase: GetNewsByKeywordUseCase
+    private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ): ViewModel() {
 
-    private val _searchText = MutableStateFlow("")
-    val searchText = _searchText.asStateFlow()
+    private val _articlesSearched = MutableStateFlow<PagingData<NewsItem>>(PagingData.empty())
+    val articlesSearched = _articlesSearched.asStateFlow()
 
-    val articlesSearched: StateFlow<PagingData<NewsItem>> = searchText.flatMapLatest { query ->
-        getNewsByKeywordUseCase(keyword = query, needsPagination = true).cachedIn(viewModelScope)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = PagingData.empty()
-    )
-
-    fun onSearchTextChange(text: String) {
-        _searchText.value = text
-
+    @OptIn(FlowPreview::class)
+    fun queryNews(query: String) {
+        viewModelScope.launch {
+            getNewsByKeywordUseCase(keyword = query, needsPagination = true)
+                .debounce(500L)
+                .cachedIn(viewModelScope)
+                .collectLatest {
+                    _articlesSearched.value = it
+                }
+        }
     }
 }

@@ -29,7 +29,13 @@ fun BottomNav(navController: NavController, homeViewModel: HomeViewModel) {
                 selected = selectedTabIndex.value == index,
                 onClick = {
                     homeViewModel.setSelectedTabIndex(index)
-                    navController.navigate(item.route)
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     val icon = if (selectedTabIndex.value == index) item.selectedIcon else item.unselectedIcon

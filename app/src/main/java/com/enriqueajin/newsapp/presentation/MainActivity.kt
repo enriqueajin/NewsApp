@@ -1,7 +1,6 @@
 package com.enriqueajin.newsapp.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -64,10 +63,15 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.KeywordNews(newsArg, keyword))
                                     },
                                     onItemClicked = { newsItem ->
-                                        Log.i("TAG", "NewsItem value $newsItem")
                                         val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
 
-                                        navController.navigate(Route.NewsDetail(newsArg))
+                                        navController.navigate(Route.NewsDetail(newsArg)) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 )
                                 homeViewModel.setSelectedTabIndex(0)
@@ -79,9 +83,11 @@ class MainActivity : ComponentActivity() {
                                     keywordNewsViewModel = keywordNewsViewModel,
                                     args = args,
                                     onItemClicked = { newsItem ->
-                                        Log.i("TAG", "NewsItem value $newsItem")
                                         val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
-                                        navController.navigate(Route.NewsDetail(newsArg))
+                                        navController.navigate(Route.NewsDetail(newsArg)) {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     },
                                     onBackPressed = { navController.navigateUp() }
                                 )
@@ -97,7 +103,10 @@ class MainActivity : ComponentActivity() {
                             composable<Route.SearchNews> {
                                 SearchNewsScreen(searchNewsViewModel) { article ->
                                     val newsArg = Json.encodeToString(NewsItem.serializer(), article)
-                                    navController.navigate(Route.NewsDetail(newsArg))
+                                    navController.navigate(Route.NewsDetail(newsArg)) {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
                                 homeViewModel.setSelectedTabIndex(1)
                             }
