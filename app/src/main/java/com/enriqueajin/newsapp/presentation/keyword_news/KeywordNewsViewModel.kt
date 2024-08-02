@@ -31,4 +31,10 @@ class KeywordNewsViewModel @Inject constructor(
                 }
         }
     }
+
+    fun onEvent(event: KeywordNewsEvent) {
+        when (event) {
+            is KeywordNewsEvent.GetArticlesByKeyword -> getNewsByKeyword(event.keyword)
+        }
+    }
 }

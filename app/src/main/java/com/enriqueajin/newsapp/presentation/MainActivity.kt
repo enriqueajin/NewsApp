@@ -34,7 +34,6 @@ import kotlinx.serialization.json.Json
 class MainActivity : ComponentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private val keywordNewsViewModel: KeywordNewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,9 +77,12 @@ class MainActivity : ComponentActivity() {
                             }
                             composable<Route.KeywordNews> {
                                 val args = it.toRoute<Route.KeywordNews>()
+                                val keywordNewsViewModel: KeywordNewsViewModel by viewModels()
+                                val articles = keywordNewsViewModel.newsByKeyword.collectAsLazyPagingItems()
 
                                 KeywordNewsScreen(
-                                    keywordNewsViewModel = keywordNewsViewModel,
+                                    articles = articles,
+                                    event = keywordNewsViewModel::onEvent,
                                     args = args,
                                     onItemClicked = { newsItem ->
                                         val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)

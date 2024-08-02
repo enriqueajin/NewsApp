@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.presentation.Route
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
@@ -25,19 +25,17 @@ import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
 
 @Composable
 fun KeywordNewsScreen(
-    keywordNewsViewModel: KeywordNewsViewModel,
+    articles: LazyPagingItems<NewsItem>,
+    event: (KeywordNewsEvent) -> Unit,
     args: Route.KeywordNews,
     onItemClicked: (NewsItem) -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val keyword = args.keyword
-    LaunchedEffect(key1 = keyword) {
-        keywordNewsViewModel.getNewsByKeyword(keyword)
+    LaunchedEffect(args.keyword) {
+        event(KeywordNewsEvent.GetArticlesByKeyword(args.keyword))
     }
 
-    val news = keywordNewsViewModel.newsByKeyword.collectAsLazyPagingItems()
-
-    Scaffold(topBar = { KeywordNewsTopBarApp(keyword) { onBackPressed()} }) {
+    Scaffold(topBar = { KeywordNewsTopBarApp(args.keyword) { onBackPressed()} }) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -45,32 +43,32 @@ fun KeywordNewsScreen(
         ) {
             when {
                 // Initial load
-                news.loadState.refresh is LoadState.Loading && news.itemCount == 0 -> {
+                articles.loadState.refresh is LoadState.Loading && articles.itemCount == 0 -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
                 // No articles yet from Api
-                news.loadState.refresh is LoadState.NotLoading && news.itemCount == 0 -> {
+                articles.loadState.refresh is LoadState.NotLoading && articles.itemCount == 0 -> {
                     Text(text = "There is not any articles.", modifier = Modifier.align(Alignment.Center))
                 }
 
                 // Refresh button when failed
-                news.loadState.hasError && news.itemCount == 0 -> {
-                    Button(modifier = Modifier.align(Alignment.Center) , onClick = { news.refresh() }) {
+                articles.loadState.hasError && articles.itemCount == 0 -> {
+                    Button(modifier = Modifier.align(Alignment.Center) , onClick = { articles.refresh() }) {
                         Text(text = "Retry")
                     }
                 }
 
                 else -> {
                     LazyColumn {
-                        items(news.itemCount) {
-                            news[it]?.let { article ->
+                        items(articles.itemCount) {
+                            articles[it]?.let { article ->
                                 NewsListItem(article) { newsItem -> onItemClicked(newsItem) }
                             }
                         }
                         item {
                             // Load indicator when scrolling
-                            if (news.loadState.append is LoadState.Loading) {
+                            if (articles.loadState.append is LoadState.Loading) {
                                 Box(modifier = Modifier.fillMaxWidth()) {
                                     CircularProgressIndicator(modifier = Modifier
                                         .padding(vertical = 8.dp)
@@ -79,15 +77,15 @@ fun KeywordNewsScreen(
                                 }
                             }
                             // Retry button when failed
-                            if (news.loadState.append is LoadState.Error) {
-                                val e = news.loadState.append as LoadState.Error
+                            if (articles.loadState.append is LoadState.Error) {
+                                val e = articles.loadState.append as LoadState.Error
                                 val errorMessage = e.error.localizedMessage?.trim() ?: ""
 
                                 if (errorMessage != HTTP_ERROR_UPGRADE_REQUIRED) {
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         Button(
                                             modifier = Modifier.align(Alignment.Center),
-                                            onClick = { news.retry() }) {
+                                            onClick = { articles.retry() }) {
                                             Text(text = "Retry")
                                         }
                                     }
@@ -100,7 +98,6 @@ fun KeywordNewsScreen(
         }
     }
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
