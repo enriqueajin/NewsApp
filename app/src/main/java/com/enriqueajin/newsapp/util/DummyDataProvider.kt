@@ -1,7 +1,12 @@
 package com.enriqueajin.newsapp.util
 
+import androidx.compose.runtime.Composable
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.data.network.model.NewsSource
+import kotlinx.coroutines.flow.flowOf
 
 object DummyDataProvider {
 
@@ -23,5 +28,11 @@ object DummyDataProvider {
             NewsItem(source = NewsSource("9", "NewsSource9"), author = "William Johnson", title = "Climate change impacts agriculture", description = "Climate change is affecting agricultural production.", url = "http://example.com/climate-change-agriculture", urlToImage = "http://example.com/images/climate-change.jpg", publishedAt = "May 29th - 2024", content = "Agricultural production..."),
             NewsItem(source = NewsSource("10", "NewsSource10"), author = "Olivia Anderson", title = "Breakthrough in renewable energy", description = "A major breakthrough in renewable energy technology.", url = "http://example.com/renewable-energy", urlToImage = "http://example.com/images/renewable-energy.jpg", publishedAt = "June 3rd - 2024", content = "In a significant development...")
         )
+    }
+
+    @Composable
+    fun <T: Any>  getFakeLazyPagingItems(data: List<T>): LazyPagingItems<T> {
+        val pagingData = flowOf(PagingData.from(data))
+        return pagingData.collectAsLazyPagingItems()
     }
 }

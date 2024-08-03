@@ -6,7 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
 
-    fun getNews(category: String, needsPagination: Boolean): Flow<PagingData<NewsItem>>
+    fun getArticlesByCategory(category: String): Flow<List<NewsItem>>
 
-    fun getNewsByKeyword(keyword: String, needsPagination: Boolean): Flow<PagingData<NewsItem>>
+    fun getPagingArticlesByCategory(category: String): Flow<PagingData<NewsItem>>
+
+    fun getArticlesByKeyword(keyword: String): Flow<List<NewsItem>>
+
+    fun getPagingArticlesByKeyword(keyword: String): Flow<PagingData<NewsItem>>
 }
