@@ -107,7 +107,7 @@ fun KeywordNewsScreenPreview() {
     KeywordNewsScreen(
         articles = DummyDataProvider.getFakeLazyPagingItems(items),
         event = {},
-        args = Route.KeywordNews(keyword = "Recipes", news = ""),
+        args = Route.KeywordNews(keyword = "Recipes"),
         onItemClicked = {},
         onBackPressed = {}
     )
