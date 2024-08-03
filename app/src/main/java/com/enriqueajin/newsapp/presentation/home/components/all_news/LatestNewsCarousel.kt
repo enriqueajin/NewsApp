@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.util.DummyDataProvider
 import kotlin.math.absoluteValue
 
 @Composable
@@ -56,5 +57,5 @@ fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) 
 @Preview(showBackground = true)
 @Composable
 fun NewsCarouselPreview() {
-//    LatestNewsCarousel(getLatestNewsItems()) {}
+    LatestNewsCarousel(news = DummyDataProvider.getLatestNewsItems()) {}
 }

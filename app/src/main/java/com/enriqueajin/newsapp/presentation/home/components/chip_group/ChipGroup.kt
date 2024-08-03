@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enriqueajin.newsapp.presentation.home.HomeEvent
+import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -63,11 +64,11 @@ fun ChipGroup(
 @Preview(showBackground = true)
 @Composable
 fun ChipGroupPreview() {
-//    val categories = listOf("All", "Science", "Sports", "Politics", "Business", "Psychology")
-//    var selected by rememberSaveable { mutableStateOf("Science") }
-//    ChipGroup(
-//        categories = categories,
-//        selected = selected,
-//        onChipSelected = { category -> selected = category }
-//    )
+    ChipGroup(
+        event = {},
+        scrollPosition = 0,
+        categories = CATEGORIES,
+        selected = "Science",
+        onChipSelected = { _ ->}
+    )
 }

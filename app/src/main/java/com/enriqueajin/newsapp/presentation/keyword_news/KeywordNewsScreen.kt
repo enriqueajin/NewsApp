@@ -22,6 +22,7 @@ import com.enriqueajin.newsapp.presentation.Route
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.presentation.keyword_news.components.KeywordNewsTopBarApp
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
+import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
 fun KeywordNewsScreen(
@@ -99,8 +100,15 @@ fun KeywordNewsScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun KeywordNewsScreenPreview() {
-//    KeywordNewsScreen()
+    val items = DummyDataProvider.getAllNewsItems()
+    KeywordNewsScreen(
+        articles = DummyDataProvider.getFakeLazyPagingItems(items),
+        event = {},
+        args = Route.KeywordNews(keyword = "Recipes", news = ""),
+        onItemClicked = {},
+        onBackPressed = {}
+    )
 }

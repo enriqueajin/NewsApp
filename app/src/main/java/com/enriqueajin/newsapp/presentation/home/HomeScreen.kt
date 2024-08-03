@@ -15,6 +15,8 @@ import com.enriqueajin.newsapp.presentation.home.components.all_news.AllNews
 import com.enriqueajin.newsapp.presentation.home.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsByCategory
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
+import com.enriqueajin.newsapp.util.DummyDataProvider
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -66,12 +68,19 @@ fun HomeScreen(
     }
 }
 
-@Preview(
-    showSystemUi = true,
-    showBackground = true,
-    device = Devices.PIXEL_4
-)
+@Preview(showBackground = true,)
 @Composable
 fun HomePreview() {
-//    Home(NewsViewModel())
+    HomeScreen(
+        event = {},
+        localState = HomeLocalUiState(),
+        uiState = HomeUiState.Success(
+            latestArticles = DummyDataProvider.getLatestNewsItems(),
+            articlesByKeyword = DummyDataProvider.getAllNewsItems(),
+            keyword = "Recipes"
+        ),
+        articlesStateFlow = MutableStateFlow(PagingData.empty()),
+        onSeeAllClicked = { _, _ -> },
+        onItemClicked = {}
+    )
 }
