@@ -14,7 +14,7 @@ sealed interface Route {
     object Favorites: Route
 
     @Serializable
-    data class KeywordNews(val news: String, val keyword: String): Route
+    data class KeywordNews(val keyword: String): Route
 
     @Serializable
     data class NewsDetail(val newsItem: String): Route

@@ -7,7 +7,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import com.enriqueajin.newsapp.data.network.model.NewsItem
@@ -26,7 +25,7 @@ fun HomeScreen(
     localState: HomeLocalUiState,
     uiState: HomeUiState,
     articlesStateFlow: StateFlow<PagingData<NewsItem>>,
-    onSeeAllClicked: (List<NewsItem>, String) -> Unit,
+    onSeeAllClicked: (String) -> Unit,
     onItemClicked: (NewsItem) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -54,7 +53,7 @@ fun HomeScreen(
                 "All" -> {
                     AllNews(
                         state = uiState,
-                        onSeeAllClicked = { news, keyword -> onSeeAllClicked(news, keyword) },
+                        onSeeAllClicked = { keyword -> onSeeAllClicked(keyword) },
                         onItemClicked = { newsItem -> onItemClicked(newsItem) }
                     )
                 }
@@ -80,7 +79,7 @@ fun HomePreview() {
             keyword = "Recipes"
         ),
         articlesStateFlow = MutableStateFlow(PagingData.empty()),
-        onSeeAllClicked = { _, _ -> },
+        onSeeAllClicked = {},
         onItemClicked = {}
     )
 }

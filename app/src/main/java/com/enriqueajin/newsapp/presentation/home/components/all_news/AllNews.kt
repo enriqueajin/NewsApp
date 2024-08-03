@@ -21,12 +21,11 @@ import androidx.compose.ui.unit.sp
 import com.enriqueajin.newsapp.data.network.model.NewsItem
 import com.enriqueajin.newsapp.presentation.home.HomeUiState
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
-import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
 fun AllNews(
     state: HomeUiState,
-    onSeeAllClicked: (List<NewsItem>, String) -> Unit,
+    onSeeAllClicked: (String) -> Unit,
     onItemClicked: (NewsItem) -> Unit,
 ) {
 
@@ -40,7 +39,7 @@ fun AllNews(
                     latestArticles = (state as HomeUiState.Success).latestArticles ?: emptyList(),
                     articlesByKeyword = (state as HomeUiState.Success).articlesByKeyword ?: emptyList(),
                     keyword = (state as HomeUiState.Success).keyword ?: "",
-                    onSeeAllClicked = { article, keyword -> onSeeAllClicked(article, keyword) },
+                    onSeeAllClicked = { keyword -> onSeeAllClicked(keyword) },
                     onItemClicked = { article -> onItemClicked(article) }
                 )
             }
@@ -57,7 +56,7 @@ fun ArticlesLists(
     latestArticles: List<NewsItem>,
     articlesByKeyword: List<NewsItem>,
     keyword: String,
-    onSeeAllClicked: (List<NewsItem>, String) -> Unit,
+    onSeeAllClicked: (String) -> Unit,
     onItemClicked: (NewsItem) -> Unit,
 ) {
     LazyColumn(modifier = Modifier
@@ -93,8 +92,7 @@ fun ArticlesLists(
                     modifier = Modifier
                         .padding(start = 30.dp)
                         .clickable {
-                            val news = DummyDataProvider.getAllNewsItems()
-                            onSeeAllClicked(news, keyword)
+                            onSeeAllClicked(keyword)
                         },
                 )
             }

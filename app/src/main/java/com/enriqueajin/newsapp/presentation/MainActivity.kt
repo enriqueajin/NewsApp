@@ -29,7 +29,6 @@ import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
 import com.enriqueajin.newsapp.presentation.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
@@ -63,12 +62,8 @@ class MainActivity : ComponentActivity() {
                                     localState = localState,
                                     uiState = uiState,
                                     articlesStateFlow = articlesStateFlow,
-                                    onSeeAllClicked = { news, keyword ->
-                                        val newsArg = Json.encodeToString(
-                                            serializer = ListSerializer(NewsItem.serializer()),
-                                            value = news
-                                        )
-                                        navController.navigate(Route.KeywordNews(newsArg, keyword))
+                                    onSeeAllClicked = { keyword ->
+                                        navController.navigate(Route.KeywordNews(keyword))
                                     },
                                     onItemClicked = { newsItem ->
                                         val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
