@@ -26,7 +26,7 @@ class SearchNewsViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     fun queryNews(query: String) {
         viewModelScope.launch {
-            getNewsByKeywordUseCase(keyword = query, needsPagination = true)
+            getNewsByKeywordUseCase(keyword = query)
                 .debounce(500L)
                 .cachedIn(viewModelScope)
                 .collectLatest {

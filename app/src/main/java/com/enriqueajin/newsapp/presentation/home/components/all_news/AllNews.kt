@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,57 +18,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import com.enriqueajin.newsapp.presentation.home.HomeViewModel
+import com.enriqueajin.newsapp.presentation.home.HomeUiState
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
 fun AllNews(
-    homeViewModel: HomeViewModel,
+    state: HomeUiState,
     onSeeAllClicked: (List<NewsItem>, String) -> Unit,
     onItemClicked: (NewsItem) -> Unit,
 ) {
-    val latestNews = homeViewModel.latestNews.collectAsLazyPagingItems()
-    val previewKeywordNews = homeViewModel.newsByKeyword.collectAsLazyPagingItems()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        when {
-            // Initial load
-            (latestNews.loadState.refresh is LoadState.Loading && latestNews.itemCount == 0) ||
-            (previewKeywordNews.loadState.refresh is LoadState.Loading && previewKeywordNews.itemCount == 0) -> {
+        when (state) {
+            HomeUiState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-
-            // No articles yet from Api
-            (latestNews.loadState.refresh is LoadState.NotLoading && latestNews.itemCount == 0) ||
-            (previewKeywordNews.loadState.refresh is LoadState.NotLoading && previewKeywordNews.itemCount == 0) -> {
-                Text(text = "There is not any articles.", modifier = Modifier.align(Alignment.Center))
-            }
-
-            // Refresh button when failed
-            (latestNews.loadState.hasError && latestNews.itemCount == 0) ||
-            (previewKeywordNews.loadState.hasError && previewKeywordNews.itemCount == 0) -> {
-                Button(modifier = Modifier.align(Alignment.Center) , onClick = {
-                    latestNews.refresh()
-                    previewKeywordNews.refresh()
-                }) {
-                    Text(text = "Retry")
-                }
-            }
-
-            else -> {
+            is HomeUiState.Success -> {
                 ArticlesLists(
-                    latestNews = latestNews,
-                    previewKeywordNews = previewKeywordNews,
-                    homeViewModel = homeViewModel,
+                    latestArticles = (state as HomeUiState.Success).latestArticles ?: emptyList(),
+                    articlesByKeyword = (state as HomeUiState.Success).articlesByKeyword ?: emptyList(),
+                    keyword = (state as HomeUiState.Success).keyword ?: "",
                     onSeeAllClicked = { article, keyword -> onSeeAllClicked(article, keyword) },
                     onItemClicked = { article -> onItemClicked(article) }
                 )
+            }
+            is HomeUiState.Error -> {
+                val error = (state as HomeUiState.Error).throwable
+                Text(text = "$error", modifier = Modifier.align(Alignment.Center))
             }
         }
     }
@@ -77,19 +54,15 @@ fun AllNews(
 
 @Composable
 fun ArticlesLists(
-    latestNews: LazyPagingItems<NewsItem>,
-    previewKeywordNews: LazyPagingItems<NewsItem>,
-    homeViewModel: HomeViewModel,
+    latestArticles: List<NewsItem>,
+    articlesByKeyword: List<NewsItem>,
+    keyword: String,
     onSeeAllClicked: (List<NewsItem>, String) -> Unit,
     onItemClicked: (NewsItem) -> Unit,
 ) {
-    val localState = homeViewModel.localState.collectAsStateWithLifecycle()
-
     LazyColumn(modifier = Modifier
         .fillMaxSize()
     ) {
-        val keyword = localState.value.keyword
-
         item {
             Text(
                 text = "Latest news",
@@ -98,7 +71,7 @@ fun ArticlesLists(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            LatestNewsCarousel(news = latestNews) { newsItem -> onItemClicked(newsItem) }
+            LatestNewsCarousel(news = latestArticles) { article -> onItemClicked(article) }
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier
@@ -126,7 +99,7 @@ fun ArticlesLists(
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            NewsByKeyword(previewKeywordNews) { newsItem -> onItemClicked(newsItem) }
+            NewsByKeyword(articlesByKeyword) { article -> onItemClicked(article) }
             Spacer(modifier = Modifier.height(30.dp))
         }
     }

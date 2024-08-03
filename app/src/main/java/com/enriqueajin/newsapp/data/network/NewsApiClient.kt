@@ -11,7 +11,7 @@ interface NewsApiClient {
             "apiKey=${BuildConfig.NEWS_API_KEY}&" +
             "language=en&" +
             "sortBy=publishedAt")
-    suspend fun getNews(
+    suspend fun getArticlesByCategory(
         @Query("category") category: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int
@@ -22,7 +22,7 @@ interface NewsApiClient {
             "searchIn=title&" +
             "language=en&" +
             "sortBy=publishedAt")
-    suspend fun getNewsByKeyword(
+    suspend fun getArticlesByKeyword(
         @Query("q") keyword: String,
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int

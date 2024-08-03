@@ -22,9 +22,9 @@ class KeywordNewsViewModel @Inject constructor(
     private val _newsByKeyword = MutableStateFlow<PagingData<NewsItem>>(PagingData.empty())
     val newsByKeyword: StateFlow<PagingData<NewsItem>> = _newsByKeyword.asStateFlow()
 
-    fun getNewsByKeyword(keyword: String) {
+    private fun getNewsByKeyword(keyword: String) {
         viewModelScope.launch {
-            getNewsByKeywordUseCase(keyword = keyword, needsPagination = true)
+            getNewsByKeywordUseCase(keyword)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _newsByKeyword.value = it

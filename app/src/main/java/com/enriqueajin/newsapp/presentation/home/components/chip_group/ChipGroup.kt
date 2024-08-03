@@ -16,8 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.enriqueajin.newsapp.presentation.home.HomeViewModel
+import com.enriqueajin.newsapp.presentation.home.HomeEvent
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -25,14 +24,13 @@ import kotlinx.coroutines.flow.debounce
 @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
 fun ChipGroup(
-    homeViewModel: HomeViewModel,
+    event: (HomeEvent) -> Unit,
+    scrollPosition: Int,
     categories: List<String>,
     selected: String,
     onChipSelected: (String) -> Unit,
 ) {
-    val scrollPosition = homeViewModel.scrollPosition.collectAsStateWithLifecycle()
-
-    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition.value)
+    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
 
     LaunchedEffect(lazyListState) {
         snapshotFlow {
@@ -40,7 +38,7 @@ fun ChipGroup(
         }
             .debounce(500L)
             .collectLatest { index ->
-                homeViewModel.setScrollPosition(index)
+                event(HomeEvent.UpdateCategoriesScrollPosition(index))
             }
     }
 

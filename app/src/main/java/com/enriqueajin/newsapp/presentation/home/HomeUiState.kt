@@ -6,13 +6,11 @@ sealed interface HomeUiState {
     object Loading: HomeUiState
     data class Success(
         // External sources state
-        val latestNews: List<NewsItem>? = null,
-        val newsByKeyword: List<NewsItem>? = null,
-        val newsByCategory: List<NewsItem>? = null,
+        val latestArticles: List<NewsItem>? = null,
+        val articlesByKeyword: List<NewsItem>? = null,
         // Local state
-        val categorySelected: String = "All",
-        val keywords: String? = null
+        val category: String = "All",
+        val keyword: String? = ""
     ): HomeUiState
     data class Error(val throwable: Throwable): HomeUiState
-
 }

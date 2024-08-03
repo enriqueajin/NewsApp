@@ -9,7 +9,11 @@ import javax.inject.Inject
 class GetNewsByCategoryUseCase @Inject constructor(
     private val newsRepositoryImpl: NewsRepositoryImpl
 ) {
-    operator fun invoke(category: String = "general", needsPagination: Boolean = false):Flow<PagingData<NewsItem>> {
-        return newsRepositoryImpl.getNews(category, needsPagination)
+    operator fun invoke(category: String = "general"):Flow<PagingData<NewsItem>> {
+        return newsRepositoryImpl.getPagingArticlesByCategory(category)
+    }
+
+    fun getArticlesByCategory(category: String = "general"):Flow<List<NewsItem>> {
+        return newsRepositoryImpl.getArticlesByCategory(category)
     }
 }

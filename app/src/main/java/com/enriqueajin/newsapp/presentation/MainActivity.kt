@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -52,8 +54,15 @@ class MainActivity : ComponentActivity() {
                             Modifier.padding(it)
                         ) {
                             composable<Route.Home> {
+                                val localState = homeViewModel.localState.value
+                                val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+                                val articlesStateFlow = homeViewModel.newsByCategory
+
                                 HomeScreen(
-                                    homeViewModel = homeViewModel,
+                                    event = homeViewModel::onEvent,
+                                    localState = localState,
+                                    uiState = uiState,
+                                    articlesStateFlow = articlesStateFlow,
                                     onSeeAllClicked = { news, keyword ->
                                         val newsArg = Json.encodeToString(
                                             serializer = ListSerializer(NewsItem.serializer()),

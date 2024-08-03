@@ -13,37 +13,38 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.data.network.model.NewsItem
-import com.enriqueajin.newsapp.presentation.home.HomeViewModel
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun NewsByCategory(homeViewModel: HomeViewModel, onItemClicked: (NewsItem) -> Unit) {
-
-    val category = homeViewModel.category.collectAsStateWithLifecycle()
-
-    key(category.value) {
-
-        val news = homeViewModel.newsByCategory.collectAsLazyPagingItems()
+fun NewsByCategory(
+    articlesStateFlow: StateFlow<PagingData<NewsItem>>,
+    category: String,
+    onItemClicked: (NewsItem) -> Unit
+) {
+    // Reset LazyPagingItems state when category changes
+    key(category) {
+        val articles = articlesStateFlow.collectAsLazyPagingItems()
 
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 // Initial load
-                news.loadState.refresh is LoadState.Loading && news.itemCount == 0 -> {
+                articles.loadState.refresh is LoadState.Loading && articles.itemCount == 0 -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
                 // No articles yet from Api
-                news.loadState.refresh is LoadState.NotLoading && news.itemCount == 0 -> {
+                articles.loadState.refresh is LoadState.NotLoading && articles.itemCount == 0 -> {
                     Text(text = "There is not any articles.", modifier = Modifier.align(Alignment.Center))
                 }
 
                 // Refresh button when failed
-                news.loadState.hasError && news.itemCount == 0 -> {
-                    Button(modifier = Modifier.align(Alignment.Center) , onClick = { news.refresh() }) {
+                articles.loadState.hasError && articles.itemCount == 0 -> {
+                    Button(modifier = Modifier.align(Alignment.Center) , onClick = { articles.refresh() }) {
                         Text(text = "Retry")
                     }
                 }
@@ -51,15 +52,15 @@ fun NewsByCategory(homeViewModel: HomeViewModel, onItemClicked: (NewsItem) -> Un
                 else -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-                        items(news.itemCount) {
-
-                            news[it]?.let { article ->
+                        items(articles.itemCount) {
+                            articles[it]?.let { article ->
                                 NewsListItem(article) { newsItem -> onItemClicked(newsItem) }
                             }
                         }
+
                         item {
                             // Load indicator when scrolling
-                            if (news.loadState.append is LoadState.Loading) {
+                            if (articles.loadState.append is LoadState.Loading) {
                                 Box(modifier = Modifier.fillMaxWidth()) {
                                     CircularProgressIndicator(modifier = Modifier
                                         .padding(vertical = 8.dp)
@@ -67,16 +68,17 @@ fun NewsByCategory(homeViewModel: HomeViewModel, onItemClicked: (NewsItem) -> Un
                                     )
                                 }
                             }
+
                             // Retry button when failed
-                            if (news.loadState.append is LoadState.Error) {
-                                val e = news.loadState.append as LoadState.Error
+                            if (articles.loadState.append is LoadState.Error) {
+                                val e = articles.loadState.append as LoadState.Error
                                 val errorMessage = e.error.localizedMessage?.trim() ?: ""
 
                                 if (errorMessage != HTTP_ERROR_UPGRADE_REQUIRED) {
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         Button(
                                             modifier = Modifier.align(Alignment.Center),
-                                            onClick = { news.retry() }) {
+                                            onClick = { articles.retry() }) {
                                             Text(text = "Retry")
                                         }
                                     }
