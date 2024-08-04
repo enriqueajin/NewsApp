@@ -16,15 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun NewsByCategory(
-    articlesStateFlow: StateFlow<PagingData<NewsItem>>,
+    articlesStateFlow: StateFlow<PagingData<Article>>,
     category: String,
-    onItemClicked: (NewsItem) -> Unit
+    onItemClicked: (Article) -> Unit
 ) {
     // Reset LazyPagingItems state when category changes
     key(category) {

@@ -12,12 +12,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import kotlin.math.absoluteValue
 
 @Composable
-fun LatestNewsCarousel(news: List<NewsItem>, onItemClicked: (NewsItem) -> Unit) {
+fun LatestNewsCarousel(news: List<Article>, onItemClicked: (Article) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
         news.size
     })

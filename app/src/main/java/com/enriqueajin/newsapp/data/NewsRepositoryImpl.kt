@@ -4,7 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.enriqueajin.newsapp.data.network.NewsApiClient
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.data.network.dto.toArticle
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.repository.NewsRepository
 import com.enriqueajin.newsapp.util.Constants.ALL_NEWS_PAGE_SIZE
 import com.enriqueajin.newsapp.util.Constants.PAGE_SIZE
@@ -12,24 +13,28 @@ import com.enriqueajin.newsapp.util.Constants.PREFETCH_ITEMS
 import com.enriqueajin.newsapp.util.Constants.REMOVED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NewsRepositoryImpl @Inject constructor(private val api: NewsApiClient): NewsRepository {
+class NewsRepositoryImpl @Inject constructor(
+    private val api: NewsApiClient,
+    private val dao: ArticleDao
+): NewsRepository {
 
     /**
      * Get articles by category from Api for HomeScreen (without pagination)
      * @param category category for which articles will be sorted
      * @return Flow with the list of articles
      */
-    override fun getArticlesByCategory(category: String): Flow<List<NewsItem>> = flow {
+    override fun getArticlesByCategory(category: String): Flow<List<Article>> = flow {
         val data = api.getArticlesByCategory(
             category = category,
             page = 1,
             pageSize = ALL_NEWS_PAGE_SIZE
         )
-        val articles = data.articles
+        val articles = data.articles.map { it.toArticle() }
         val filteredArticles = articles.filter { it.title != REMOVED }
         emit(filteredArticles)
     }
@@ -39,7 +44,7 @@ class NewsRepositoryImpl @Inject constructor(private val api: NewsApiClient): Ne
      * @param category category for which articles will be sorted
      * @return Flow with the list of articles
      */
-    override fun getPagingArticlesByCategory(category: String): Flow<PagingData<NewsItem>> {
+    override fun getPagingArticlesByCategory(category: String): Flow<PagingData<Article>> {
         return Pager(config = PagingConfig(pageSize = PAGE_SIZE, prefetchDistance = PREFETCH_ITEMS),
             pagingSourceFactory = {
                 NewsPagingSource(
@@ -54,13 +59,13 @@ class NewsRepositoryImpl @Inject constructor(private val api: NewsApiClient): Ne
      * @param keyword Keyword for which articles will be searched
      * @return Flow with the list of articles
      */
-    override fun getArticlesByKeyword(keyword: String): Flow<List<NewsItem>> = flow {
+    override fun getArticlesByKeyword(keyword: String): Flow<List<Article>> = flow {
         val data = api.getArticlesByKeyword(
             keyword = keyword,
             page = 1,
             pageSize = ALL_NEWS_PAGE_SIZE
         )
-        val articles = data.articles
+        val articles = data.articles.map { it.toArticle() }
         val filteredArticles = articles.filter { it.title != REMOVED }
         emit(filteredArticles)
     }
@@ -70,7 +75,7 @@ class NewsRepositoryImpl @Inject constructor(private val api: NewsApiClient): Ne
      * @param keyword Keyword for which articles will be searched
      * @return Flow with the list of articles
      */
-    override fun getPagingArticlesByKeyword(keyword: String, ): Flow<PagingData<NewsItem>> {
+    override fun getPagingArticlesByKeyword(keyword: String, ): Flow<PagingData<Article>> {
         return Pager(config = PagingConfig(pageSize = PAGE_SIZE, prefetchDistance = PREFETCH_ITEMS),
             pagingSourceFactory = {
                 NewsPagingSource(
@@ -78,5 +83,21 @@ class NewsRepositoryImpl @Inject constructor(private val api: NewsApiClient): Ne
                     keyword = keyword,
                 )
             }).flow
+    }
+
+    override fun getFavorites(): Flow<List<Article>> {
+        return dao.getFavorites().map { list ->
+            list.map { articleEntity ->
+                articleEntity.toArticle()
+            }
+        }
+    }
+
+    override suspend fun addFavoriteArticle(article: ArticleEntity) {
+        dao.addArticle(article)
+    }
+
+    override suspend fun deleteFavoriteArticle(article: ArticleEntity) {
+        dao.deleteArticle(article)
     }
 }

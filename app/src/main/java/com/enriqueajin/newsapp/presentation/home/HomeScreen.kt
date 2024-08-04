@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.components.all_news.AllNews
 import com.enriqueajin.newsapp.presentation.home.components.chip_group.ChipGroup
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsByCategory
@@ -24,9 +24,9 @@ fun HomeScreen(
     event: (HomeEvent) -> Unit,
     localState: HomeLocalUiState,
     uiState: HomeUiState,
-    articlesStateFlow: StateFlow<PagingData<NewsItem>>,
+    articlesStateFlow: StateFlow<PagingData<Article>>,
     onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (NewsItem) -> Unit
+    onItemClicked: (Article) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByCategoryUseCase
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,8 +27,8 @@ class HomeViewModel @Inject constructor(
 
     var localState = MutableStateFlow(HomeLocalUiState())
 
-    private val latestArticles: Flow<List<NewsItem>> = getNewsByCategoryUseCase.getArticlesByCategory()
-    private val articlesByKeyword: Flow<List<NewsItem>> = getNewsByKeywordUseCase.getArticlesByKeyword(keyword = localState.value.keyword)
+    private val latestArticles: Flow<List<Article>> = getNewsByCategoryUseCase.getArticlesByCategory()
+    private val articlesByKeyword: Flow<List<Article>> = getNewsByKeywordUseCase.getArticlesByKeyword(keyword = localState.value.keyword)
 
     val uiState: StateFlow<HomeUiState> = combine(
         localState,
@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
     private val _selectedTabIndex = MutableStateFlow(0)
     val selectedTabIndex = _selectedTabIndex.asStateFlow()
 
-    val newsByCategory: StateFlow<PagingData<NewsItem>> = localState.flatMapLatest { state ->
+    val newsByCategory: StateFlow<PagingData<Article>> = localState.flatMapLatest { state ->
         getNewsByCategoryUseCase(category = state.category).cachedIn(viewModelScope)
     }.stateIn(
         scope = viewModelScope,

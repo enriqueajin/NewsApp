@@ -24,26 +24,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.ui.theme.LightGray
 import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
 
 @Composable
-fun NewsByKeywordItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
+fun NewsByKeywordItem(article: Article, onItemClicked: (Article) -> Unit) {
     Card(
         modifier = Modifier
             .width(170.dp)
             .height(200.dp)
             .padding(end = 15.dp)
-            .clickable { onItemClicked(newsItem) },
+            .clickable { onItemClicked(article) },
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
         ) {
             when {
-                !newsItem.urlToImage.isNullOrEmpty() -> {
+                !article.urlToImage.isNullOrEmpty() -> {
                     AsyncImage(
-                        model = newsItem.urlToImage,
+                        model = article.urlToImage,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -75,7 +75,7 @@ fun NewsByKeywordItem(newsItem: NewsItem, onItemClicked: (NewsItem) -> Unit) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.TopStart
                 ) {
-                    val title = newsItem.title ?: "News without title"
+                    val title = article.title ?: "News without title"
                     Text(
                         text = title,
                         maxLines = 3,

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.Route
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.presentation.keyword_news.components.KeywordNewsTopBarApp
@@ -26,10 +26,10 @@ import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
 fun KeywordNewsScreen(
-    articles: LazyPagingItems<NewsItem>,
+    articles: LazyPagingItems<Article>,
     event: (KeywordNewsEvent) -> Unit,
     args: Route.KeywordNews,
-    onItemClicked: (NewsItem) -> Unit,
+    onItemClicked: (Article) -> Unit,
     onBackPressed: () -> Unit
 ) {
     LaunchedEffect(args.keyword) {

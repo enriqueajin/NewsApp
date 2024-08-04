@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.news_detail.components.NewsDetailsTopBar
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 import com.enriqueajin.newsapp.presentation.ui.theme.Purple80
@@ -45,11 +45,11 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
+fun NewsDetailScreen(article: Article, onBackPressed: () -> Unit) {
     val context = LocalContext.current
     Scaffold(topBar = {
         NewsDetailsTopBar(
-            newsItem = newsItem,
+            article = article,
             onShareArticle = {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
@@ -76,7 +76,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                     AssistChip(
                         onClick = {},
                         label = {
-                            val text = newsItem.author ?: NO_AUTHOR
+                            val text = article.author ?: NO_AUTHOR
                             val maxLength = 30
                             Text(
                                 text = if (text.length <= maxLength) text else text.substring(0, maxLength),
@@ -90,7 +90,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                         )
                     )
                     Text(
-                        text = formatDate(newsItem.publishedAt ?: NO_DATE),
+                        text = formatDate(article.publishedAt ?: NO_DATE),
                         color = DarkGray,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -98,13 +98,13 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(25.dp))
                 Text(
-                    text = newsItem.title ?: NO_TITLE,
+                    text = article.title ?: NO_TITLE,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 40.sp
                 )
                 Spacer(modifier = Modifier.height(25.dp))
-                if (newsItem.urlToImage == null) {
+                if (article.urlToImage == null) {
                     Image(
                         painter = painterResource(id = R.drawable.no_image_available),
                         contentDescription = null,
@@ -117,7 +117,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
 
                 } else {
                     AsyncImage(
-                        model = newsItem.urlToImage,
+                        model = article.urlToImage,
                         error = painterResource(id = R.drawable.no_image_available),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -129,7 +129,7 @@ fun NewsDetailScreen(newsItem: NewsItem, onBackPressed: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(25.dp))
                 Text(
-                    text = newsItem.content ?: NO_CONTENT,
+                    text = article.content ?: NO_CONTENT,
                     fontSize = 18.sp
                 )
                 Spacer(modifier = Modifier.height(30.dp))

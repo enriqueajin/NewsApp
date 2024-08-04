@@ -17,7 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.home.HomeScreen
 import com.enriqueajin.newsapp.presentation.home.HomeViewModel
@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.KeywordNews(keyword))
                                     },
                                     onItemClicked = { newsItem ->
-                                        val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
+                                        val newsArg = Json.encodeToString(Article.serializer(), newsItem)
 
                                         navController.navigate(Route.NewsDetail(newsArg)) {
                                             popUpTo(navController.graph.startDestinationId) {
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                     event = keywordNewsViewModel::onEvent,
                                     args = args,
                                     onItemClicked = { newsItem ->
-                                        val newsArg = Json.encodeToString(NewsItem.serializer(), newsItem)
+                                        val newsArg = Json.encodeToString(Article.serializer(), newsItem)
                                         navController.navigate(Route.NewsDetail(newsArg)) {
                                             launchSingleTop = true
                                             restoreState = true
@@ -100,9 +100,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable<Route.NewsDetail> {
                                 val args = it.toRoute<Route.NewsDetail>()
-                                val newsItem = Json.decodeFromString(NewsItem.serializer(), args.newsItem)
+                                val newsItem = Json.decodeFromString(Article.serializer(), args.newsItem)
                                 NewsDetailScreen(
-                                    newsItem = newsItem,
+                                    article = newsItem,
                                     onBackPressed = { navController.navigateUp() }
                                 )
                             }
@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                     articles = articles,
                                     event = searchNewsViewModel::onEvent,
                                     onItemClicked = { article ->
-                                        val newsArg = Json.encodeToString(NewsItem.serializer(), article)
+                                        val newsArg = Json.encodeToString(Article.serializer(), article)
                                         navController.navigate(Route.NewsDetail(newsArg)) {
                                             launchSingleTop = true
                                             restoreState = true
