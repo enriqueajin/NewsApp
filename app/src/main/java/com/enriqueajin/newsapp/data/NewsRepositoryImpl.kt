@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.enriqueajin.newsapp.data.network.NewsApiClient
-import com.enriqueajin.newsapp.data.network.dto.toArticle
+import com.enriqueajin.newsapp.data.network.dto.toDomain
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.repository.NewsRepository
 import com.enriqueajin.newsapp.util.Constants.ALL_NEWS_PAGE_SIZE
@@ -34,7 +34,7 @@ class NewsRepositoryImpl @Inject constructor(
             page = 1,
             pageSize = ALL_NEWS_PAGE_SIZE
         )
-        val articles = data.articles.map { it.toArticle() }
+        val articles = data.articles.map { it.toDomain() }
         val filteredArticles = articles.filter { it.title != REMOVED }
         emit(filteredArticles)
     }
@@ -65,7 +65,7 @@ class NewsRepositoryImpl @Inject constructor(
             page = 1,
             pageSize = ALL_NEWS_PAGE_SIZE
         )
-        val articles = data.articles.map { it.toArticle() }
+        val articles = data.articles.map { it.toDomain() }
         val filteredArticles = articles.filter { it.title != REMOVED }
         emit(filteredArticles)
     }
@@ -88,7 +88,7 @@ class NewsRepositoryImpl @Inject constructor(
     override fun getFavorites(): Flow<List<Article>> {
         return dao.getFavorites().map { list ->
             list.map { articleEntity ->
-                articleEntity.toArticle()
+                articleEntity.toDomain()
             }
         }
     }
@@ -99,5 +99,11 @@ class NewsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteFavoriteArticle(article: ArticleEntity) {
         dao.deleteArticle(article)
+    }
+
+    override fun checkIsArticleFavorite(articleId: String): Flow<Boolean> {
+        return dao.checkIsArticleFavorite(articleId).map { rowsFound ->
+            rowsFound > 0
+        }
     }
 }

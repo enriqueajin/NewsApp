@@ -8,13 +8,13 @@ data class ArticleDto(
     val author: String?,
     val title: String?,
     val description: String?,
-    val url: String?,
+    val url: String,
     val urlToImage: String?,
     val publishedAt: String?,
     val content: String?,
 )
 
-fun ArticleDto.toArticle(): Article {
+fun ArticleDto.toDomain(): Article {
     return Article(
         source = source?.name,
         author = author,

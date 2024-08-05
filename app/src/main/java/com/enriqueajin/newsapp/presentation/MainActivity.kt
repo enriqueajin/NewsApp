@@ -25,6 +25,7 @@ import com.enriqueajin.newsapp.presentation.home.components.BottomNav
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
 import com.enriqueajin.newsapp.presentation.news_detail.NewsDetailScreen
+import com.enriqueajin.newsapp.presentation.news_detail.NewsDetailViewModel
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
 import com.enriqueajin.newsapp.presentation.ui.theme.NewsAppTheme
@@ -99,10 +100,14 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<Route.NewsDetail> {
+                                val viewModel: NewsDetailViewModel by viewModels()
                                 val args = it.toRoute<Route.NewsDetail>()
                                 val newsItem = Json.decodeFromString(Article.serializer(), args.newsItem)
+                                val isFavoriteArticle by viewModel.isArticleFavorite.collectAsStateWithLifecycle()
                                 NewsDetailScreen(
                                     article = newsItem,
+                                    isFavoriteArticle = isFavoriteArticle,
+                                    event = viewModel::onEvent,
                                     onBackPressed = { navController.navigateUp() }
                                 )
                             }

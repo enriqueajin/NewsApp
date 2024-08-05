@@ -20,6 +20,7 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,17 +46,34 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun NewsDetailScreen(article: Article, onBackPressed: () -> Unit) {
+fun NewsDetailScreen(
+    article: Article,
+    isFavoriteArticle: Boolean,
+    event: (ArticleDetailEvent) -> Unit,
+    onBackPressed: () -> Unit
+) {
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        event(ArticleDetailEvent.CheckIsFavoriteArticle(article.url))
+    }
+
     Scaffold(topBar = {
         NewsDetailsTopBar(
             article = article,
+            isFavoriteArticle = isFavoriteArticle,
             onShareArticle = {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
                 intent.putExtra(Intent.EXTRA_TEXT, it.url)
                 intent.type = "text/plain"
                 context.startActivity(intent)
+            },
+            onAddFavorite = {
+                event(ArticleDetailEvent.AddFavorite(it))
+            },
+            onDeleteFavorite = {
+                event(ArticleDetailEvent.DeleteFavorite(it))
             },
             onBackPressed = { onBackPressed() }
         )
@@ -141,5 +159,10 @@ fun NewsDetailScreen(article: Article, onBackPressed: () -> Unit) {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NewsDetailScreenPreview() {
-    NewsDetailScreen(DummyDataProvider.getAllNewsItems().first()) {}
+    NewsDetailScreen(
+        article = DummyDataProvider.getAllNewsItems().first(),
+        isFavoriteArticle = true,
+        event = {},
+        onBackPressed = {}
+    )
 }

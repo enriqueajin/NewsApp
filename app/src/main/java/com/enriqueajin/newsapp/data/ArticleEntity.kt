@@ -6,19 +6,18 @@ import com.enriqueajin.newsapp.domain.model.Article
 
 @Entity
 data class ArticleEntity (
-    @PrimaryKey
-    val id: Int,
     val source: String?,
     val author: String?,
     val title: String?,
     val description: String?,
-    val url: String?,
+    @PrimaryKey
+    val url: String,
     val urlToImage: String?,
     val publishedAt: String?,
     val content: String?,
 )
 
-fun ArticleEntity.toArticle(): Article {
+fun ArticleEntity.toDomain(): Article {
     return Article(
         source = source,
         author = author,
@@ -27,6 +26,6 @@ fun ArticleEntity.toArticle(): Article {
         url = url,
         urlToImage = urlToImage,
         publishedAt = publishedAt,
-        content = content
+        content = content,
     )
 }

@@ -21,4 +21,5 @@ interface NewsRepository {
 
     suspend fun deleteFavoriteArticle(article: ArticleEntity)
 
+    fun checkIsArticleFavorite(articleId: String): Flow<Boolean>
 }

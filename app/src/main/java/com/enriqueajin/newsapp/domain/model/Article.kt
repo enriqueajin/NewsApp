@@ -5,12 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Article(
-    val id: Int = System.currentTimeMillis().hashCode(),
     val source: String?,
     val author: String?,
     val title: String?,
     val description: String?,
-    val url: String?,
+    val url: String,
     val urlToImage: String?,
     val publishedAt: String?,
     val content: String?,
@@ -18,7 +17,6 @@ data class Article(
 
 fun Article.toData(): ArticleEntity {
     return ArticleEntity(
-        id = id,
         source = source,
         author = author,
         title = title,
@@ -26,6 +24,6 @@ fun Article.toData(): ArticleEntity {
         url = url,
         urlToImage = urlToImage,
         publishedAt = publishedAt,
-        content = content
+        content = content,
     )
 }

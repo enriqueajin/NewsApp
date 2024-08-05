@@ -3,6 +3,7 @@ package com.enriqueajin.newsapp.presentation.news_detail.components
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +17,14 @@ import com.enriqueajin.newsapp.domain.model.Article
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsDetailsTopBar(article: Article, onShareArticle: (Article) -> Unit, onBackPressed: () -> Unit) {
+fun NewsDetailsTopBar(
+    article: Article,
+    isFavoriteArticle: Boolean,
+    onShareArticle: (Article) -> Unit,
+    onAddFavorite: (Article) -> Unit,
+    onDeleteFavorite: (Article) -> Unit,
+    onBackPressed: () -> Unit
+) {
     TopAppBar(
         modifier = Modifier.padding(horizontal = 13.dp),
         title = { },
@@ -29,8 +37,15 @@ fun NewsDetailsTopBar(article: Article, onShareArticle: (Article) -> Unit, onBac
             IconButton(onClick = { onShareArticle(article) }) {
                 Icon(imageVector = Icons.Default.Share, contentDescription = null)
             }
-            IconButton(onClick = {}) {
-                Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = null)
+            IconButton(onClick = {
+                if (isFavoriteArticle) {
+                    onDeleteFavorite(article)
+                } else {
+                    onAddFavorite(article)
+                }
+            }) {
+                val icon = if (isFavoriteArticle) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+                Icon(imageVector = icon, contentDescription = null)
             }
         }
     )
