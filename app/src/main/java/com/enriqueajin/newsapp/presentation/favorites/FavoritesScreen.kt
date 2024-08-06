@@ -90,6 +90,7 @@ fun FavoriteList(
                     contentDescription = "Close Icon"
                 )
             },
+            placeholder = { Text(text = "Search favorites") },
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
