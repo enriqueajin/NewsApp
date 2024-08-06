@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.HomeUiState
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 
@@ -26,7 +26,7 @@ import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 fun AllNews(
     state: HomeUiState,
     onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (NewsItem) -> Unit,
+    onItemClicked: (Article) -> Unit,
 ) {
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -53,11 +53,11 @@ fun AllNews(
 
 @Composable
 fun ArticlesLists(
-    latestArticles: List<NewsItem>,
-    articlesByKeyword: List<NewsItem>,
+    latestArticles: List<Article>,
+    articlesByKeyword: List<Article>,
     keyword: String,
     onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (NewsItem) -> Unit,
+    onItemClicked: (Article) -> Unit,
 ) {
     LazyColumn(modifier = Modifier
         .fillMaxSize()

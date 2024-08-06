@@ -1,6 +1,5 @@
 package com.enriqueajin.newsapp.util
 
-import android.os.Build
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 

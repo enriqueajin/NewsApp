@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 import com.enriqueajin.newsapp.util.Constants.NO_AUTHOR
 import com.enriqueajin.newsapp.util.Constants.NO_DATE
@@ -33,7 +33,7 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun NewsListItem(item: NewsItem, onItemClicked: (NewsItem) -> Unit) {
+fun NewsListItem(item: Article, onItemClicked: (Article) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

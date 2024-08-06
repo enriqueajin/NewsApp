@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enriqueajin.newsapp.data.network.model.NewsItem
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +19,8 @@ class KeywordNewsViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ): ViewModel() {
 
-    private val _newsByKeyword = MutableStateFlow<PagingData<NewsItem>>(PagingData.empty())
-    val newsByKeyword: StateFlow<PagingData<NewsItem>> = _newsByKeyword.asStateFlow()
+    private val _newsByKeyword = MutableStateFlow<PagingData<Article>>(PagingData.empty())
+    val newsByKeyword: StateFlow<PagingData<Article>> = _newsByKeyword.asStateFlow()
 
     private fun getNewsByKeyword(keyword: String) {
         viewModelScope.launch {
