@@ -9,6 +9,7 @@ import com.enriqueajin.newsapp.domain.use_case.DeleteArticleFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class NewsDetailViewModel @Inject constructor(
 
     private fun checkArticleFavorite(articleId: String) {
         viewModelScope.launch {
-            checkIsArticleFavoriteUseCase(articleId).collect { isFavorite ->
+            checkIsArticleFavoriteUseCase(articleId).collectLatest { isFavorite ->
                 _isArticleFavorite.value = isFavorite
             }
         }

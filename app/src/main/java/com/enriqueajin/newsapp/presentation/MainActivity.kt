@@ -19,6 +19,7 @@ import androidx.navigation.toRoute
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
+import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
 import com.enriqueajin.newsapp.presentation.home.HomeScreen
 import com.enriqueajin.newsapp.presentation.home.HomeViewModel
 import com.enriqueajin.newsapp.presentation.home.components.BottomNav
@@ -41,7 +42,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-
             NewsAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -129,7 +129,21 @@ class MainActivity : ComponentActivity() {
                                 homeViewModel.setSelectedTabIndex(1)
                             }
                             composable<Route.Favorites> {
-                                FavoritesScreen()
+                                val viewModel: FavoritesViewModel by viewModels()
+                                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                                val searchText by viewModel.searchText.collectAsStateWithLifecycle()
+                                FavoritesScreen(
+                                    event = viewModel::onEvent,
+                                    searchText = searchText,
+                                    uiState = uiState,
+                                    onItemClicked = { article ->
+                                        val arg = Json.encodeToString(Article.serializer(), article)
+                                        navController.navigate(Route.NewsDetail(arg)) {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                )
                                 homeViewModel.setSelectedTabIndex(2)
                             }
                         }

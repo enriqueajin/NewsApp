@@ -71,9 +71,11 @@ fun NewsDetailScreen(
             },
             onAddFavorite = {
                 event(ArticleDetailEvent.AddFavorite(it))
+                event(ArticleDetailEvent.CheckIsFavoriteArticle(article.url))
             },
             onDeleteFavorite = {
                 event(ArticleDetailEvent.DeleteFavorite(it))
+                event(ArticleDetailEvent.CheckIsFavoriteArticle(article.url))
             },
             onBackPressed = { onBackPressed() }
         )
