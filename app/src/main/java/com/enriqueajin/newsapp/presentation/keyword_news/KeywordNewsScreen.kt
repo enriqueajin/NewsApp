@@ -61,37 +61,47 @@ fun KeywordNewsScreen(
                 }
 
                 else -> {
-                    LazyColumn {
-                        items(articles.itemCount) {
-                            articles[it]?.let { article ->
-                                ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
-                            }
-                        }
-                        item {
-                            // Load indicator when scrolling
-                            if (articles.loadState.append is LoadState.Loading) {
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    CircularProgressIndicator(modifier = Modifier
-                                        .padding(vertical = 8.dp)
-                                        .align(Alignment.Center)
-                                    )
-                                }
-                            }
-                            // Retry button when failed
-                            if (articles.loadState.append is LoadState.Error) {
-                                val e = articles.loadState.append as LoadState.Error
-                                val errorMessage = e.error.localizedMessage?.trim() ?: ""
+                    ArticleList(articles = articles) { article ->
+                        onItemClicked(article)
+                    }
+                }
+            }
+        }
+    }
+}
 
-                                if (errorMessage != HTTP_ERROR_UPGRADE_REQUIRED) {
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        Button(
-                                            modifier = Modifier.align(Alignment.Center),
-                                            onClick = { articles.retry() }) {
-                                            Text(text = "Retry")
-                                        }
-                                    }
-                                }
-                            }
+@Composable
+fun ArticleList(
+    articles: LazyPagingItems<Article>,
+    onItemClicked: (Article) -> Unit
+) {
+    LazyColumn {
+        items(articles.itemCount) {
+            articles[it]?.let { article ->
+                ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
+            }
+        }
+        item {
+            // Load indicator when scrolling
+            if (articles.loadState.append is LoadState.Loading) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    CircularProgressIndicator(modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.Center)
+                    )
+                }
+            }
+            // Retry button when failed
+            if (articles.loadState.append is LoadState.Error) {
+                val e = articles.loadState.append as LoadState.Error
+                val errorMessage = e.error.localizedMessage?.trim() ?: ""
+
+                if (errorMessage != HTTP_ERROR_UPGRADE_REQUIRED) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            modifier = Modifier.align(Alignment.Center),
+                            onClick = { articles.retry() }) {
+                            Text(text = "Retry")
                         }
                     }
                 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
@@ -50,40 +51,50 @@ fun ArticlesByCategory(
                 }
 
                 else -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    ArticleList(articles) { article ->
+                        onItemClicked(article)
+                    }
+                }
+            }
+        }
+    }
+}
 
-                        items(articles.itemCount) {
-                            articles[it]?.let { article ->
-                                ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
-                            }
-                        }
+@Composable
+fun ArticleList(
+    articles: LazyPagingItems<Article>,
+    onItemClicked: (Article) -> Unit
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-                        item {
-                            // Load indicator when scrolling
-                            if (articles.loadState.append is LoadState.Loading) {
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    CircularProgressIndicator(modifier = Modifier
-                                        .padding(vertical = 8.dp)
-                                        .align(Alignment.Center)
-                                    )
-                                }
-                            }
+        items(articles.itemCount) {
+            articles[it]?.let { article ->
+                ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
+            }
+        }
 
-                            // Retry button when failed
-                            if (articles.loadState.append is LoadState.Error) {
-                                val e = articles.loadState.append as LoadState.Error
-                                val errorMessage = e.error.localizedMessage?.trim() ?: ""
+        item {
+            // Load indicator when scrolling
+            if (articles.loadState.append is LoadState.Loading) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    CircularProgressIndicator(modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.Center)
+                    )
+                }
+            }
 
-                                if (errorMessage != HTTP_ERROR_UPGRADE_REQUIRED) {
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        Button(
-                                            modifier = Modifier.align(Alignment.Center),
-                                            onClick = { articles.retry() }) {
-                                            Text(text = "Retry")
-                                        }
-                                    }
-                                }
-                            }
+            // Retry button when failed
+            if (articles.loadState.append is LoadState.Error) {
+                val e = articles.loadState.append as LoadState.Error
+                val errorMessage = e.error.localizedMessage?.trim() ?: ""
+
+                if (errorMessage != HTTP_ERROR_UPGRADE_REQUIRED) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Button(
+                            modifier = Modifier.align(Alignment.Center),
+                            onClick = { articles.retry() }) {
+                            Text(text = "Retry")
                         }
                     }
                 }
