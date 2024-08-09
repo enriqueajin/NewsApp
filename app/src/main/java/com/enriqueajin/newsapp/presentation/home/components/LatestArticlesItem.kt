@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.all_news
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,7 @@ import com.enriqueajin.newsapp.util.DateUtils
 import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
 
 @Composable
-fun LatestNewsItem(article: Article, onItemClicked: (Article) -> Unit) {
+fun LatestArticlesItem(article: Article, onItemClicked: (Article) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +64,7 @@ fun LatestNewsItem(article: Article, onItemClicked: (Article) -> Unit) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun CarouselNewsItemPreview() {
+fun LatestArticlesItemPreview() {
     val item = getLatestNewsItems().first()
-    LatestNewsItem(item) {}
+    LatestArticlesItem(item) {}
 }

@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.all_news
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +23,7 @@ import com.enriqueajin.newsapp.presentation.home.HomeUiState
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 
 @Composable
-fun AllNews(
+fun AllArticles(
     state: HomeUiState,
     onSeeAllClicked: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
@@ -70,7 +70,7 @@ fun ArticlesLists(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            LatestNewsCarousel(news = latestArticles) { article -> onItemClicked(article) }
+            LatestArticlesCarousel(news = latestArticles) { article -> onItemClicked(article) }
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier
@@ -97,7 +97,7 @@ fun ArticlesLists(
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            NewsByKeyword(articlesByKeyword) { article -> onItemClicked(article) }
+            ArticlesByKeyword(articlesByKeyword) { article -> onItemClicked(article) }
             Spacer(modifier = Modifier.height(30.dp))
         }
     }

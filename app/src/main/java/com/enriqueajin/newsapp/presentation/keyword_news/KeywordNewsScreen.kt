@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.home.components.ArticleItem
 import com.enriqueajin.newsapp.presentation.nav_graph.Route
-import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.presentation.keyword_news.components.KeywordNewsTopBarApp
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
 import com.enriqueajin.newsapp.util.DummyDataProvider
@@ -64,7 +64,7 @@ fun KeywordNewsScreen(
                     LazyColumn {
                         items(articles.itemCount) {
                             articles[it]?.let { article ->
-                                NewsListItem(article) { newsItem -> onItemClicked(newsItem) }
+                                ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
                             }
                         }
                         item {

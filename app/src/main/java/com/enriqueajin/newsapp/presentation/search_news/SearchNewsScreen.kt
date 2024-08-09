@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
+import com.enriqueajin.newsapp.presentation.home.components.ArticleItem
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
@@ -121,7 +121,7 @@ fun SearchNewsScreen(
 
                             items(articles.itemCount) { index ->
                                 articles[index]?.let { article ->
-                                    NewsListItem(item = article) { newsItem -> onItemClicked(newsItem) }
+                                    ArticleItem(item = article) { newsItem -> onItemClicked(newsItem) }
                                 }
                             }
                             item {

@@ -2,7 +2,6 @@ package com.enriqueajin.newsapp.presentation.nav_graph
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -33,12 +32,12 @@ import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
 import com.enriqueajin.newsapp.presentation.home.HomeScreen
 import com.enriqueajin.newsapp.presentation.home.HomeViewModel
-import com.enriqueajin.newsapp.presentation.home.components.BottomNav
-import com.enriqueajin.newsapp.presentation.home.components.BottomNavItem
+import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
+import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
-import com.enriqueajin.newsapp.presentation.news_detail.NewsDetailScreen
-import com.enriqueajin.newsapp.presentation.news_detail.NewsDetailViewModel
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailScreen
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailViewModel
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
 import kotlinx.serialization.json.Json
@@ -48,17 +47,17 @@ fun NavGraph() {
 
     val items = remember {
         listOf(
-            BottomNavItem(
+            BottomBarItem(
                 route = Route.Home,
                 selectedIcon = Icons.Filled.Home,
                 unselectedIcon = Icons.Outlined.Home
             ),
-            BottomNavItem(
+            BottomBarItem(
                 route = Route.SearchNews,
                 selectedIcon = Icons.Filled.Search,
                 unselectedIcon = Icons.Outlined.Search
             ),
-            BottomNavItem(
+            BottomBarItem(
                 route = Route.Favorites,
                 selectedIcon = Icons.Filled.Favorite,
                 unselectedIcon = Icons.Default.FavoriteBorder
@@ -86,7 +85,7 @@ fun NavGraph() {
 
     Scaffold(bottomBar = {
         if (isBottomBarVisible) {
-            BottomNav(
+            BottomBar(
                 items = items,
                 selectedItem = selectedItem,
                 onItemClick = { item ->
@@ -140,9 +139,9 @@ fun NavGraph() {
                         }
                     },
                     onItemClicked = { newsItem ->
-                        val newsArg = Json.encodeToString(Article.serializer(), newsItem)
+                        val article = Json.encodeToString(Article.serializer(), newsItem)
                         navigateToDetail(navController) {
-                            Route.NewsDetail(newsArg)
+                            Route.NewsDetail(article)
                         }
                     }
                 )
@@ -156,21 +155,21 @@ fun NavGraph() {
                     event = viewModel::onEvent,
                     args = args,
                     onItemClicked = { newsItem ->
-                        val newsArg = Json.encodeToString(Article.serializer(), newsItem)
+                        val article = Json.encodeToString(Article.serializer(), newsItem)
                         navigateToDetail(navController) {
-                            Route.NewsDetail(newsArg)
+                            Route.NewsDetail(article)
                         }
                     },
                     onBackPressed = { navController.navigateUp() }
                 )
             }
             composable<Route.NewsDetail> {
-                val viewModel: NewsDetailViewModel = hiltViewModel()
+                val viewModel: ArticleDetailViewModel = hiltViewModel()
                 val args = it.toRoute<Route.NewsDetail>()
-                val newsItem = Json.decodeFromString(Article.serializer(), args.newsItem)
+                val article = Json.decodeFromString(Article.serializer(), args.article)
                 val isFavoriteArticle by viewModel.isArticleFavorite.collectAsStateWithLifecycle()
-                NewsDetailScreen(
-                    article = newsItem,
+                ArticleDetailScreen(
+                    article = article,
                     isFavoriteArticle = isFavoriteArticle,
                     event = viewModel::onEvent,
                     onBackPressed = { navController.navigateUp() }
@@ -183,9 +182,9 @@ fun NavGraph() {
                     articles = articles,
                     event = viewModel::onEvent,
                     onItemClicked = { article ->
-                        val newsArg = Json.encodeToString(Article.serializer(), article)
+                        val item = Json.encodeToString(Article.serializer(), article)
                         navigateToDetail(navController) {
-                            Route.NewsDetail(newsArg)
+                            Route.NewsDetail(item)
                         }
                     }
                 )
@@ -199,9 +198,9 @@ fun NavGraph() {
                     searchText = searchText,
                     uiState = uiState,
                     onItemClicked = { article ->
-                        val arg = Json.encodeToString(Article.serializer(), article)
+                        val item = Json.encodeToString(Article.serializer(), article)
                         navigateToDetail(navController) {
-                            Route.NewsDetail(arg)
+                            Route.NewsDetail(item)
                         }
                     }
                 )

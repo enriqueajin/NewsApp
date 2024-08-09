@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components
+package com.enriqueajin.newsapp.presentation.bottom_bar
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -6,10 +6,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 
 @Composable
-fun BottomNav(
-    items: List<BottomNavItem>,
+fun BottomBar(
+    items: List<BottomBarItem>,
     selectedItem: Int,
-    onItemClick: (BottomNavItem) -> Unit
+    onItemClick: (BottomBarItem) -> Unit
 ) {
     NavigationBar {
         items.forEachIndexed { index, item ->

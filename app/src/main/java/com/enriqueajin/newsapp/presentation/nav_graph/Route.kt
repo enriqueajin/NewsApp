@@ -17,5 +17,5 @@ sealed interface Route {
     data class KeywordNews(val keyword: String): Route
 
     @Serializable
-    data class NewsDetail(val newsItem: String): Route
+    data class NewsDetail(val article: String): Route
 }

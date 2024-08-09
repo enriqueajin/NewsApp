@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.chip_group
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.debounce
 
 @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
-fun ChipGroup(
+fun CategoryGroup(
     event: (HomeEvent) -> Unit,
     scrollPosition: Int,
     categories: List<String>,
@@ -64,7 +64,7 @@ fun ChipGroup(
 @Preview(showBackground = true)
 @Composable
 fun ChipGroupPreview() {
-    ChipGroup(
+    CategoryGroup(
         event = {},
         scrollPosition = 0,
         categories = CATEGORIES,

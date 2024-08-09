@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.all_news
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +17,7 @@ import com.enriqueajin.newsapp.util.DummyDataProvider
 import kotlin.math.absoluteValue
 
 @Composable
-fun LatestNewsCarousel(news: List<Article>, onItemClicked: (Article) -> Unit) {
+fun LatestArticlesCarousel(news: List<Article>, onItemClicked: (Article) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
         news.size
     })
@@ -49,13 +49,13 @@ fun LatestNewsCarousel(news: List<Article>, onItemClicked: (Article) -> Unit) {
             )
         }) {
             val item = news[index]
-            LatestNewsItem(item) { article -> onItemClicked(article) }
+            LatestArticlesItem(item) { article -> onItemClicked(article) }
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun NewsCarouselPreview() {
-    LatestNewsCarousel(news = DummyDataProvider.getLatestNewsItems()) {}
+fun LatestArticlesCarouselPreview() {
+    LatestArticlesCarousel(news = DummyDataProvider.getLatestNewsItems()) {}
 }

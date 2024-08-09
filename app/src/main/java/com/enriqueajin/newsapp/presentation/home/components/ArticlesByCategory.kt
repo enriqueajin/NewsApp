@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.keyword_news
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,7 @@ import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun NewsByCategory(
+fun ArticlesByCategory(
     articlesStateFlow: StateFlow<PagingData<Article>>,
     category: String,
     onItemClicked: (Article) -> Unit
@@ -54,7 +54,7 @@ fun NewsByCategory(
 
                         items(articles.itemCount) {
                             articles[it]?.let { article ->
-                                NewsListItem(article) { newsItem -> onItemClicked(newsItem) }
+                                ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
                             }
                         }
 
