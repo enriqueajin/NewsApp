@@ -90,6 +90,9 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.0-beta03")
 
+    // Hilt navigation
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 

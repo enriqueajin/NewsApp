@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -49,9 +48,6 @@ class HomeViewModel @Inject constructor(
         initialValue = HomeUiState.Loading
     )
 
-    private val _selectedTabIndex = MutableStateFlow(0)
-    val selectedTabIndex = _selectedTabIndex.asStateFlow()
-
     val newsByCategory: StateFlow<PagingData<Article>> = localState.flatMapLatest { state ->
         getNewsByCategoryUseCase(category = state.category).cachedIn(viewModelScope)
     }.stateIn(
@@ -73,9 +69,5 @@ class HomeViewModel @Inject constructor(
 
     private fun setScrollPosition(position: Int) {
         localState.value = localState.value.copy(categoriesScrollPosition = position)
-    }
-
-    fun setSelectedTabIndex(index: Int) {
-        _selectedTabIndex.value = index
     }
 }

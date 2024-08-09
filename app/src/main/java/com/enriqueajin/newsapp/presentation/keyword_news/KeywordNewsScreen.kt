@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.Route
+import com.enriqueajin.newsapp.presentation.nav_graph.Route
 import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
 import com.enriqueajin.newsapp.presentation.keyword_news.components.KeywordNewsTopBarApp
 import com.enriqueajin.newsapp.util.Constants.HTTP_ERROR_UPGRADE_REQUIRED
