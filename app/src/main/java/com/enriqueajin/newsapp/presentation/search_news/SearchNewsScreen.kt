@@ -16,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,9 +45,9 @@ fun SearchNewsScreen(
     event: (SearchNewsEvent) -> Unit,
     onItemClicked: (Article) -> Unit,
 ) {
-
     var query by rememberSaveable { mutableStateOf("") }
     val focusRequest = remember { FocusRequester() }
+    var isActive by rememberSaveable { mutableStateOf(true) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
@@ -69,8 +67,11 @@ fun SearchNewsScreen(
         query = query,
         onQueryChange = { text -> query = text },
         onSearch = { keyboardController?.hide() },
-        active = true,
-        onActiveChange = { },
+        active = isActive,
+        onActiveChange = {
+            isActive = it
+            if (!isActive) query = ""
+        },
         placeholder = { Text(text = "Search articles") },
         leadingIcon = {
             Icon(
@@ -81,15 +82,16 @@ fun SearchNewsScreen(
         trailingIcon = {
             Icon(
                 modifier = Modifier.clickable {
-                    query = ""
+                    if (query == "") {
+                        isActive = false
+                    } else {
+                        query = ""
+                    }
                 },
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close Icon"
             )
-        },
-        colors = SearchBarDefaults.colors(
-            containerColor = Color.White
-        )
+        }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             when {
