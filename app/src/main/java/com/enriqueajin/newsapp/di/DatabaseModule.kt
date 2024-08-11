@@ -2,8 +2,8 @@ package com.enriqueajin.newsapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.enriqueajin.newsapp.data.ArticleDao
-import com.enriqueajin.newsapp.data.ArticlesDatabase
+import com.enriqueajin.newsapp.data.local.ArticleDao
+import com.enriqueajin.newsapp.data.local.ArticlesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

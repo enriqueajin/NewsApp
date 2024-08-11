@@ -1,7 +1,7 @@
 package com.enriqueajin.newsapp.domain.use_case
 
 import androidx.paging.PagingData
-import com.enriqueajin.newsapp.data.NewsRepositoryImpl
+import com.enriqueajin.newsapp.data.repository.NewsRepositoryImpl
 import com.enriqueajin.newsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
