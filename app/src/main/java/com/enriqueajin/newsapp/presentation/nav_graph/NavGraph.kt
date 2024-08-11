@@ -1,7 +1,10 @@
 package com.enriqueajin.newsapp.presentation.nav_graph
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -28,16 +31,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailScreen
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailViewModel
+import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
+import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
 import com.enriqueajin.newsapp.presentation.home.HomeScreen
 import com.enriqueajin.newsapp.presentation.home.HomeViewModel
-import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
-import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailScreen
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailViewModel
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
 import kotlinx.serialization.json.Json
@@ -84,7 +87,11 @@ fun NavGraph() {
     }
 
     Scaffold(bottomBar = {
-        if (isBottomBarVisible) {
+        AnimatedVisibility(
+            visible = isBottomBarVisible,
+            enter = slideInVertically(animationSpec = tween(600)) { it },
+            exit = slideOutVertically(animationSpec = tween(600)) { it }
+        ) {
             BottomBar(
                 items = items,
                 selectedItem = selectedItem,
