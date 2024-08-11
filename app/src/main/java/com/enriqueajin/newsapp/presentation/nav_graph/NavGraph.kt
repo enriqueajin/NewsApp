@@ -218,10 +218,8 @@ fun NavGraph() {
 
 private fun navigateToDetail(navController: NavController, routeBuilder: () -> Route) {
     navController.navigate(routeBuilder()) {
-        navController.graph.startDestinationRoute?.let { screenRoute ->
-            launchSingleTop = true
-            restoreState = true
-        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
