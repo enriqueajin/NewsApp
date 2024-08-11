@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.data
+package com.enriqueajin.newsapp.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

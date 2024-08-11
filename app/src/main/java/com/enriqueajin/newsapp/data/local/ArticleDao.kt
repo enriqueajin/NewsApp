@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.data
+package com.enriqueajin.newsapp.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete

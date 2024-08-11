@@ -1,6 +1,6 @@
 package com.enriqueajin.newsapp.domain.model
 
-import com.enriqueajin.newsapp.data.ArticleEntity
+import com.enriqueajin.newsapp.data.local.ArticleEntity
 import kotlinx.serialization.Serializable
 
 @Serializable

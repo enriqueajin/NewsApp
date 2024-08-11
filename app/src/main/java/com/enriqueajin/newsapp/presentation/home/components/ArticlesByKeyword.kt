@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.all_news
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +13,7 @@ import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun NewsByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
+fun ArticlesByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -21,7 +21,7 @@ fun NewsByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
     ) {
         LazyRow {
             items(news) { article ->
-                NewsByKeywordItem(article) { item -> onItemClicked(item) }
+                ArticlesByKeywordItem(article) { item -> onItemClicked(item) }
             }
         }
     }
@@ -29,6 +29,6 @@ fun NewsByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun NewsByKeywordPreview() {
-    NewsByKeyword(news = DummyDataProvider.getAllNewsItems()) {}
+fun ArticlesByKeywordPreview() {
+    ArticlesByKeyword(news = DummyDataProvider.getAllNewsItems()) {}
 }

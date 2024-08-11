@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.news_detail
+package com.enriqueajin.newsapp.presentation.article_detail
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.news_detail.components.NewsDetailsTopBar
+import com.enriqueajin.newsapp.presentation.article_detail.components.NewsDetailsTopBar
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 import com.enriqueajin.newsapp.presentation.ui.theme.Purple80
 import com.enriqueajin.newsapp.util.Constants.NO_AUTHOR
@@ -46,7 +46,7 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun NewsDetailScreen(
+fun ArticleDetailScreen(
     article: Article,
     isFavoriteArticle: Boolean,
     event: (ArticleDetailEvent) -> Unit,
@@ -161,7 +161,7 @@ fun NewsDetailScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NewsDetailScreenPreview() {
-    NewsDetailScreen(
+    ArticleDetailScreen(
         article = DummyDataProvider.getAllNewsItems().first(),
         isFavoriteArticle = true,
         event = {},

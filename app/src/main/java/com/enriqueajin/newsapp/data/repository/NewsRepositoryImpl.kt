@@ -1,9 +1,13 @@
-package com.enriqueajin.newsapp.data
+package com.enriqueajin.newsapp.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.enriqueajin.newsapp.data.local.ArticleDao
+import com.enriqueajin.newsapp.data.local.ArticleEntity
+import com.enriqueajin.newsapp.data.local.toDomain
 import com.enriqueajin.newsapp.data.network.NewsApiClient
+import com.enriqueajin.newsapp.data.network.NewsPagingSource
 import com.enriqueajin.newsapp.data.network.dto.toDomain
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.repository.NewsRepository

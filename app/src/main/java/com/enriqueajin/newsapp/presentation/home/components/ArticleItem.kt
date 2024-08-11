@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.home.components.keyword_news
+package com.enriqueajin.newsapp.presentation.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -33,7 +33,7 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun NewsListItem(item: Article, onItemClicked: (Article) -> Unit) {
+fun ArticleItem(item: Article, onItemClicked: (Article) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,6 +102,6 @@ fun NewsListItem(item: Article, onItemClicked: (Article) -> Unit) {
 }
 @Preview(showBackground = true)
 @Composable
-fun NewsListItemPreview() {
-    NewsListItem(item = DummyDataProvider.getAllNewsItems().first(),) {}
+fun ArticleItemPreview() {
+    ArticleItem(item = DummyDataProvider.getAllNewsItems().first(),) {}
 }

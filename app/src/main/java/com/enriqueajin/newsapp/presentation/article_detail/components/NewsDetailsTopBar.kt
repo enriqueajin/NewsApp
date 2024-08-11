@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.news_detail.components
+package com.enriqueajin.newsapp.presentation.article_detail.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

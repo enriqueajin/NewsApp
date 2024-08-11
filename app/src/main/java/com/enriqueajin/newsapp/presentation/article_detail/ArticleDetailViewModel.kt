@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.news_detail
+package com.enriqueajin.newsapp.presentation.article_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsDetailViewModel @Inject constructor(
+class ArticleDetailViewModel @Inject constructor(
     private val addArticleToFavoritesUseCase: AddArticleToFavoritesUseCase,
     private val deleteArticleFromFavoritesUseCase: DeleteArticleFromFavoritesUseCase,
     private val checkIsArticleFavoriteUseCase: CheckIsArticleFavoriteUseCase

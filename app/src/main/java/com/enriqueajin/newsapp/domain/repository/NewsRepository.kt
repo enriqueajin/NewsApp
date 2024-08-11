@@ -1,7 +1,7 @@
 package com.enriqueajin.newsapp.domain.repository
 
 import androidx.paging.PagingData
-import com.enriqueajin.newsapp.data.ArticleEntity
+import com.enriqueajin.newsapp.data.local.ArticleEntity
 import com.enriqueajin.newsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 

@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.presentation.news_detail
+package com.enriqueajin.newsapp.presentation.article_detail
 
 import com.enriqueajin.newsapp.domain.model.Article
 

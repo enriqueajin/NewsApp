@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.home.components.keyword_news.NewsListItem
+import com.enriqueajin.newsapp.presentation.home.components.ArticleItem
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
@@ -106,7 +106,7 @@ fun FavoriteList(
         } else {
             LazyColumn {
                 items(articles) { article ->
-                    NewsListItem(article) { onItemClicked(article) }
+                    ArticleItem(article) { onItemClicked(article) }
                 }
             }
         }

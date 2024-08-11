@@ -1,8 +1,7 @@
-package com.enriqueajin.newsapp.data
+package com.enriqueajin.newsapp.data.network
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.enriqueajin.newsapp.data.network.NewsApiClient
 import com.enriqueajin.newsapp.data.network.dto.toDomain
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.Constants.PAGE_SIZE
