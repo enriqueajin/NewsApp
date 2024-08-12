@@ -12,10 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enriqueajin.newsapp.presentation.home.HomeEvent
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
+import com.enriqueajin.newsapp.util.TestTags.CATEGORY
+import com.enriqueajin.newsapp.util.TestTags.CATEGORY_GROUP_LAZY_ROW
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -46,13 +49,16 @@ fun CategoryGroup(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 15.dp)
+            .testTag(CATEGORY_GROUP_LAZY_ROW)
     ) {
         items(categories) { category ->
             FilterChip(
                 selected = selected == category,
                 onClick = { onChipSelected(category) },
                 label = { Text(text = category) },
-                modifier = Modifier.padding(horizontal = 5.dp)
+                modifier = Modifier
+                    .padding(horizontal = 5.dp)
+                    .testTag(CATEGORY + categories.indexOf(category))
             )
         }
     }
