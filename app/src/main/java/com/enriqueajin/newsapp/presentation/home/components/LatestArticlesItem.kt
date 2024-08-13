@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,11 +23,16 @@ import com.enriqueajin.newsapp.presentation.ui.theme.Purple80
 import com.enriqueajin.newsapp.util.Constants.NO_DATE
 import com.enriqueajin.newsapp.util.DateUtils
 import com.enriqueajin.newsapp.util.DummyDataProvider.getLatestNewsItems
+import com.enriqueajin.newsapp.util.TestTags.LATEST_ARTICLE_ITEM
 
 @Composable
-fun LatestArticlesItem(article: Article, onItemClicked: (Article) -> Unit) {
+fun LatestArticlesItem(
+    modifier: Modifier,
+    article: Article,
+    onItemClicked: (Article) -> Unit
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
             .clickable { onItemClicked(article) },
@@ -66,5 +72,5 @@ fun LatestArticlesItem(article: Article, onItemClicked: (Article) -> Unit) {
 @Composable
 fun LatestArticlesItemPreview() {
     val item = getLatestNewsItems().first()
-    LatestArticlesItem(item) {}
+    LatestArticlesItem(modifier = Modifier.testTag(LATEST_ARTICLE_ITEM), item) {}
 }
