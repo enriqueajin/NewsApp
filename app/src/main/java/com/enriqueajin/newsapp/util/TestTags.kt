@@ -15,4 +15,8 @@ object TestTags {
     // LatestArticlesCarousel
     const val CAROUSEL_HORIZONTAL_PAGER = "carousel_horizontal_pager"
     const val LATEST_ARTICLE_ITEM = "latest_article_item"
+
+    // ArticlesByKeyword (Home LazyRow)
+    const val ARTICLES_BY_KEYWORD_LAZY_ROW = "articles_by_keyword_lazy_row"
+    const val ARTICLES_BY_KEYWORD_ITEM = "articles_by_keyword_item"
 }

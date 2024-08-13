@@ -7,10 +7,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.DummyDataProvider
+import com.enriqueajin.newsapp.util.TestTags.ARTICLES_BY_KEYWORD_ITEM
+import com.enriqueajin.newsapp.util.TestTags.ARTICLES_BY_KEYWORD_LAZY_ROW
 
 @Composable
 fun ArticlesByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
@@ -19,9 +22,12 @@ fun ArticlesByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
             .fillMaxWidth()
             .padding(start = 30.dp)
     ) {
-        LazyRow {
+        LazyRow(modifier = Modifier.testTag(ARTICLES_BY_KEYWORD_LAZY_ROW)) {
             items(news) { article ->
-                ArticlesByKeywordItem(article) { item -> onItemClicked(item) }
+                ArticlesByKeywordItem(
+                    modifier = Modifier.testTag(ARTICLES_BY_KEYWORD_ITEM + news.indexOf(article)),
+                    article = article
+                ) { item -> onItemClicked(item) }
             }
         }
     }
