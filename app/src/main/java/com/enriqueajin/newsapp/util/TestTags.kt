@@ -26,4 +26,8 @@ object TestTags {
     const val ALL_ARTICLES_ERROR = "all_articles_error"
     const val ALL_ARTICLES_KEYWORD = "all_articles_keyword"
     const val ALL_ARTICLES_SEE_ALL = "all_articles_see_all"
+
+    // Home
+    const val HOME = "home"
+    const val HOME_ARTICLES_BY_CATEGORY = "home_articles_by_category"
 }
