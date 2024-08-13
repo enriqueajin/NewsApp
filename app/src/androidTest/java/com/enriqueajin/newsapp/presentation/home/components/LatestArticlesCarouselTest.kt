@@ -6,11 +6,13 @@ import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.TestTags.CAROUSEL_HORIZONTAL_PAGER
 import com.enriqueajin.newsapp.util.TestTags.LATEST_ARTICLE_ITEM
@@ -104,5 +106,25 @@ class LatestArticlesCarouselTest {
                 composeTestRule.onNodeWithTag(LATEST_ARTICLE_ITEM + (index)).assertIsDisplayed()
             }
         }
+    }
+
+    @Test
+    fun whenOnItemClicked_thenCallbackProvidesCorrectArticle() {
+        val articles = DummyDataProvider.getAllNewsItems()
+        val randomIndex = articles.indices.random()
+        val expectedArticle = articles[randomIndex]
+        var clickedArticle: Article? = null
+
+        composeTestRule.setContent {
+            LatestArticlesCarousel(
+                news = articles,
+                onItemClicked = { article -> clickedArticle = article }
+            )
+        }
+
+        composeTestRule.onNodeWithTag(CAROUSEL_HORIZONTAL_PAGER).performScrollToIndex(randomIndex)
+        composeTestRule.onNodeWithTag(LATEST_ARTICLE_ITEM + randomIndex).performClick()
+
+        assert(clickedArticle == expectedArticle)
     }
 }
