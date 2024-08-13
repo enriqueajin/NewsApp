@@ -19,4 +19,11 @@ object TestTags {
     // ArticlesByKeyword (Home LazyRow)
     const val ARTICLES_BY_KEYWORD_LAZY_ROW = "articles_by_keyword_lazy_row"
     const val ARTICLES_BY_KEYWORD_ITEM = "articles_by_keyword_item"
+
+    // AllArticles (Home)
+    const val ALL_ARTICLES_CIRCULAR_PROGRESS = "all_articles_circular_bar"
+    const val ALL_ARTICLES_ARTICLES_LIST = "all_articles_articles_list"
+    const val ALL_ARTICLES_ERROR = "all_articles_error"
+    const val ALL_ARTICLES_KEYWORD = "all_articles_keyword"
+    const val ALL_ARTICLES_SEE_ALL = "all_articles_see_all"
 }

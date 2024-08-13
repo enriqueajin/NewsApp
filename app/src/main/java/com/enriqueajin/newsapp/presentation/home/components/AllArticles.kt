@@ -15,12 +15,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.HomeUiState
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
+import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_ARTICLES_LIST
+import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_CIRCULAR_PROGRESS
+import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_ERROR
+import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_KEYWORD
+import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_SEE_ALL
 
 @Composable
 fun AllArticles(
@@ -32,7 +38,10 @@ fun AllArticles(
     Box(modifier = Modifier.fillMaxSize()) {
         when (state) {
             HomeUiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator(modifier = Modifier
+                    .align(Alignment.Center)
+                    .testTag(ALL_ARTICLES_CIRCULAR_PROGRESS)
+                )
             }
             is HomeUiState.Success -> {
                 ArticlesLists(
@@ -45,7 +54,12 @@ fun AllArticles(
             }
             is HomeUiState.Error -> {
                 val error = (state as HomeUiState.Error).throwable
-                Text(text = "$error", modifier = Modifier.align(Alignment.Center))
+                Text(
+                    text = "$error",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .testTag(ALL_ARTICLES_ERROR)
+                )
             }
         }
     }
@@ -61,6 +75,7 @@ fun ArticlesLists(
 ) {
     LazyColumn(modifier = Modifier
         .fillMaxSize()
+        .testTag(ALL_ARTICLES_ARTICLES_LIST)
     ) {
         item {
             Text(
@@ -82,7 +97,8 @@ fun ArticlesLists(
                 Text(
                     text = keyword,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.testTag(ALL_ARTICLES_KEYWORD)
                 )
                 Text(
                     text = "See All",
@@ -93,7 +109,8 @@ fun ArticlesLists(
                         .padding(start = 30.dp)
                         .clickable {
                             onSeeAllClicked(keyword)
-                        },
+                        }
+                        .testTag(ALL_ARTICLES_SEE_ALL),
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
