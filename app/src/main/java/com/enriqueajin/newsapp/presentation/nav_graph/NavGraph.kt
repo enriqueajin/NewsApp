@@ -29,7 +29,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
@@ -38,8 +37,7 @@ import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
-import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
-import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
+import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
 import kotlinx.serialization.json.Json
 
 @Composable
@@ -164,18 +162,12 @@ fun NavGraph() {
                 )
             }
             composable<Route.SearchNews> {
-                val viewModel: SearchNewsViewModel = hiltViewModel()
-                val articles = viewModel.articles.collectAsLazyPagingItems()
-                SearchNewsScreen(
-                    articles = articles,
-                    event = viewModel::onEvent,
-                    onItemClicked = { article ->
-                        val item = Json.encodeToString(Article.serializer(), article)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(item)
-                        }
+                SearchNewsRoute { item ->
+                    val article = Json.encodeToString(Article.serializer(), item)
+                    navigateToDetail(navController) {
+                        Route.NewsDetail(article)
                     }
-                )
+                }
             }
             composable<Route.Favorites> {
                 val viewModel: FavoritesViewModel = hiltViewModel()
