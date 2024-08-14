@@ -1,8 +1,9 @@
 package com.enriqueajin.newsapp.presentation.home.components
 
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -78,7 +79,7 @@ class AllArticlesTest {
         }
         composeTestRule.onNodeWithTag(ALL_ARTICLES_KEYWORD)
             .assertIsDisplayed()
-            .assertTextContains(expectedKeyword)
+            .assert(hasText(expectedKeyword))
     }
 
     @Test
