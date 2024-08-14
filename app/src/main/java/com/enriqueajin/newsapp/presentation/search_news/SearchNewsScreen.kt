@@ -43,7 +43,6 @@ internal fun SearchNewsRoute(
         articles = articles,
         query = query,
         onQueryChange = searchNewsViewModel::setQuery,
-        onEmptyQuery = searchNewsViewModel::setQuery,
         onItemClicked = onItemClicked,
     )
 }
@@ -54,7 +53,6 @@ fun SearchNewsScreen(
     articles: LazyPagingItems<Article>,
     query: String,
     onQueryChange: (String) -> Unit,
-    onEmptyQuery: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
 ) {
     val focusRequest = remember { FocusRequester() }
@@ -81,7 +79,7 @@ fun SearchNewsScreen(
         active = isActive,
         onActiveChange = {
             isActive = it
-            if (!isActive) onEmptyQuery("")
+            if (!isActive) onQueryChange("")
         },
         placeholder = { Text(text = "Search articles") },
         leadingIcon = {
@@ -96,7 +94,7 @@ fun SearchNewsScreen(
                     if (query == "") {
                         isActive = false
                     } else {
-                        onEmptyQuery("")
+                        onQueryChange("")
                     }
                 },
                 imageVector = Icons.Default.Close,
@@ -122,7 +120,6 @@ fun SearchNewsScreenPreview(modifier: Modifier = Modifier) {
         articles = DummyDataProvider.getFakeLazyPagingItems(items),
         query = "",
         onQueryChange = {},
-        onEmptyQuery = {},
         onItemClicked = {}
     )
 }
