@@ -23,31 +23,23 @@ class ArticleDetailViewModel @Inject constructor(
     private val _isArticleFavorite = MutableStateFlow(false)
     val isArticleFavorite = _isArticleFavorite.asStateFlow()
 
-    private fun addArticleToFavorites(article: Article) {
+    fun addArticleToFavorites(article: Article) {
         viewModelScope.launch {
             addArticleToFavoritesUseCase(article)
         }
     }
 
-    private fun deleteArticleFromFavorites(article: Article) {
+    fun deleteArticleFromFavorites(article: Article) {
         viewModelScope.launch {
             deleteArticleFromFavoritesUseCase(article)
         }
     }
 
-    private fun checkArticleFavorite(articleId: String) {
+    fun checkArticleFavorite(articleId: String) {
         viewModelScope.launch {
             checkIsArticleFavoriteUseCase(articleId).collectLatest { isFavorite ->
                 _isArticleFavorite.value = isFavorite
             }
-        }
-    }
-
-    fun onEvent(event: ArticleDetailEvent) {
-        when (event) {
-            is ArticleDetailEvent.AddFavorite -> addArticleToFavorites(event.article)
-            is ArticleDetailEvent.DeleteFavorite -> deleteArticleFromFavorites(event.article)
-            is ArticleDetailEvent.CheckIsFavoriteArticle -> checkArticleFavorite(event.articleId)
         }
     }
 }

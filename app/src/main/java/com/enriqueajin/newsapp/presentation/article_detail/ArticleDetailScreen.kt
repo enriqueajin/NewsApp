@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.domain.model.Article
@@ -46,38 +49,55 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
+fun ArticleDetailRoute(
+    articleDetailViewModel: ArticleDetailViewModel = hiltViewModel(),
+    article: Article,
+    onBackPressed: () -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        articleDetailViewModel.checkArticleFavorite(article.url)
+    }
+    val isFavorite by articleDetailViewModel.isArticleFavorite.collectAsStateWithLifecycle()
+
+    ArticleDetailScreen(
+        article = article,
+        isFavoriteArticle = isFavorite,
+        onAddFavoriteArticle = {
+            articleDetailViewModel.addArticleToFavorites(article)
+            articleDetailViewModel.checkArticleFavorite(article.url)
+        },
+        onDeleteFavoriteArticle = {
+            articleDetailViewModel.deleteArticleFromFavorites(article)
+            articleDetailViewModel.checkArticleFavorite(article.url)
+
+        },
+        onBackPressed = onBackPressed
+    )
+}
+
+@Composable
 fun ArticleDetailScreen(
     article: Article,
     isFavoriteArticle: Boolean,
-    event: (ArticleDetailEvent) -> Unit,
+    onAddFavoriteArticle: () -> Unit,
+    onDeleteFavoriteArticle: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        event(ArticleDetailEvent.CheckIsFavoriteArticle(article.url))
-    }
-
     Scaffold(topBar = {
         NewsDetailsTopBar(
-            article = article,
             isFavoriteArticle = isFavoriteArticle,
             onShareArticle = {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
-                intent.putExtra(Intent.EXTRA_TEXT, it.url)
+                intent.putExtra(Intent.EXTRA_TEXT, article.url)
                 intent.type = "text/plain"
                 context.startActivity(intent)
             },
-            onAddFavorite = {
-                event(ArticleDetailEvent.AddFavorite(it))
-                event(ArticleDetailEvent.CheckIsFavoriteArticle(article.url))
-            },
-            onDeleteFavorite = {
-                event(ArticleDetailEvent.DeleteFavorite(it))
-                event(ArticleDetailEvent.CheckIsFavoriteArticle(article.url))
-            },
-            onBackPressed = { onBackPressed() }
+            onAddFavorite = onAddFavoriteArticle,
+            onDeleteFavorite = onDeleteFavoriteArticle,
+            onBackPressed = onBackPressed
         )
     }) {
         Box(modifier = Modifier
@@ -162,9 +182,10 @@ fun ArticleDetailScreen(
 @Composable
 fun NewsDetailScreenPreview() {
     ArticleDetailScreen(
-        article = DummyDataProvider.getAllNewsItems().first(),
+        article = DummyDataProvider.getLatestNewsItems().first() ,
         isFavoriteArticle = true,
-        event = {},
+        onAddFavoriteArticle = {},
+        onDeleteFavoriteArticle = {},
         onBackPressed = {}
     )
 }

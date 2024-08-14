@@ -31,8 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailScreen
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailViewModel
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
@@ -156,15 +155,11 @@ fun NavGraph() {
                     onBackPressed = { navController.navigateUp() }
                 )
             }
-            composable<Route.NewsDetail> {
-                val viewModel: ArticleDetailViewModel = hiltViewModel()
-                val args = it.toRoute<Route.NewsDetail>()
+            composable<Route.NewsDetail> { navBackStackEntry ->
+                val args = navBackStackEntry.toRoute<Route.NewsDetail>()
                 val article = Json.decodeFromString(Article.serializer(), args.article)
-                val isFavoriteArticle by viewModel.isArticleFavorite.collectAsStateWithLifecycle()
-                ArticleDetailScreen(
+                ArticleDetailRoute(
                     article = article,
-                    isFavoriteArticle = isFavoriteArticle,
-                    event = viewModel::onEvent,
                     onBackPressed = { navController.navigateUp() }
                 )
             }
