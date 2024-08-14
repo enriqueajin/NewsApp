@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,11 +28,16 @@ import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.ui.theme.LightGray
 import com.enriqueajin.newsapp.util.DummyDataProvider.getAllNewsItems
+import com.enriqueajin.newsapp.util.TestTags.ARTICLES_BY_KEYWORD_ITEM
 
 @Composable
-fun ArticlesByKeywordItem(article: Article, onItemClicked: (Article) -> Unit) {
+fun ArticlesByKeywordItem(
+    modifier: Modifier,
+    article: Article,
+    onItemClicked: (Article) -> Unit
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(170.dp)
             .height(200.dp)
             .padding(end = 15.dp)
@@ -94,5 +100,8 @@ fun ArticlesByKeywordItem(article: Article, onItemClicked: (Article) -> Unit) {
 @Composable
 fun ArticlesByKeywordItemPreview() {
     val item = getAllNewsItems().first()
-    ArticlesByKeywordItem(item) {}
+    ArticlesByKeywordItem(
+        modifier = Modifier.testTag(ARTICLES_BY_KEYWORD_ITEM),
+        article = item
+    ) {}
 }

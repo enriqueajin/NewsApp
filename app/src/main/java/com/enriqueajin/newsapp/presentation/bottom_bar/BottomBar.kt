@@ -4,6 +4,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import com.enriqueajin.newsapp.util.TestTags.BOTTOM_BAR_ITEM
 
 @Composable
 fun BottomBar(
@@ -22,7 +25,8 @@ fun BottomBar(
                         imageVector = icon,
                         contentDescription = null
                     )
-                }
+                },
+                modifier = Modifier.testTag(BOTTOM_BAR_ITEM + index)
             )
         }
     }
