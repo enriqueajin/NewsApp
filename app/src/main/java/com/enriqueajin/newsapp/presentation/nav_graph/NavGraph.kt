@@ -37,8 +37,7 @@ import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
-import com.enriqueajin.newsapp.presentation.home.HomeScreen
-import com.enriqueajin.newsapp.presentation.home.HomeViewModel
+import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
@@ -131,24 +130,16 @@ fun NavGraph() {
             modifier = Modifier.padding(it)
         ) {
             composable<Route.Home> {
-                val viewModel: HomeViewModel = hiltViewModel()
-                val localState = viewModel.localState.value
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val articlesStateFlow = viewModel.newsByCategory
-                HomeScreen(
-                    event = viewModel::onEvent,
-                    localState = localState,
-                    uiState = uiState,
-                    articlesStateFlow = articlesStateFlow,
+                HomeRoute(
+                    onItemClicked = { item ->
+                        val article = Json.encodeToString(Article.serializer(), item)
+                        navigateToDetail(navController) {
+                            Route.NewsDetail(article)
+                        }
+                    },
                     onSeeAllClicked = { keyword ->
                         navigateToDetail(navController) {
                             Route.KeywordNews(keyword)
-                        }
-                    },
-                    onItemClicked = { newsItem ->
-                        val article = Json.encodeToString(Article.serializer(), newsItem)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(article)
                         }
                     }
                 )

@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.enriqueajin.newsapp.presentation.home.HomeEvent
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.TestTags.CATEGORY
 import com.enriqueajin.newsapp.util.TestTags.CATEGORY_GROUP_LAZY_ROW
@@ -26,11 +25,11 @@ import kotlinx.coroutines.flow.debounce
 @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
 fun CategoryGroup(
-    event: (HomeEvent) -> Unit,
     scrollPosition: Int,
     categories: List<String>,
     selected: String,
     onChipSelected: (String) -> Unit,
+    onCategoryScrollPositionChanged: (Int) -> Unit,
 ) {
     val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
 
@@ -40,7 +39,7 @@ fun CategoryGroup(
         }
             .debounce(500L)
             .collectLatest { index ->
-                event(HomeEvent.UpdateCategoriesScrollPosition(index))
+                onCategoryScrollPositionChanged(index)
             }
     }
 
@@ -68,10 +67,10 @@ fun CategoryGroup(
 @Composable
 fun ChipGroupPreview() {
     CategoryGroup(
-        event = {},
         scrollPosition = 0,
         categories = CATEGORIES,
         selected = "Science",
-        onChipSelected = { _ ->}
+        onChipSelected = { _ ->},
+        onCategoryScrollPositionChanged = {}
     )
 }

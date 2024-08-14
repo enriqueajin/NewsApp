@@ -5,40 +5,58 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.paging.PagingData
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
-import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
+import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.TestTags.HOME
 import com.enriqueajin.newsapp.util.TestTags.HOME_ARTICLES_BY_CATEGORY
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+
+@Composable
+internal fun HomeRoute(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    onItemClicked: (Article) -> Unit,
+    onSeeAllClicked: (String) -> Unit
+) {
+    val localState by homeViewModel.localState.collectAsStateWithLifecycle()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    HomeScreen(
+        localState = localState,
+        uiState = uiState,
+        onCategoryChange = { category -> homeViewModel.localState.update { it.copy(category = category) }},
+        onCategoryScrollPositionChanged = { pos -> homeViewModel.localState.update { it.copy(categoriesScrollPosition = pos) } },
+        onItemClicked = onItemClicked,
+        onSeeAllClicked = onSeeAllClicked,
+    )
+}
 
 @Composable
 fun HomeScreen(
-    event: (HomeEvent) -> Unit,
-    localState: HomeLocalUiState,
+    localState: HomeLocalState,
     uiState: HomeUiState,
-    articlesStateFlow: StateFlow<PagingData<Article>>,
+    onCategoryChange: (String) -> Unit,
+    onCategoryScrollPositionChanged: (Int) -> Unit,
     onSeeAllClicked: (String) -> Unit,
     onItemClicked: (Article) -> Unit
 ) {
     Scaffold(
         topBar = {
             CategoryGroup(
-                event = event,
                 scrollPosition = localState.categoriesScrollPosition,
                 categories = CATEGORIES,
                 selected = localState.category,
-                onChipSelected = { category ->
-                    event(HomeEvent.UpdateCategory(category))
-                },
+                onChipSelected = onCategoryChange,
+                onCategoryScrollPositionChanged = onCategoryScrollPositionChanged,
             )
         }, modifier = Modifier.testTag(HOME)
     ) {
@@ -51,33 +69,35 @@ fun HomeScreen(
                 "All" -> {
                     AllArticles(
                         state = uiState,
-                        onSeeAllClicked = { keyword -> onSeeAllClicked(keyword) },
-                        onItemClicked = { newsItem -> onItemClicked(newsItem) }
+                        onSeeAllClicked = onSeeAllClicked,
+                        onItemClicked = onItemClicked
                     )
                 }
-                else -> ArticlesByCategory(
-                    modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
-                    articlesStateFlow = articlesStateFlow,
-                    category = localState.category,
-                    onItemClicked = { article -> onItemClicked(article) }
-                )
+                else -> {
+                    ArticlesByCategory(
+                        modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
+                        category = localState.category,
+                        onItemClicked = onItemClicked
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true,)
+@Preview(showBackground = true)
 @Composable
 fun HomePreview() {
+    val state = HomeUiState.Success(
+        latestArticles = DummyDataProvider.getLatestNewsItems(),
+        articlesByKeyword = DummyDataProvider.getAllNewsItems(),
+        keyword = "Recipes"
+    )
     HomeScreen(
-        event = {},
-        localState = HomeLocalUiState(),
-        uiState = HomeUiState.Success(
-            latestArticles = DummyDataProvider.getLatestNewsItems(),
-            articlesByKeyword = DummyDataProvider.getAllNewsItems(),
-            keyword = "Recipes"
-        ),
-        articlesStateFlow = MutableStateFlow(PagingData.empty()),
+        localState = HomeLocalState(),
+        uiState = state,
+        onCategoryChange = {},
+        onCategoryScrollPositionChanged = {},
         onSeeAllClicked = {},
         onItemClicked = {}
     )

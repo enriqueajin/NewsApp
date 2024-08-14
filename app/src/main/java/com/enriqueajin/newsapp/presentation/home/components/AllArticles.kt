@@ -45,15 +45,15 @@ fun AllArticles(
             }
             is HomeUiState.Success -> {
                 ArticlesLists(
-                    latestArticles = (state as HomeUiState.Success).latestArticles ?: emptyList(),
-                    articlesByKeyword = (state as HomeUiState.Success).articlesByKeyword ?: emptyList(),
-                    keyword = (state as HomeUiState.Success).keyword ?: "",
-                    onSeeAllClicked = { keyword -> onSeeAllClicked(keyword) },
-                    onItemClicked = { article -> onItemClicked(article) }
+                    latestArticles = state.latestArticles ?: emptyList(),
+                    articlesByKeyword = state.articlesByKeyword ?: emptyList(),
+                    keyword = state.keyword ?: "",
+                    onSeeAllClicked = onSeeAllClicked,
+                    onItemClicked = onItemClicked
                 )
             }
             is HomeUiState.Error -> {
-                val error = (state as HomeUiState.Error).throwable
+                val error = state.throwable
                 Text(
                     text = "$error",
                     modifier = Modifier
@@ -85,7 +85,7 @@ fun ArticlesLists(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            LatestArticlesCarousel(news = latestArticles) { article -> onItemClicked(article) }
+            LatestArticlesCarousel(articles = latestArticles, onItemClicked = onItemClicked)
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier
@@ -114,7 +114,7 @@ fun ArticlesLists(
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            ArticlesByKeyword(articlesByKeyword) { article -> onItemClicked(article) }
+            ArticlesByKeyword(articles = articlesByKeyword, onItemClicked = onItemClicked)
             Spacer(modifier = Modifier.height(30.dp))
         }
     }

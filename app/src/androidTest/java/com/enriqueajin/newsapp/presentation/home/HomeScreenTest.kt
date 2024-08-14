@@ -23,7 +23,7 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 event = {},
-                localState = HomeLocalUiState(),
+                localState = HomeLocalState(),
                 uiState = HomeUiState.Loading,
                 articlesStateFlow = MutableStateFlow(PagingData.empty()),
                 onSeeAllClicked = {},
@@ -43,7 +43,7 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 event = {},
-                localState = HomeLocalUiState(category = "All"),
+                localState = HomeLocalState(category = "All"),
                 uiState = state,
                 articlesStateFlow = MutableStateFlow(PagingData.empty()),
                 onSeeAllClicked = {},
@@ -63,7 +63,7 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 event = {},
-                localState = HomeLocalUiState(category = "All"),
+                localState = HomeLocalState(category = "All"),
                 uiState = state,
                 articlesStateFlow = MutableStateFlow(PagingData.empty()),
                 onSeeAllClicked = {},
@@ -87,7 +87,7 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 event = {},
-                localState = HomeLocalUiState(category = category),
+                localState = HomeLocalState(category = category),
                 uiState = state,
                 articlesStateFlow = MutableStateFlow(PagingData.empty()),
                 onSeeAllClicked = {},
@@ -111,7 +111,7 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 event = {},
-                localState = HomeLocalUiState(category = category),
+                localState = HomeLocalState(category = category),
                 uiState = state,
                 articlesStateFlow = MutableStateFlow(PagingData.empty()),
                 onSeeAllClicked = {},

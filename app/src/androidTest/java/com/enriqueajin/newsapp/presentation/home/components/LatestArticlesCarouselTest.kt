@@ -27,7 +27,7 @@ class LatestArticlesCarouselTest {
     fun isCarouselDisplayed() {
         val articles = DummyDataProvider.getLatestNewsItems()
         composeTestRule.setContent {
-            LatestArticlesCarousel(news = articles, onItemClicked = {})
+            LatestArticlesCarousel(articles = articles, onItemClicked = {})
         }
         composeTestRule.onNodeWithTag(CAROUSEL_HORIZONTAL_PAGER).assertIsDisplayed()
     }
@@ -36,7 +36,7 @@ class LatestArticlesCarouselTest {
     fun checkIsHorizontalPagerScrollable() {
         val articles = DummyDataProvider.getLatestNewsItems()
         composeTestRule.setContent {
-            LatestArticlesCarousel(news = articles, onItemClicked = {})
+            LatestArticlesCarousel(articles = articles, onItemClicked = {})
         }
         composeTestRule.onNodeWithTag(CAROUSEL_HORIZONTAL_PAGER).assert(hasScrollAction())
         composeTestRule.onNodeWithTag(CAROUSEL_HORIZONTAL_PAGER).assert(hasScrollToNodeAction())
@@ -47,7 +47,7 @@ class LatestArticlesCarouselTest {
         val articles = DummyDataProvider.getLatestNewsItems()
 
         composeTestRule.setContent {
-            LatestArticlesCarousel(news = articles, onItemClicked = {})
+            LatestArticlesCarousel(articles = articles, onItemClicked = {})
         }
 
         articles.forEachIndexed { index, _ ->
@@ -61,7 +61,7 @@ class LatestArticlesCarouselTest {
         val articles = DummyDataProvider.getLatestNewsItems()
 
         composeTestRule.setContent {
-            LatestArticlesCarousel(news = articles, onItemClicked = {})
+            LatestArticlesCarousel(articles = articles, onItemClicked = {})
         }
 
         articles.forEachIndexed { index, _ ->
@@ -88,7 +88,7 @@ class LatestArticlesCarouselTest {
         val articles = DummyDataProvider.getLatestNewsItems()
 
         composeTestRule.setContent {
-            LatestArticlesCarousel(news = articles, onItemClicked = {})
+            LatestArticlesCarousel(articles = articles, onItemClicked = {})
         }
 
         for (index in articles.size - 1 downTo  0) {
@@ -117,7 +117,7 @@ class LatestArticlesCarouselTest {
 
         composeTestRule.setContent {
             LatestArticlesCarousel(
-                news = articles,
+                articles = articles,
                 onItemClicked = { article -> clickedArticle = article }
             )
         }
