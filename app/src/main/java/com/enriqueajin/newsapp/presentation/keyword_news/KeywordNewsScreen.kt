@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.PagingStateHandler
 import com.enriqueajin.newsapp.presentation.keyword_news.components.KeywordNewsTopBarApp
@@ -16,18 +18,38 @@ import com.enriqueajin.newsapp.presentation.nav_graph.Route
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun KeywordNewsScreen(
-    articles: LazyPagingItems<Article>,
-    event: (KeywordNewsEvent) -> Unit,
+internal fun KeywordScreenRoute(
+    keywordNewsViewModel: KeywordNewsViewModel = hiltViewModel(),
     args: Route.KeywordNews,
     onItemClicked: (Article) -> Unit,
     onBackPressed: () -> Unit
 ) {
-    LaunchedEffect(args.keyword) {
-        event(KeywordNewsEvent.GetArticlesByKeyword(args.keyword))
+    LaunchedEffect(Unit) {
+        keywordNewsViewModel.setKeyword(args.keyword)
     }
+    val articles = keywordNewsViewModel.articlesByKeyword.collectAsLazyPagingItems()
 
-    Scaffold(topBar = { KeywordNewsTopBarApp(args.keyword) { onBackPressed()} }) {
+    KeywordNewsScreen(
+        articles = articles,
+        args = args,
+        onItemClicked = onItemClicked,
+        onBackPressed = onBackPressed
+    )
+}
+
+@Composable
+fun KeywordNewsScreen(
+    articles: LazyPagingItems<Article>,
+    args: Route.KeywordNews,
+    onItemClicked: (Article) -> Unit,
+    onBackPressed: () -> Unit
+) {
+    Scaffold(topBar = {
+        KeywordNewsTopBarApp(
+            title = args.keyword,
+            onBackPressed = onBackPressed
+        )
+    }) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -35,7 +57,7 @@ fun KeywordNewsScreen(
         ) {
             PagingStateHandler(
                 articles = articles,
-                onItemClicked = { article -> onItemClicked(article)}
+                onItemClicked = onItemClicked
             )
         }
     }
@@ -47,7 +69,6 @@ fun KeywordNewsScreenPreview() {
     val items = DummyDataProvider.getAllNewsItems()
     KeywordNewsScreen(
         articles = DummyDataProvider.getFakeLazyPagingItems(items),
-        event = {},
         args = Route.KeywordNews(keyword = "Recipes"),
         onItemClicked = {},
         onBackPressed = {}

@@ -38,8 +38,7 @@ import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
-import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
-import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
+import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
 import kotlinx.serialization.json.Json
@@ -144,16 +143,12 @@ fun NavGraph() {
                     }
                 )
             }
-            composable<Route.KeywordNews> {
-                val args = it.toRoute<Route.KeywordNews>()
-                val viewModel: KeywordNewsViewModel = hiltViewModel()
-                val articles = viewModel.newsByKeyword.collectAsLazyPagingItems()
-                KeywordNewsScreen(
-                    articles = articles,
-                    event = viewModel::onEvent,
+            composable<Route.KeywordNews> { navBackStackEntry ->
+                val args = navBackStackEntry.toRoute<Route.KeywordNews>()
+                KeywordScreenRoute(
                     args = args,
-                    onItemClicked = { newsItem ->
-                        val article = Json.encodeToString(Article.serializer(), newsItem)
+                    onItemClicked = { item ->
+                        val article = Json.encodeToString(Article.serializer(), item)
                         navigateToDetail(navController) {
                             Route.NewsDetail(article)
                         }
