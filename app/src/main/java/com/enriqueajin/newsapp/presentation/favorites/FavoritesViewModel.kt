@@ -40,13 +40,7 @@ class FavoritesViewModel @Inject constructor(
             initialValue = FavoritesUiState.Loading
         )
 
-    fun onEvent(event: FavoritesEvent) {
-        when (event) {
-            is FavoritesEvent.OnSearchTextChanged -> onSearchTextChange(event.text)
-        }
-    }
-
-    private fun onSearchTextChange(text: String) {
+    fun onSearchTextChange(text: String) {
         _searchText.value = text
     }
 }

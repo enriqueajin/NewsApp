@@ -21,8 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,8 +31,7 @@ import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
-import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
-import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
+import com.enriqueajin.newsapp.presentation.favorites.FavoritesRoute
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
@@ -170,20 +167,12 @@ fun NavGraph() {
                 }
             }
             composable<Route.Favorites> {
-                val viewModel: FavoritesViewModel = hiltViewModel()
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val searchText by viewModel.searchText.collectAsStateWithLifecycle()
-                FavoritesScreen(
-                    event = viewModel::onEvent,
-                    searchText = searchText,
-                    uiState = uiState,
-                    onItemClicked = { article ->
-                        val item = Json.encodeToString(Article.serializer(), article)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(item)
-                        }
+                FavoritesRoute { item ->
+                    val article = Json.encodeToString(Article.serializer(), item)
+                    navigateToDetail(navController) {
+                        Route.NewsDetail(article)
                     }
-                )
+                }
             }
         }
     }
