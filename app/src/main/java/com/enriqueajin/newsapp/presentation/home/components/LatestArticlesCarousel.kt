@@ -20,9 +20,12 @@ import com.enriqueajin.newsapp.util.TestTags.LATEST_ARTICLE_ITEM
 import kotlin.math.absoluteValue
 
 @Composable
-fun LatestArticlesCarousel(news: List<Article>, onItemClicked: (Article) -> Unit) {
+fun LatestArticlesCarousel(
+    articles: List<Article>,
+    onItemClicked: (Article) -> Unit
+) {
     val pagerState = rememberPagerState(pageCount = {
-        news.size
+        articles.size
     })
     HorizontalPager(
         state = pagerState,
@@ -52,11 +55,11 @@ fun LatestArticlesCarousel(news: List<Article>, onItemClicked: (Article) -> Unit
                 fraction = 1f - pageOffset.coerceIn(0f, 1f)
             )
         }) {
-            val item = news[index]
+            val item = articles[index]
             LatestArticlesItem(
                 modifier = Modifier.testTag(LATEST_ARTICLE_ITEM + index),
                 article = item,
-                onItemClicked = { article -> onItemClicked(article) }
+                onItemClicked = onItemClicked
             )
         }
     }
@@ -65,5 +68,5 @@ fun LatestArticlesCarousel(news: List<Article>, onItemClicked: (Article) -> Unit
 @Preview(showBackground = true)
 @Composable
 fun LatestArticlesCarouselPreview() {
-    LatestArticlesCarousel(news = DummyDataProvider.getLatestNewsItems()) {}
+    LatestArticlesCarousel(articles = DummyDataProvider.getLatestNewsItems()) {}
 }

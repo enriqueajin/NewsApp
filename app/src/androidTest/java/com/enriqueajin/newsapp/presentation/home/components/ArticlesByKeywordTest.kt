@@ -25,7 +25,7 @@ class ArticlesByKeywordTest {
         val articles = DummyDataProvider.getAllNewsItems()
 
         composeTestRule.setContent {
-            ArticlesByKeyword(news = articles) { }
+            ArticlesByKeyword(articles = articles) { }
         }
 
         composeTestRule.onNodeWithTag(ARTICLES_BY_KEYWORD_LAZY_ROW).assertIsDisplayed()
@@ -36,7 +36,7 @@ class ArticlesByKeywordTest {
         val articles = DummyDataProvider.getAllNewsItems()
 
         composeTestRule.setContent {
-            ArticlesByKeyword(news = articles) { }
+            ArticlesByKeyword(articles = articles) { }
         }
 
         composeTestRule.onNodeWithTag(ARTICLES_BY_KEYWORD_LAZY_ROW).assert(hasScrollAction())
@@ -48,7 +48,7 @@ class ArticlesByKeywordTest {
         val articles = DummyDataProvider.getAllNewsItems()
 
         composeTestRule.setContent {
-            ArticlesByKeyword(news = articles) { }
+            ArticlesByKeyword(articles = articles) { }
         }
 
         articles.forEachIndexed { index, _ ->
@@ -65,7 +65,7 @@ class ArticlesByKeywordTest {
         var clickedArticle: Article? = null
 
         composeTestRule.setContent {
-            ArticlesByKeyword(news = articles) { article -> clickedArticle = article }
+            ArticlesByKeyword(articles = articles) { article -> clickedArticle = article }
         }
 
         composeTestRule.onNodeWithTag(ARTICLES_BY_KEYWORD_LAZY_ROW).performScrollToIndex(randomIndex)

@@ -18,19 +18,38 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.components.ArticleItem
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
+internal fun FavoritesRoute(
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
+    onItemClicked: (Article) -> Unit,
+) {
+    val uiState by favoritesViewModel.uiState.collectAsStateWithLifecycle()
+    val searchText by favoritesViewModel.searchText.collectAsStateWithLifecycle()
+
+    FavoritesScreen(
+        searchText = searchText,
+        onSearchTextChanged = favoritesViewModel::onSearchTextChange,
+        uiState = uiState,
+        onItemClicked = onItemClicked
+    )
+}
+
+@Composable
 fun FavoritesScreen(
-    event: (FavoritesEvent) -> Unit,
     searchText: String,
+    onSearchTextChanged: (String) -> Unit,
     uiState: FavoritesUiState,
     onItemClicked: (Article) -> Unit
 ) {
@@ -48,9 +67,9 @@ fun FavoritesScreen(
         is FavoritesUiState.Success -> {
             FavoriteList(
                 searchText = searchText,
-                event = event,
                 articles = uiState.favoriteArticles,
-                onItemClicked = { article -> onItemClicked(article) }
+                onSearchTextChanged = onSearchTextChanged,
+                onItemClicked = onItemClicked
             )
         }
     }
@@ -59,8 +78,8 @@ fun FavoritesScreen(
 @Composable
 fun FavoriteList(
     searchText: String,
-    event: (FavoritesEvent) -> Unit,
     articles: List<Article>,
+    onSearchTextChanged: (String) -> Unit,
     onItemClicked: (Article) -> Unit
 ) {
     Column(
@@ -72,9 +91,7 @@ fun FavoriteList(
                 .padding(30.dp),
             shape = RoundedCornerShape(10.dp),
             value = searchText,
-            onValueChange = { text ->
-                event(FavoritesEvent.OnSearchTextChanged(text))
-            },
+            onValueChange = onSearchTextChanged,
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -84,7 +101,7 @@ fun FavoriteList(
             trailingIcon = {
                 Icon(
                     modifier = Modifier.clickable {
-                        event(FavoritesEvent.OnSearchTextChanged(""))
+                        onSearchTextChanged("")
                     },
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close Icon"
@@ -106,7 +123,10 @@ fun FavoriteList(
         } else {
             LazyColumn {
                 items(articles) { article ->
-                    ArticleItem(article) { onItemClicked(article) }
+                    ArticleItem(
+                        article = article,
+                        onItemClicked = onItemClicked
+                    )
                 }
             }
         }
@@ -117,8 +137,8 @@ fun FavoriteList(
 @Composable
 fun FavoritesScreenPreview() {
     FavoritesScreen(
-        event = {},
         searchText = "",
+        onSearchTextChanged = {},
         uiState = FavoritesUiState.Success(DummyDataProvider.getAllNewsItems()),
         onItemClicked = {}
     )

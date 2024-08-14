@@ -24,50 +24,40 @@ class HomeViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
-    var localState = MutableStateFlow(HomeLocalUiState())
+    var localState = MutableStateFlow(HomeLocalState())
 
     private val latestArticles: Flow<List<Article>> = getNewsByCategoryUseCase.getArticlesByCategory()
-    private val articlesByKeyword: Flow<List<Article>> = getNewsByKeywordUseCase.getArticlesByKeyword(keyword = localState.value.keyword)
+    private val articlesByKeyword: Flow<List<Article>> =
+        localState.flatMapLatest { state ->
+            getNewsByKeywordUseCase.getArticlesByKeyword(keyword = state.keyword)
+        }
 
     val uiState: StateFlow<HomeUiState> = combine(
         localState,
         latestArticles,
         articlesByKeyword
-    ) { state, latestArticles, articlesByKeyword ->
+    ) { local, latestArticles, articlesByKeyword ->
         HomeUiState.Success(
             latestArticles = latestArticles,
             articlesByKeyword = articlesByKeyword,
-            category = state.category,
-            keyword = state.keyword
+            category = local.category,
+            keyword = local.keyword
         )
     }.catch {
         HomeUiState.Error(it)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = HomeUiState.Loading
     )
 
-    val newsByCategory: StateFlow<PagingData<Article>> = localState.flatMapLatest { state ->
-        getNewsByCategoryUseCase(category = state.category).cachedIn(viewModelScope)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = PagingData.empty()
-    )
-
-    fun onEvent(event: HomeEvent) {
-        when (event) {
-            is HomeEvent.UpdateCategory -> updateCategory(event.category)
-            is HomeEvent.UpdateCategoriesScrollPosition -> setScrollPosition(event.position)
-        }
-    }
-
-    private fun updateCategory(category: String) {
-        localState.value = localState.value.copy(category = category)
-    }
-
-    private fun setScrollPosition(position: Int) {
-        localState.value = localState.value.copy(categoriesScrollPosition = position)
-    }
+    // Handled separately since works upon the user interaction with categories
+    val newsByCategory: StateFlow<PagingData<Article>> =
+        localState.flatMapLatest { state ->
+            getNewsByCategoryUseCase(category = state.category).cachedIn(viewModelScope)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = PagingData.empty()
+        )
 }

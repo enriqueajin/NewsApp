@@ -23,19 +23,38 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.PagingStateHandler
 import com.enriqueajin.newsapp.util.DummyDataProvider
+
+@Composable
+internal fun SearchNewsRoute(
+    searchNewsViewModel: SearchNewsViewModel = hiltViewModel(),
+    onItemClicked: (Article) -> Unit,
+) {
+    val articles = searchNewsViewModel.searchedArticles.collectAsLazyPagingItems()
+    val query by searchNewsViewModel.query.collectAsStateWithLifecycle()
+
+    SearchNewsScreen(
+        articles = articles,
+        query = query,
+        onQueryChange = searchNewsViewModel::setQuery,
+        onItemClicked = onItemClicked,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchNewsScreen(
     articles: LazyPagingItems<Article>,
-    event: (SearchNewsEvent) -> Unit,
+    query: String,
+    onQueryChange: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
     val focusRequest = remember { FocusRequester() }
     var isActive by rememberSaveable { mutableStateOf(true) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -46,7 +65,7 @@ fun SearchNewsScreen(
 
     LaunchedEffect(query) {
         if (query.isNotBlank()) {
-            event(SearchNewsEvent.OnQueryNews(query))
+            onQueryChange(query)
         }
     }
 
@@ -55,12 +74,12 @@ fun SearchNewsScreen(
             .fillMaxWidth()
             .focusRequester(focusRequest),
         query = query,
-        onQueryChange = { text -> query = text },
+        onQueryChange = onQueryChange,
         onSearch = { keyboardController?.hide() },
         active = isActive,
         onActiveChange = {
             isActive = it
-            if (!isActive) query = ""
+            if (!isActive) onQueryChange("")
         },
         placeholder = { Text(text = "Search articles") },
         leadingIcon = {
@@ -75,7 +94,7 @@ fun SearchNewsScreen(
                     if (query == "") {
                         isActive = false
                     } else {
-                        query = ""
+                        onQueryChange("")
                     }
                 },
                 imageVector = Icons.Default.Close,
@@ -86,7 +105,7 @@ fun SearchNewsScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             PagingStateHandler(
                 articles = articles,
-                onItemClicked = { article -> onItemClicked(article) },
+                onItemClicked = onItemClicked,
                 query = query
             )
         }
@@ -99,7 +118,8 @@ fun SearchNewsScreenPreview(modifier: Modifier = Modifier) {
     val items = DummyDataProvider.getAllNewsItems()
     SearchNewsScreen(
         articles = DummyDataProvider.getFakeLazyPagingItems(items),
-        event = {},
+        query = "",
+        onQueryChange = {},
         onItemClicked = {}
     )
 }

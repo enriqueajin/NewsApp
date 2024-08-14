@@ -16,18 +16,22 @@ import com.enriqueajin.newsapp.util.TestTags.ARTICLES_BY_KEYWORD_ITEM
 import com.enriqueajin.newsapp.util.TestTags.ARTICLES_BY_KEYWORD_LAZY_ROW
 
 @Composable
-fun ArticlesByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
+fun ArticlesByKeyword(
+    articles: List<Article>,
+    onItemClicked: (Article) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 30.dp)
     ) {
         LazyRow(modifier = Modifier.testTag(ARTICLES_BY_KEYWORD_LAZY_ROW)) {
-            items(news) { article ->
+            items(articles) { article ->
                 ArticlesByKeywordItem(
-                    modifier = Modifier.testTag(ARTICLES_BY_KEYWORD_ITEM + news.indexOf(article)),
-                    article = article
-                ) { item -> onItemClicked(item) }
+                    modifier = Modifier.testTag(ARTICLES_BY_KEYWORD_ITEM + articles.indexOf(article)),
+                    article = article,
+                    onItemClicked = onItemClicked
+                )
             }
         }
     }
@@ -36,5 +40,5 @@ fun ArticlesByKeyword(news: List<Article>, onItemClicked: (Article) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ArticlesByKeywordPreview() {
-    ArticlesByKeyword(news = DummyDataProvider.getAllNewsItems()) {}
+    ArticlesByKeyword(articles = DummyDataProvider.getAllNewsItems()) {}
 }

@@ -33,15 +33,15 @@ import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
 
 @Composable
-fun ArticleItem(item: Article, onItemClicked: (Article) -> Unit) {
+fun ArticleItem(article: Article, onItemClicked: (Article) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp)
-            .clickable { onItemClicked(item) }
+            .clickable { onItemClicked(article) }
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            if (item.urlToImage == null) {
+            if (article.urlToImage == null) {
                 Image(
                     painter = painterResource(id = R.drawable.no_image_available),
                     contentDescription = null,
@@ -53,7 +53,7 @@ fun ArticleItem(item: Article, onItemClicked: (Article) -> Unit) {
 
             } else {
                 AsyncImage(
-                    model = item.urlToImage,
+                    model = article.urlToImage,
                     contentDescription = null,
                     modifier = Modifier
                         .size(110.dp)
@@ -70,7 +70,7 @@ fun ArticleItem(item: Article, onItemClicked: (Article) -> Unit) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = item.title ?: NO_TITLE,
+                    text = article.title ?: NO_TITLE,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                     maxLines = 3
@@ -79,13 +79,13 @@ fun ArticleItem(item: Article, onItemClicked: (Article) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = item.author ?: NO_AUTHOR,
+                        text = article.author ?: NO_AUTHOR,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
                         color = DarkGray
                     )
                     Text(
-                        text = formatDate(item.publishedAt ?: NO_DATE),
+                        text = formatDate(article.publishedAt ?: NO_DATE),
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
                         color = DarkGray
@@ -103,5 +103,5 @@ fun ArticleItem(item: Article, onItemClicked: (Article) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ArticleItemPreview() {
-    ArticleItem(item = DummyDataProvider.getAllNewsItems().first(),) {}
+    ArticleItem(article = DummyDataProvider.getAllNewsItems().first(),) {}
 }

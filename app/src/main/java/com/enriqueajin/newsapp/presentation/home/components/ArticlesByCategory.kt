@@ -5,23 +5,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.paging.PagingData
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.PagingStateHandler
-import kotlinx.coroutines.flow.StateFlow
+import com.enriqueajin.newsapp.presentation.home.HomeViewModel
 
 @Composable
 fun ArticlesByCategory(
+    homeViewModel: HomeViewModel = hiltViewModel(),
     modifier:  Modifier,
-    articlesStateFlow: StateFlow<PagingData<Article>>,
     category: String,
     onItemClicked: (Article) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         // Reset LazyPagingItems state when category changes
         key(category) {
-            val articles = articlesStateFlow.collectAsLazyPagingItems()
+            val articles = homeViewModel.newsByCategory.collectAsLazyPagingItems()
             PagingStateHandler(
                 articles = articles,
                 onItemClicked = { article -> onItemClicked(article) }

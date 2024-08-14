@@ -21,28 +21,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailScreen
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailViewModel
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
-import com.enriqueajin.newsapp.presentation.favorites.FavoritesScreen
-import com.enriqueajin.newsapp.presentation.favorites.FavoritesViewModel
-import com.enriqueajin.newsapp.presentation.home.HomeScreen
-import com.enriqueajin.newsapp.presentation.home.HomeViewModel
-import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsScreen
-import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsViewModel
-import com.enriqueajin.newsapp.presentation.search_news.SearchNewsScreen
-import com.enriqueajin.newsapp.presentation.search_news.SearchNewsViewModel
+import com.enriqueajin.newsapp.presentation.favorites.FavoritesRoute
+import com.enriqueajin.newsapp.presentation.home.HomeRoute
+import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
+import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
 import kotlinx.serialization.json.Json
 
 @Composable
@@ -131,38 +123,26 @@ fun NavGraph() {
             modifier = Modifier.padding(it)
         ) {
             composable<Route.Home> {
-                val viewModel: HomeViewModel = hiltViewModel()
-                val localState = viewModel.localState.value
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val articlesStateFlow = viewModel.newsByCategory
-                HomeScreen(
-                    event = viewModel::onEvent,
-                    localState = localState,
-                    uiState = uiState,
-                    articlesStateFlow = articlesStateFlow,
+                HomeRoute(
+                    onItemClicked = { item ->
+                        val article = Json.encodeToString(Article.serializer(), item)
+                        navigateToDetail(navController) {
+                            Route.NewsDetail(article)
+                        }
+                    },
                     onSeeAllClicked = { keyword ->
                         navigateToDetail(navController) {
                             Route.KeywordNews(keyword)
                         }
-                    },
-                    onItemClicked = { newsItem ->
-                        val article = Json.encodeToString(Article.serializer(), newsItem)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(article)
-                        }
                     }
                 )
             }
-            composable<Route.KeywordNews> {
-                val args = it.toRoute<Route.KeywordNews>()
-                val viewModel: KeywordNewsViewModel = hiltViewModel()
-                val articles = viewModel.newsByKeyword.collectAsLazyPagingItems()
-                KeywordNewsScreen(
-                    articles = articles,
-                    event = viewModel::onEvent,
+            composable<Route.KeywordNews> { navBackStackEntry ->
+                val args = navBackStackEntry.toRoute<Route.KeywordNews>()
+                KeywordScreenRoute(
                     args = args,
-                    onItemClicked = { newsItem ->
-                        val article = Json.encodeToString(Article.serializer(), newsItem)
+                    onItemClicked = { item ->
+                        val article = Json.encodeToString(Article.serializer(), item)
                         navigateToDetail(navController) {
                             Route.NewsDetail(article)
                         }
@@ -170,47 +150,29 @@ fun NavGraph() {
                     onBackPressed = { navController.navigateUp() }
                 )
             }
-            composable<Route.NewsDetail> {
-                val viewModel: ArticleDetailViewModel = hiltViewModel()
-                val args = it.toRoute<Route.NewsDetail>()
+            composable<Route.NewsDetail> { navBackStackEntry ->
+                val args = navBackStackEntry.toRoute<Route.NewsDetail>()
                 val article = Json.decodeFromString(Article.serializer(), args.article)
-                val isFavoriteArticle by viewModel.isArticleFavorite.collectAsStateWithLifecycle()
-                ArticleDetailScreen(
+                ArticleDetailRoute(
                     article = article,
-                    isFavoriteArticle = isFavoriteArticle,
-                    event = viewModel::onEvent,
                     onBackPressed = { navController.navigateUp() }
                 )
             }
             composable<Route.SearchNews> {
-                val viewModel: SearchNewsViewModel = hiltViewModel()
-                val articles = viewModel.articles.collectAsLazyPagingItems()
-                SearchNewsScreen(
-                    articles = articles,
-                    event = viewModel::onEvent,
-                    onItemClicked = { article ->
-                        val item = Json.encodeToString(Article.serializer(), article)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(item)
-                        }
+                SearchNewsRoute { item ->
+                    val article = Json.encodeToString(Article.serializer(), item)
+                    navigateToDetail(navController) {
+                        Route.NewsDetail(article)
                     }
-                )
+                }
             }
             composable<Route.Favorites> {
-                val viewModel: FavoritesViewModel = hiltViewModel()
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val searchText by viewModel.searchText.collectAsStateWithLifecycle()
-                FavoritesScreen(
-                    event = viewModel::onEvent,
-                    searchText = searchText,
-                    uiState = uiState,
-                    onItemClicked = { article ->
-                        val item = Json.encodeToString(Article.serializer(), article)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(item)
-                        }
+                FavoritesRoute { item ->
+                    val article = Json.encodeToString(Article.serializer(), item)
+                    navigateToDetail(navController) {
+                        Route.NewsDetail(article)
                     }
-                )
+                }
             }
         }
     }

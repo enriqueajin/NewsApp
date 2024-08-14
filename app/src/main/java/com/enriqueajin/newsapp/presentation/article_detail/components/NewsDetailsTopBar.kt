@@ -13,35 +13,33 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.enriqueajin.newsapp.domain.model.Article
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsDetailsTopBar(
-    article: Article,
     isFavoriteArticle: Boolean,
-    onShareArticle: (Article) -> Unit,
-    onAddFavorite: (Article) -> Unit,
-    onDeleteFavorite: (Article) -> Unit,
+    onShareArticle: () -> Unit,
+    onAddFavorite: () -> Unit,
+    onDeleteFavorite: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
         modifier = Modifier.padding(horizontal = 13.dp),
         title = { },
         navigationIcon = {
-            IconButton(onClick = { onBackPressed() }) {
+            IconButton(onClick = onBackPressed) {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
             }
         },
         actions = {
-            IconButton(onClick = { onShareArticle(article) }) {
+            IconButton(onClick = onShareArticle) {
                 Icon(imageVector = Icons.Default.Share, contentDescription = null)
             }
             IconButton(onClick = {
                 if (isFavoriteArticle) {
-                    onDeleteFavorite(article)
+                    onDeleteFavorite()
                 } else {
-                    onAddFavorite(article)
+                    onAddFavorite()
                 }
             }) {
                 val icon = if (isFavoriteArticle) Icons.Default.Favorite else Icons.Default.FavoriteBorder
