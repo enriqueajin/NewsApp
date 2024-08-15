@@ -28,11 +28,11 @@ class CategoryGroupTest {
     fun checkCategoryGroupIsScrollable() {
         composeTestRule.setContent {
             CategoryGroup(
-                event = {},
                 scrollPosition = 0,
                 categories = categories,
                 selected = selected,
-                onChipSelected = { category -> selected = category }
+                onChipSelected = { category -> selected = category },
+                onCategoryScrollPositionChanged = {}
             )
         }
         composeTestRule.onNodeWithTag(CATEGORY_GROUP_LAZY_ROW).assert(hasScrollAction())
@@ -43,11 +43,11 @@ class CategoryGroupTest {
         composeTestRule.setContent {
             NewsAppTheme {
                 CategoryGroup(
-                    event = {},
                     scrollPosition = 0,
                     categories = categories,
                     selected = selected,
-                    onChipSelected = { category -> selected = category }
+                    onChipSelected = { category -> selected = category },
+                    onCategoryScrollPositionChanged = {}
                 )
             }
         }
@@ -77,11 +77,11 @@ class CategoryGroupTest {
         composeTestRule.setContent {
             NewsAppTheme {
                 CategoryGroup(
-                    event = {},
                     scrollPosition = 0,
                     categories = categories,
                     selected = selected,
-                    onChipSelected = { category -> selected = category }
+                    onChipSelected = { category -> selected = category },
+                    onCategoryScrollPositionChanged = {}
                 )
             }
         }

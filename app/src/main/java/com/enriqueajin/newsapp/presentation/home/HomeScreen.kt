@@ -6,11 +6,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
@@ -29,10 +34,13 @@ internal fun HomeRoute(
 ) {
     val localState by homeViewModel.localState.collectAsStateWithLifecycle()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    var articlesByCategory by rememberSaveable { mutableStateOf<LazyPagingItems<Article>?>(null) }
 
     HomeScreen(
         localState = localState,
         uiState = uiState,
+        articlesByCategory = articlesByCategory,
+        onCollectArticlesByCategory = { articlesByCategory = homeViewModel.newsByCategory.collectAsLazyPagingItems() },
         onCategoryChange = { category -> homeViewModel.localState.update { it.copy(category = category) }},
         onCategoryScrollPositionChanged = { pos -> homeViewModel.localState.update { it.copy(categoriesScrollPosition = pos) } },
         onItemClicked = onItemClicked,
@@ -44,6 +52,8 @@ internal fun HomeRoute(
 fun HomeScreen(
     localState: HomeLocalState,
     uiState: HomeUiState,
+    articlesByCategory: LazyPagingItems<Article>?,
+    onCollectArticlesByCategory: @Composable () -> Unit,
     onCategoryChange: (String) -> Unit,
     onCategoryScrollPositionChanged: (Int) -> Unit,
     onSeeAllClicked: (String) -> Unit,
@@ -77,6 +87,8 @@ fun HomeScreen(
                     ArticlesByCategory(
                         modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
                         category = localState.category,
+                        articles = articlesByCategory,
+                        onCollectArticlesByCategory = onCollectArticlesByCategory,
                         onItemClicked = onItemClicked
                     )
                 }
@@ -96,6 +108,8 @@ fun HomePreview() {
     HomeScreen(
         localState = HomeLocalState(),
         uiState = state,
+        articlesByCategory = DummyDataProvider.getFakeLazyPagingItems(data = DummyDataProvider.getAllNewsItems()),
+        onCollectArticlesByCategory = {},
         onCategoryChange = {},
         onCategoryScrollPositionChanged = {},
         onSeeAllClicked = {},
