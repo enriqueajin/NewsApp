@@ -1,4 +1,4 @@
-package com.enriqueajin.newsapp.ui.theme
+package com.enriqueajin.newsapp.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
