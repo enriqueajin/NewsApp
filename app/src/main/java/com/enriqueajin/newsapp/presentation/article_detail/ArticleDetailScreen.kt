@@ -34,7 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.domain.model.Article
@@ -58,6 +61,21 @@ fun ArticleDetailRoute(
         articleDetailViewModel.checkArticleFavorite(article.url)
     }
     val isFavorite by articleDetailViewModel.isArticleFavorite.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            articleDetailViewModel.events.collect { event ->
+                when (event) {
+                    is UserEvent.Error -> {
+                        val error = event.error.asString(context)
+                        articleDetailViewModel.showSnackbar(error)
+                    }
+                }
+            }
+        }
+    }
 
     ArticleDetailScreen(
         article = article,

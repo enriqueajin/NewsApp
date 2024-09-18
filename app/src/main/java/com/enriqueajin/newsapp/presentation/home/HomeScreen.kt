@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.update
 internal fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     onItemClicked: (Article) -> Unit,
-    onSeeAllClicked: (String) -> Unit
+    onSeeAllClicked: (String) -> Unit,
 ) {
     val localState by homeViewModel.localState.collectAsStateWithLifecycle()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -45,6 +45,7 @@ internal fun HomeRoute(
         onCategoryScrollPositionChanged = { pos -> homeViewModel.localState.update { it.copy(categoriesScrollPosition = pos) } },
         onItemClicked = onItemClicked,
         onSeeAllClicked = onSeeAllClicked,
+        onRetry = { homeViewModel.retryFetchingArticles() }
     )
 }
 
@@ -57,7 +58,8 @@ fun HomeScreen(
     onCategoryChange: (String) -> Unit,
     onCategoryScrollPositionChanged: (Int) -> Unit,
     onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (Article) -> Unit
+    onItemClicked: (Article) -> Unit,
+    onRetry: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -80,7 +82,8 @@ fun HomeScreen(
                     AllArticles(
                         state = uiState,
                         onSeeAllClicked = onSeeAllClicked,
-                        onItemClicked = onItemClicked
+                        onItemClicked = onItemClicked,
+                        onRetry = onRetry,
                     )
                 }
                 else -> {
@@ -113,6 +116,7 @@ fun HomePreview() {
         onCategoryChange = {},
         onCategoryScrollPositionChanged = {},
         onSeeAllClicked = {},
-        onItemClicked = {}
+        onItemClicked = {},
+        onRetry = {}
     )
 }

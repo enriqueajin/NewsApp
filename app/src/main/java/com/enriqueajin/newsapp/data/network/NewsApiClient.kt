@@ -2,6 +2,7 @@ package com.enriqueajin.newsapp.data.network
 
 import com.enriqueajin.newsapp.BuildConfig
 import com.enriqueajin.newsapp.data.network.response.NewsResponse
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Query
 

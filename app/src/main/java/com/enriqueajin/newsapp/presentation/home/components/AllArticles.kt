@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ fun AllArticles(
     state: HomeUiState,
     onSeeAllClicked: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
+    onRetry: () -> Unit,
 ) {
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -53,13 +55,16 @@ fun AllArticles(
                 )
             }
             is HomeUiState.Error -> {
-                val error = state.throwable
+                val error = state.error.asString()
                 Text(
-                    text = "$error",
+                    text = error,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .testTag(ALL_ARTICLES_ERROR)
                 )
+                Button(onClick = onRetry) {
+                    Text(text = "Retry")
+                }
             }
         }
     }

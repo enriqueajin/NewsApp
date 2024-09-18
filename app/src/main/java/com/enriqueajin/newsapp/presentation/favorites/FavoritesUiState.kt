@@ -1,6 +1,7 @@
 package com.enriqueajin.newsapp.presentation.favorites
 
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.UiText
 
 sealed interface FavoritesUiState {
 
@@ -8,5 +9,5 @@ sealed interface FavoritesUiState {
 
     data class Success(val favoriteArticles: List<Article>): FavoritesUiState
 
-    data class Error(val throwable: Throwable): FavoritesUiState
+    data class Error(val error: UiText): FavoritesUiState
 }

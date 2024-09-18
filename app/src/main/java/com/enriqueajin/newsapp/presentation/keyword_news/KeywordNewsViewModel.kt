@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.domain.use_case.GetPagedNewsByKeywordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class KeywordNewsViewModel @Inject constructor(
-    private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
+    private val getNewsByKeywordUseCase: GetPagedNewsByKeywordUseCase
 ): ViewModel() {
 
     private val _keyword = MutableStateFlow("")

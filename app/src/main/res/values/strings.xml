@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">NewsApp</string>
+    <string name="the_request_timed_out">The request timed out.</string>
+    <string name="youve_hit_your_rate_limit">You\'ve done too many requests.</string>
+    <string name="no_internet">You got no internet access.</string>
+    <string name="server_error">There was a server error.</string>
+    <string name="error_serialization">There was a serialization error.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
+    <string name="unauthorized">You got no authorization for this operation.</string>
+    <string name="conflict">Error. A conflict was found.</string>
+    <string name="upgrade_required">Too many requests. You need to upgrade your plan.</string>
+    <string name="constraint_violation">There was a constraint violation in the database.</string>
+    <string name="database_corrupted">The database is corrupted.</string>
+    <string name="storage_full">The phone\'s storage is full.</string>
+    <string name="unknown_database">Unknown database error.</string>
+    <string name="unknown_host">Unable to resolve the host.</string>
 </resources>

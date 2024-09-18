@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,10 +54,14 @@ fun FavoritesScreen(
     uiState: FavoritesUiState,
     onItemClicked: (Article) -> Unit
 ) {
+    val context = LocalContext.current
     when (uiState) {
         is FavoritesUiState.Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                Text(text = "${uiState.throwable}", modifier = Modifier.align(Alignment.Center))
+                Text(
+                    text = uiState.error.asString(context),
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
         FavoritesUiState.Loading -> {

@@ -6,13 +6,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
+import com.enriqueajin.newsapp.domain.model.Article
 
 @Dao
 interface ArticleDao {
 
     @Query("SELECT * FROM ArticleEntity")
-    fun getFavorites(): Flow<List<ArticleEntity>>
+    suspend fun getFavorites(): List<Article>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addArticle(article: ArticleEntity)
@@ -24,5 +24,5 @@ interface ArticleDao {
     suspend fun deleteArticle(article: ArticleEntity)
 
     @Query("SELECT COUNT(*) FROM ArticleEntity where url = :id")
-    fun checkIsArticleFavorite(id: String): Flow<Int>
+    suspend fun checkIsArticleFavorite(id: String): Int
 }
