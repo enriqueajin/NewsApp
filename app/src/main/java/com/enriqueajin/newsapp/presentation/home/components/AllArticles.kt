@@ -3,6 +3,7 @@ package com.enriqueajin.newsapp.presentation.home.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,7 +37,6 @@ fun AllArticles(
     onItemClicked: (Article) -> Unit,
     onRetry: () -> Unit,
 ) {
-
     Box(modifier = Modifier.fillMaxSize()) {
         when (state) {
             HomeUiState.Loading -> {
@@ -56,14 +56,19 @@ fun AllArticles(
             }
             is HomeUiState.Error -> {
                 val error = state.error.asString()
-                Text(
-                    text = error,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .testTag(ALL_ARTICLES_ERROR)
-                )
-                Button(onClick = onRetry) {
-                    Text(text = "Retry")
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = error,
+                        modifier = Modifier
+                            .testTag(ALL_ARTICLES_ERROR)
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Button(onClick = onRetry) {
+                        Text(text = "Retry")
+                    }
                 }
             }
         }

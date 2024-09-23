@@ -47,7 +47,7 @@ import kotlinx.serialization.json.Json
 @Composable
 fun NavGraph() {
 
-    val items = remember {
+    val items = rememberSaveable {
         listOf(
             BottomBarItem(
                 route = Route.Home,

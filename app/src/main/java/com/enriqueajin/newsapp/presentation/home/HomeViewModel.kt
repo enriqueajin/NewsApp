@@ -30,7 +30,18 @@ class HomeViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
+    fun onEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.OnCategoryChange -> onCategoryChange(event.category)
+            is HomeEvent.OnCategoryScrollPositionChange -> onCategoryScrollPositionChange(event.scrollPosition)
+            HomeEvent.OnRetry -> retryFetchingArticles()
+        }
+    }
+
     var localState = MutableStateFlow(HomeLocalState())
+
+    // StateFlow that increases by 1 to trigger the retry
+    private val retryTrigger = MutableStateFlow(0)
 
     private val latestArticles: Flow<Result<List<Article>, DataError.Network>> = getNewsByCategoryUseCase()
 
@@ -39,12 +50,6 @@ class HomeViewModel @Inject constructor(
         localState.flatMapLatest { state ->
             getNewsByKeywordUseCase(keyword = state.keyword)
         }
-
-    private val retryTrigger = MutableStateFlow(0)
-
-    fun retryFetchingArticles() {
-        retryTrigger.update { it + 1 }
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<HomeUiState> =
@@ -66,7 +71,9 @@ class HomeViewModel @Inject constructor(
                     }
                     else -> {
                         when {
-                            latestArticles is Result.Error -> HomeUiState.Error(latestArticles.error.asUiText())
+                            latestArticles is Result.Error -> {
+                                HomeUiState.Error(latestArticles.error.asUiText())
+                            }
                             else -> {
                                 val error = (articlesByKeyword as Result.Error).error.asUiText()
                                 HomeUiState.Error(error)
@@ -78,17 +85,34 @@ class HomeViewModel @Inject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeUiState.Loading)
-
+            initialValue = HomeUiState.Loading
+        )
 
     // Handled separately since works upon the user interaction with categories
     @OptIn(ExperimentalCoroutinesApi::class)
     val newsByCategory: StateFlow<PagingData<Article>> =
         localState.flatMapLatest { state ->
-            getPagedNewsByCategoryUseCase(category = state.category).cachedIn(viewModelScope)
+            getPagedNewsByCategoryUseCase(category = state.category)
+                .cachedIn(viewModelScope)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = PagingData.empty()
         )
+
+    private fun retryFetchingArticles() {
+        retryTrigger.update { it + 1 }
+    }
+
+    private fun onCategoryChange(category: String) {
+        localState.update {
+            it.copy(category = category)
+        }
+    }
+
+    private fun onCategoryScrollPositionChange(scrollPosition: Int) {
+        localState.update {
+            it.copy(categoriesScrollPosition = scrollPosition)
+        }
+    }
 }

@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +21,6 @@ import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.TestTags.HOME
 import com.enriqueajin.newsapp.util.TestTags.HOME_ARTICLES_BY_CATEGORY
-import kotlinx.coroutines.flow.update
 
 @Composable
 internal fun HomeRoute(
@@ -34,18 +30,15 @@ internal fun HomeRoute(
 ) {
     val localState by homeViewModel.localState.collectAsStateWithLifecycle()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    var articlesByCategory by rememberSaveable { mutableStateOf<LazyPagingItems<Article>?>(null) }
+    val articlesByCategory = homeViewModel.newsByCategory.collectAsLazyPagingItems()
 
     HomeScreen(
         localState = localState,
         uiState = uiState,
+        event = homeViewModel::onEvent,
         articlesByCategory = articlesByCategory,
-        onCollectArticlesByCategory = { articlesByCategory = homeViewModel.newsByCategory.collectAsLazyPagingItems() },
-        onCategoryChange = { category -> homeViewModel.localState.update { it.copy(category = category) }},
-        onCategoryScrollPositionChanged = { pos -> homeViewModel.localState.update { it.copy(categoriesScrollPosition = pos) } },
         onItemClicked = onItemClicked,
         onSeeAllClicked = onSeeAllClicked,
-        onRetry = { homeViewModel.retryFetchingArticles() }
     )
 }
 
@@ -53,13 +46,10 @@ internal fun HomeRoute(
 fun HomeScreen(
     localState: HomeLocalState,
     uiState: HomeUiState,
-    articlesByCategory: LazyPagingItems<Article>?,
-    onCollectArticlesByCategory: @Composable () -> Unit,
-    onCategoryChange: (String) -> Unit,
-    onCategoryScrollPositionChanged: (Int) -> Unit,
+    event: (HomeEvent) -> Unit,
+    articlesByCategory: LazyPagingItems<Article>,
     onSeeAllClicked: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
-    onRetry: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -67,8 +57,12 @@ fun HomeScreen(
                 scrollPosition = localState.categoriesScrollPosition,
                 categories = CATEGORIES,
                 selected = localState.category,
-                onChipSelected = onCategoryChange,
-                onCategoryScrollPositionChanged = onCategoryScrollPositionChanged,
+                onChipSelected = { category ->
+                    event(HomeEvent.OnCategoryChange(category))
+                },
+                onCategoryScrollPositionChanged = { scrollPosition ->
+                    event(HomeEvent.OnCategoryScrollPositionChange(scrollPosition))
+                }
             )
         }, modifier = Modifier.testTag(HOME)
     ) {
@@ -83,15 +77,15 @@ fun HomeScreen(
                         state = uiState,
                         onSeeAllClicked = onSeeAllClicked,
                         onItemClicked = onItemClicked,
-                        onRetry = onRetry,
+                        onRetry = {
+                            event(HomeEvent.OnRetry)
+                        },
                     )
                 }
                 else -> {
                     ArticlesByCategory(
                         modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
-                        category = localState.category,
-                        articles = articlesByCategory,
-                        onCollectArticlesByCategory = onCollectArticlesByCategory,
+                        articlesByCategory = articlesByCategory,
                         onItemClicked = onItemClicked
                     )
                 }
@@ -111,12 +105,9 @@ fun HomePreview() {
     HomeScreen(
         localState = HomeLocalState(),
         uiState = state,
+        event = {},
         articlesByCategory = DummyDataProvider.getFakeLazyPagingItems(data = DummyDataProvider.getAllNewsItems()),
-        onCollectArticlesByCategory = {},
-        onCategoryChange = {},
-        onCategoryScrollPositionChanged = {},
         onSeeAllClicked = {},
         onItemClicked = {},
-        onRetry = {}
     )
 }

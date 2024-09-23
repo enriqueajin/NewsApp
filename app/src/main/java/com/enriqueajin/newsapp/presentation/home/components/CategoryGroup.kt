@@ -19,8 +19,6 @@ import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.TestTags.CATEGORY
 import com.enriqueajin.newsapp.util.TestTags.CATEGORY_GROUP_LAZY_ROW
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 
 @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
@@ -31,20 +29,20 @@ fun CategoryGroup(
     onChipSelected: (String) -> Unit,
     onCategoryScrollPositionChanged: (Int) -> Unit,
 ) {
-    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
+//    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
 
-    LaunchedEffect(lazyListState) {
-        snapshotFlow {
-            lazyListState.firstVisibleItemIndex
-        }
-            .debounce(500L)
-            .collectLatest { index ->
-                onCategoryScrollPositionChanged(index)
-            }
-    }
+//    LaunchedEffect(lazyListState) {
+//        snapshotFlow {
+//            lazyListState.firstVisibleItemIndex
+//        }
+//            .debounce(500L)
+//            .collectLatest { index ->
+//                onCategoryScrollPositionChanged(index)
+//            }
+//    }
 
     LazyRow(
-        state = lazyListState,
+//        state = lazyListState,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp, vertical = 15.dp)
