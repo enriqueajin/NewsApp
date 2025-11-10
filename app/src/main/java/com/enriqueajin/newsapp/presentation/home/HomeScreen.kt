@@ -2,29 +2,32 @@ package com.enriqueajin.newsapp.presentation.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Error
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Loading
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Success
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
 import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
+import com.enriqueajin.newsapp.util.Constants.CATEGORIES_INITIAL_VALUE
 import com.enriqueajin.newsapp.util.DummyDataProvider
+import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_CIRCULAR_PROGRESS
 import com.enriqueajin.newsapp.util.TestTags.HOME
 import com.enriqueajin.newsapp.util.TestTags.HOME_ARTICLES_BY_CATEGORY
-import kotlinx.coroutines.flow.update
 
 @Composable
 internal fun HomeRoute(
@@ -32,41 +35,39 @@ internal fun HomeRoute(
     onItemClicked: (Article) -> Unit,
     onSeeAllClicked: (String) -> Unit
 ) {
-    val localState by homeViewModel.localState.collectAsStateWithLifecycle()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    var articlesByCategory by rememberSaveable { mutableStateOf<LazyPagingItems<Article>?>(null) }
 
-    HomeScreen(
-        localState = localState,
-        uiState = uiState,
-        articlesByCategory = articlesByCategory,
-        onCollectArticlesByCategory = { articlesByCategory = homeViewModel.newsByCategory.collectAsLazyPagingItems() },
-        onCategoryChange = { category -> homeViewModel.localState.update { it.copy(category = category) }},
-        onCategoryScrollPositionChanged = { pos -> homeViewModel.localState.update { it.copy(categoriesScrollPosition = pos) } },
-        onItemClicked = onItemClicked,
-        onSeeAllClicked = onSeeAllClicked,
-    )
+    when (uiState) {
+        Loading -> Loading()
+        is Error -> Error()
+        is Success -> {
+            HomeScreen(
+                uiState = (uiState as Success),
+                onItemClicked = onItemClicked,
+                onSeeAllClicked = onSeeAllClicked,
+                event = homeViewModel::onEvent
+            )
+        }
+    }
 }
 
 @Composable
 fun HomeScreen(
-    localState: HomeLocalState,
-    uiState: HomeUiState,
-    articlesByCategory: LazyPagingItems<Article>?,
-    onCollectArticlesByCategory: @Composable () -> Unit,
-    onCategoryChange: (String) -> Unit,
-    onCategoryScrollPositionChanged: (Int) -> Unit,
+    uiState: Success,
     onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (Article) -> Unit
+    onItemClicked: (Article) -> Unit,
+    event: (HomeContract.Event) -> Unit,
 ) {
+    val pagingItems = uiState.newsByCategory?.collectAsLazyPagingItems()
     Scaffold(
         topBar = {
             CategoryGroup(
-                scrollPosition = localState.categoriesScrollPosition,
+                scrollPosition = 0,
                 categories = CATEGORIES,
-                selected = localState.category,
-                onChipSelected = onCategoryChange,
-                onCategoryScrollPositionChanged = onCategoryScrollPositionChanged,
+                selected = uiState.category,
+                onChipSelected = {
+                    event(HomeContract.Event.OnCategoryChange(it))
+                },
             )
         }, modifier = Modifier.testTag(HOME)
     ) {
@@ -75,44 +76,56 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            when (localState.category) {
-                "All" -> {
-                    AllArticles(
-                        state = uiState,
-                        onSeeAllClicked = onSeeAllClicked,
-                        onItemClicked = onItemClicked
-                    )
-                }
-                else -> {
-                    ArticlesByCategory(
-                        modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
-                        category = localState.category,
-                        articles = articlesByCategory,
-                        onCollectArticlesByCategory = onCollectArticlesByCategory,
-                        onItemClicked = onItemClicked
-                    )
-                }
+            if(uiState.category == CATEGORIES_INITIAL_VALUE) {
+                AllArticles(
+                    state = uiState,
+                    onSeeAllClicked = onSeeAllClicked,
+                    onItemClicked = onItemClicked
+                )
+
+            } else {
+                ArticlesByCategory(
+                    modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
+                    articles = pagingItems,
+                    onItemClicked = onItemClicked
+                )
             }
         }
+    }
+}
+
+@Composable
+fun Loading(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
+        CircularProgressIndicator(modifier = Modifier
+            .align(Alignment.Center)
+            .testTag(ALL_ARTICLES_CIRCULAR_PROGRESS)
+        )
+    }
+}
+
+@Composable
+fun Error(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxWidth()) {
+        CircularProgressIndicator(modifier = Modifier
+            .align(Alignment.Center)
+            .testTag(ALL_ARTICLES_CIRCULAR_PROGRESS)
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
-    val state = HomeUiState.Success(
+    val state = Success(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
         keyword = "Recipes"
     )
     HomeScreen(
-        localState = HomeLocalState(),
         uiState = state,
-        articlesByCategory = DummyDataProvider.getFakeLazyPagingItems(data = DummyDataProvider.getAllNewsItems()),
-        onCollectArticlesByCategory = {},
-        onCategoryChange = {},
-        onCategoryScrollPositionChanged = {},
         onSeeAllClicked = {},
-        onItemClicked = {}
+        onItemClicked = {},
+        event = {}
     )
 }
