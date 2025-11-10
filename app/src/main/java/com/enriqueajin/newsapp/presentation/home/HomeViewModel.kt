@@ -4,18 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByCategoryUseCase
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State
+import com.enriqueajin.newsapp.util.KeywordProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,40 +24,58 @@ class HomeViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
-    var localState = MutableStateFlow(HomeLocalState())
+    private val _uiState: MutableStateFlow<State> = MutableStateFlow(State.Loading)
+    val uiState = _uiState.asStateFlow()
 
-    private val latestArticles: Flow<List<Article>> = getNewsByCategoryUseCase.getArticlesByCategory()
-    private val articlesByKeyword: Flow<List<Article>> =
-        localState.flatMapLatest { state ->
-            getNewsByKeywordUseCase.getArticlesByKeyword(keyword = state.keyword)
+    init {
+        onEvent(Event.OnInit)
+    }
+
+    fun onEvent(event: Event) {
+        when (event) {
+            Event.OnInit -> getInitialArticles()
+            is Event.OnCategoryChange -> getArticlesByCategory(category = event.category)
+            is Event.OnKeywordChange -> getArticlesByKeyword(keyword = event.keyword)
         }
+    }
 
-    val uiState: StateFlow<HomeUiState> = combine(
-        localState,
-        latestArticles,
-        articlesByKeyword
-    ) { local, latestArticles, articlesByKeyword ->
-        HomeUiState.Success(
-            latestArticles = latestArticles,
-            articlesByKeyword = articlesByKeyword,
-            category = local.category,
-            keyword = local.keyword
-        )
-    }.catch {
-        HomeUiState.Error(it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = HomeUiState.Loading
-    )
+    private fun getInitialArticles() {
+        getLatestArticles()
+        getArticlesByKeyword(KeywordProvider.getRandomKeyword())
+    }
 
-    // Handled separately since works upon the user interaction with categories
-    val newsByCategory: StateFlow<PagingData<Article>> =
-        localState.flatMapLatest { state ->
-            getNewsByCategoryUseCase(category = state.category).cachedIn(viewModelScope)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = PagingData.empty()
-        )
+    private fun getLatestArticles() {
+        viewModelScope.launch {
+            getNewsByCategoryUseCase.getArticlesByCategory().distinctUntilChanged().collect { articles ->
+                _uiState.value = State.Success(latestArticles = articles)
+            }
+        }
+    }
+
+    private fun getArticlesByCategory(category: String) {
+        viewModelScope.launch {
+            val articles = getNewsByCategoryUseCase(category)
+                .cachedIn(viewModelScope)
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000L),
+                    initialValue = PagingData.empty()
+                )
+            _uiState.value = (_uiState.value as State.Success).copy(
+                newsByCategory = articles,
+                category = category
+            )
+        }
+    }
+
+    private fun getArticlesByKeyword(keyword: String) {
+        viewModelScope.launch {
+            getNewsByKeywordUseCase.getArticlesByKeyword(keyword).distinctUntilChanged().collect { articles ->
+                _uiState.value = (_uiState.value as State.Success).copy(
+                    articlesByKeyword = articles,
+                    keyword = keyword
+                )
+            }
+        }
+    }
 }

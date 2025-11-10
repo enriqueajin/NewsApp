@@ -29,7 +29,6 @@ fun CategoryGroup(
     categories: List<String>,
     selected: String,
     onChipSelected: (String) -> Unit,
-    onCategoryScrollPositionChanged: (Int) -> Unit,
 ) {
     val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
 
@@ -39,7 +38,7 @@ fun CategoryGroup(
         }
             .debounce(500L)
             .collectLatest { index ->
-                onCategoryScrollPositionChanged(index)
+
             }
     }
 
@@ -71,6 +70,5 @@ fun ChipGroupPreview() {
         categories = CATEGORIES,
         selected = "Science",
         onChipSelected = { _ ->},
-        onCategoryScrollPositionChanged = {}
     )
 }

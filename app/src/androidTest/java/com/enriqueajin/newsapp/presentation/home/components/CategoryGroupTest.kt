@@ -31,8 +31,7 @@ class CategoryGroupTest {
                 scrollPosition = 0,
                 categories = categories,
                 selected = selected,
-                onChipSelected = { category -> selected = category },
-                onCategoryScrollPositionChanged = {}
+                onChipSelected = { selected = it }
             )
         }
         composeTestRule.onNodeWithTag(CATEGORY_GROUP_LAZY_ROW).assert(hasScrollAction())
@@ -46,8 +45,7 @@ class CategoryGroupTest {
                     scrollPosition = 0,
                     categories = categories,
                     selected = selected,
-                    onChipSelected = { category -> selected = category },
-                    onCategoryScrollPositionChanged = {}
+                    onChipSelected = { selected = it }
                 )
             }
         }
@@ -80,8 +78,7 @@ class CategoryGroupTest {
                     scrollPosition = 0,
                     categories = categories,
                     selected = selected,
-                    onChipSelected = { category -> selected = category },
-                    onCategoryScrollPositionChanged = {}
+                    onChipSelected = { selected = it }
                 )
             }
         }

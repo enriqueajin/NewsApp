@@ -23,4 +23,6 @@ object Constants {
     const val ALL_NEWS_PAGE_SIZE = 15
     const val PAGE_SIZE = 25
     const val PREFETCH_ITEMS = 3
+
+    const val CATEGORIES_INITIAL_VALUE = "All"
 }
