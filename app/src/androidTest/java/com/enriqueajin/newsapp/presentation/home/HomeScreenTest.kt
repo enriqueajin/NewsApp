@@ -30,8 +30,6 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 uiState = state,
-                onSeeAllClicked = {},
-                onItemClicked = {},
                 event = {}
             )
         }
@@ -43,8 +41,6 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 uiState = state,
-                onSeeAllClicked = {},
-                onItemClicked = {},
                 event = {}
             )
         }
@@ -56,8 +52,6 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 uiState = state,
-                onSeeAllClicked = {},
-                onItemClicked = {},
                 event = {}
             )
         }
@@ -69,8 +63,6 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 uiState = state.copy(category = CATEGORIES.last()),
-                onSeeAllClicked = {},
-                onItemClicked = {},
                 event = {}
             )
         }
@@ -82,8 +74,6 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(
                 uiState = state.copy(category = CATEGORIES.last()),
-                onSeeAllClicked = {},
-                onItemClicked = {},
                 event = {}
             )
         }
