@@ -11,6 +11,8 @@ interface HomeContract {
         data object OnInit: Event()
         data class OnCategoryChange(val category: String): Event()
         data class OnKeywordChange(val keyword: String): Event()
+        data class OnItemClick(val article: Article): Event()
+        data class OnSeeAllClick(val keyword: String): Event()
     }
 
     sealed interface State {
@@ -26,6 +28,11 @@ interface HomeContract {
         ): State
 
         data class Error(val throwable: Throwable): State
+    }
+
+    sealed class Effect {
+        data class NavigateToArticleDetail(val article: Article): Effect()
+        data class NavigateToArticlesWithKeyword(val keyword: String): Effect()
     }
 }
 

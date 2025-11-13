@@ -32,6 +32,7 @@ import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesRoute
+import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
@@ -124,16 +125,11 @@ fun NavGraph() {
         ) {
             composable<Route.Home> {
                 HomeRoute(
-                    onItemClicked = { item ->
-                        val article = Json.encodeToString(Article.serializer(), item)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(article)
-                        }
-                    },
-                    onSeeAllClicked = { keyword ->
-                        navigateToDetail(navController) {
-                            Route.KeywordNews(keyword)
-                        }
+                    onNavigationEffect = { effect ->
+                        navigate(
+                            navController = navController,
+                            effect = effect
+                        )
                     }
                 )
             }
@@ -176,6 +172,14 @@ fun NavGraph() {
             }
         }
     }
+}
+
+private fun navigate(navController: NavController, effect: HomeContract.Effect) = when(effect) {
+    is HomeContract.Effect.NavigateToArticleDetail -> navigateToDetail(navController) {
+        val article = Json.encodeToString(Article.serializer(), effect.article)
+        Route.NewsDetail(article)
+    }
+    is HomeContract.Effect.NavigateToArticlesWithKeyword -> navigateToDetail(navController) { Route.KeywordNews(effect.keyword) }
 }
 
 private fun navigateToDetail(navController: NavController, routeBuilder: () -> Route) {

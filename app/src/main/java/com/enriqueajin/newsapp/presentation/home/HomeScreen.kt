@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Error
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Loading
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Success
@@ -28,14 +27,15 @@ import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_CIRCULAR_PROGRESS
 import com.enriqueajin.newsapp.util.TestTags.HOME
 import com.enriqueajin.newsapp.util.TestTags.HOME_ARTICLES_BY_CATEGORY
+import com.enriqueajin.newsapp.util.collectAsEffect
 
 @Composable
 internal fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    onItemClicked: (Article) -> Unit,
-    onSeeAllClicked: (String) -> Unit
+    onNavigationEffect: (HomeContract.Effect) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    homeViewModel.uiEffects.collectAsEffect { onNavigationEffect(it) }
 
     when (uiState) {
         Loading -> Loading()
@@ -43,8 +43,6 @@ internal fun HomeRoute(
         is Success -> {
             HomeScreen(
                 uiState = (uiState as Success),
-                onItemClicked = onItemClicked,
-                onSeeAllClicked = onSeeAllClicked,
                 event = homeViewModel::onEvent
             )
         }
@@ -54,8 +52,6 @@ internal fun HomeRoute(
 @Composable
 fun HomeScreen(
     uiState: Success,
-    onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (Article) -> Unit,
     event: (HomeContract.Event) -> Unit,
 ) {
     val pagingItems = uiState.newsByCategory?.collectAsLazyPagingItems()
@@ -79,15 +75,21 @@ fun HomeScreen(
             if(uiState.category == CATEGORIES_INITIAL_VALUE) {
                 AllArticles(
                     state = uiState,
-                    onSeeAllClicked = onSeeAllClicked,
-                    onItemClicked = onItemClicked
+                    onSeeAllClicked = { keyword ->
+                        event(HomeContract.Event.OnSeeAllClick(keyword))
+                    },
+                    onItemClicked = { article ->
+                        event(HomeContract.Event.OnItemClick(article))
+                    },
                 )
 
             } else {
                 ArticlesByCategory(
                     modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
                     articles = pagingItems,
-                    onItemClicked = onItemClicked
+                    onItemClicked = { article ->
+                        event(HomeContract.Event.OnItemClick(article))
+                    },
                 )
             }
         }
@@ -124,8 +126,6 @@ fun HomePreview() {
     )
     HomeScreen(
         uiState = state,
-        onSeeAllClicked = {},
-        onItemClicked = {},
-        event = {}
+        event = {},
     )
 }
