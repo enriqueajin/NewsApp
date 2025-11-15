@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Success
+import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_ARTICLES_LIST
 import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_KEYWORD
@@ -26,7 +26,7 @@ import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_SEE_ALL
 
 @Composable
 fun AllArticles(
-    state: Success,
+    state: HomeContract.State,
     onSeeAllClicked: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
 ) {

@@ -15,9 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Error
-import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Loading
-import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Success
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
 import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
@@ -37,12 +36,12 @@ internal fun HomeRoute(
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     homeViewModel.uiEffects.collectAsEffect { onNavigationEffect(it) }
 
-    when (uiState) {
-        Loading -> Loading()
-        is Error -> Error()
-        is Success -> {
+    when {
+        uiState.loading -> Loading()
+        uiState.error.isNotBlank() -> Error()
+        else -> {
             HomeScreen(
-                uiState = (uiState as Success),
+                uiState = uiState,
                 event = homeViewModel::onEvent
             )
         }
@@ -51,8 +50,8 @@ internal fun HomeRoute(
 
 @Composable
 fun HomeScreen(
-    uiState: Success,
-    event: (HomeContract.Event) -> Unit,
+    uiState: State,
+    event: (Event) -> Unit,
 ) {
     val pagingItems = uiState.newsByCategory?.collectAsLazyPagingItems()
     Scaffold(
@@ -119,7 +118,7 @@ fun Error(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
-    val state = Success(
+    val state = State(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
         keyword = "Recipes"
