@@ -36,6 +36,7 @@ import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesRoute
 import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
+import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
 import kotlinx.serialization.json.Json
@@ -112,17 +113,17 @@ fun NavGraph() {
                 )
             }
             composable<Route.KeywordNews> { navBackStackEntry ->
-                val args = navBackStackEntry.toRoute<Route.KeywordNews>()
-                KeywordScreenRoute(
-                    args = args,
-                    onItemClicked = { item ->
-                        val article = Json.encodeToString(Article.serializer(), item)
-                        navigateToDetail(navController) {
-                            Route.NewsDetail(article)
+                KeywordScreenRoute { effect ->
+                    when(effect) {
+                        KeywordNewsContract.Effect.NavigateBack -> navController.navigateUp()
+                        is KeywordNewsContract.Effect.NavigateToArticleDetail -> {
+                            navigateToDetail(navController) {
+                                val article = Json.encodeToString(Article.serializer(), effect.article)
+                                Route.NewsDetail(article)
+                            }
                         }
-                    },
-                    onBackPressed = { navController.navigateUp() }
-                )
+                    }
+                }
             }
             composable<Route.NewsDetail> { navBackStackEntry ->
                 val args = navBackStackEntry.toRoute<Route.NewsDetail>()

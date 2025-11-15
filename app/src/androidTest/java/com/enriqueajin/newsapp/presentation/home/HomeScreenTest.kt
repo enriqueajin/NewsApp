@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Success
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES_INITIAL_VALUE
 import com.enriqueajin.newsapp.util.DummyDataProvider
@@ -18,7 +18,7 @@ class HomeScreenTest {
 
     @get:Rule val composeTestRule = createComposeRule()
 
-    private val state = Success(
+    private val state = State(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
         keyword = "Recipes",
