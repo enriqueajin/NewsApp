@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<State> = MutableStateFlow(State.Loading)
+    private val _uiState: MutableStateFlow<State> = MutableStateFlow(State())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEffects: MutableSharedFlow<Effect> = MutableSharedFlow()
@@ -59,14 +59,19 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getLatestArticles() {
+        _uiState.isLoading(loading = true)
         viewModelScope.launch {
             getNewsByCategoryUseCase.getArticlesByCategory().distinctUntilChanged().collect { articles ->
-                _uiState.value = State.Success(latestArticles = articles)
+                _uiState.value = _uiState.value.copy(
+                    latestArticles = articles,
+                    loading = false
+                )
             }
         }
     }
 
     private fun getArticlesByCategory(category: String) {
+        _uiState.isLoading(loading = true)
         viewModelScope.launch {
             val articles = getNewsByCategoryUseCase(category)
                 .cachedIn(viewModelScope)
@@ -75,21 +80,26 @@ class HomeViewModel @Inject constructor(
                     started = SharingStarted.WhileSubscribed(5000L),
                     initialValue = PagingData.empty()
                 )
-            _uiState.value = (_uiState.value as State.Success).copy(
+            _uiState.value = _uiState.value.copy(
                 newsByCategory = articles,
-                category = category
+                category = category,
+                loading = false
             )
         }
     }
 
     private fun getArticlesByKeyword(keyword: String) {
+        _uiState.isLoading(loading = true)
         viewModelScope.launch {
             getNewsByKeywordUseCase.getArticlesByKeyword(keyword).distinctUntilChanged().collect { articles ->
-                _uiState.value = (_uiState.value as State.Success).copy(
+                _uiState.value = _uiState.value.copy(
                     articlesByKeyword = articles,
-                    keyword = keyword
+                    keyword = keyword,
+                    loading = false
                 )
             }
         }
     }
+
+    private fun MutableStateFlow<State>.isLoading(loading: Boolean) { this.value = this.value.copy(loading = loading) }
 }

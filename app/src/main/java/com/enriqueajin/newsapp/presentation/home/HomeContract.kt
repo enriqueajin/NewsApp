@@ -15,20 +15,15 @@ interface HomeContract {
         data class OnSeeAllClick(val keyword: String): Event()
     }
 
-    sealed interface State {
-
-        object Loading: State
-
-        data class Success(
-            val latestArticles: List<Article>? = null,
-            val articlesByKeyword: List<Article>? = null,
-            val newsByCategory: Flow<PagingData<Article>>? = null,
-            val keyword: String = "",
-            val category: String = CATEGORIES_INITIAL_VALUE,
-        ): State
-
-        data class Error(val throwable: Throwable): State
-    }
+    data class State(
+        val loading: Boolean = true,
+        val error: String = "",
+        val latestArticles: List<Article>? = null,
+        val articlesByKeyword: List<Article>? = null,
+        val newsByCategory: Flow<PagingData<Article>>? = null,
+        val keyword: String = "",
+        val category: String = CATEGORIES_INITIAL_VALUE,
+    )
 
     sealed class Effect {
         data class NavigateToArticleDetail(val article: Article): Effect()
