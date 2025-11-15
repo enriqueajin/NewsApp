@@ -2,6 +2,7 @@ package com.enriqueajin.newsapp.presentation.home
 
 import androidx.paging.PagingData
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.StateContract
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES_INITIAL_VALUE
 import kotlinx.coroutines.flow.Flow
 
@@ -16,14 +17,14 @@ interface HomeContract {
     }
 
     data class State(
-        val loading: Boolean = true,
-        val error: String = "",
+        override val loading: Boolean = true,
+        override val error: String = "",
         val latestArticles: List<Article>? = null,
         val articlesByKeyword: List<Article>? = null,
         val newsByCategory: Flow<PagingData<Article>>? = null,
         val keyword: String = "",
         val category: String = CATEGORIES_INITIAL_VALUE,
-    )
+    ): StateContract
 
     sealed class Effect {
         data class NavigateToArticleDetail(val article: Article): Effect()

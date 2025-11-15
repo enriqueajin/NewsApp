@@ -6,10 +6,11 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByCategoryUseCase
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
-import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.util.KeywordProvider
+import com.enriqueajin.newsapp.util.updateState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,7 +60,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getLatestArticles() {
-        _uiState.isLoading(loading = true)
+        _uiState.updateState { it.copy(loading = true) }
         viewModelScope.launch {
             getNewsByCategoryUseCase.getArticlesByCategory().distinctUntilChanged().collect { articles ->
                 _uiState.value = _uiState.value.copy(
@@ -71,7 +72,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getArticlesByCategory(category: String) {
-        _uiState.isLoading(loading = true)
+        _uiState.updateState { it.copy(loading = true) }
         viewModelScope.launch {
             val articles = getNewsByCategoryUseCase(category)
                 .cachedIn(viewModelScope)
@@ -80,26 +81,28 @@ class HomeViewModel @Inject constructor(
                     started = SharingStarted.WhileSubscribed(5000L),
                     initialValue = PagingData.empty()
                 )
-            _uiState.value = _uiState.value.copy(
-                newsByCategory = articles,
-                category = category,
-                loading = false
-            )
-        }
-    }
-
-    private fun getArticlesByKeyword(keyword: String) {
-        _uiState.isLoading(loading = true)
-        viewModelScope.launch {
-            getNewsByKeywordUseCase.getArticlesByKeyword(keyword).distinctUntilChanged().collect { articles ->
-                _uiState.value = _uiState.value.copy(
-                    articlesByKeyword = articles,
-                    keyword = keyword,
+            _uiState.updateState {
+                it.copy(
+                    newsByCategory = articles,
+                    category = category,
                     loading = false
                 )
             }
         }
     }
 
-    private fun MutableStateFlow<State>.isLoading(loading: Boolean) { this.value = this.value.copy(loading = loading) }
+    private fun getArticlesByKeyword(keyword: String) {
+        _uiState.updateState { it.copy(loading = true) }
+        viewModelScope.launch {
+            getNewsByKeywordUseCase.getArticlesByKeyword(keyword).distinctUntilChanged().collect { articles ->
+                _uiState.updateState {
+                    it.copy(
+                        articlesByKeyword = articles,
+                        keyword = keyword,
+                        loading = false
+                    )
+                }
+            }
+        }
+    }
 }

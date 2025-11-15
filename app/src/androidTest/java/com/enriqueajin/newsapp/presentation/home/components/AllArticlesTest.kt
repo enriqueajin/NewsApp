@@ -7,7 +7,8 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.enriqueajin.newsapp.presentation.home.HomeContract.State.Success
+import com.enriqueajin.newsapp.presentation.home.HomeContract
+import com.enriqueajin.newsapp.presentation.home.HomeContract.State
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_ARTICLES_LIST
 import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_CIRCULAR_PROGRESS
@@ -21,7 +22,7 @@ class AllArticlesTest {
 
     @get:Rule val composeTestRule = createComposeRule()
 
-    private val state = Success(
+    private val state = State(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
         keyword = "Recipes"
