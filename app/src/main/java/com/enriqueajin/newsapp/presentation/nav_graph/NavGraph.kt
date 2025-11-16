@@ -38,6 +38,7 @@ import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
+import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.toRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
 import kotlinx.serialization.json.Json
 
@@ -66,21 +67,12 @@ fun NavGraph() {
 
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState().value
-    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val currentRoute = backStackEntry?.toRoute()
 
-    selectedItem = when (backStackEntry?.destination?.route) {
-        Route.Home::class.qualifiedName -> 0
-        Route.SearchNews::class.qualifiedName -> 1
-        Route.Favorites::class.qualifiedName -> 2
-        else -> 0
-    }
+    selectedTab = updateSelectedNavItem(currentRoute)
 
-    // Hide bottom bar when the user is in KeywordScreen or NewsDetailScreen
-    val isBottomBarVisible = remember(key1 = backStackEntry) {
-        backStackEntry?.destination?.route == Route.Home::class.qualifiedName ||
-        backStackEntry?.destination?.route == Route.SearchNews::class.qualifiedName ||
-        backStackEntry?.destination?.route == Route.Favorites::class.qualifiedName
-    }
+    val isBottomBarVisible = remember(backStackEntry) { checkBottomBarVisible(currentRoute) }
 
     Scaffold(bottomBar = {
         AnimatedVisibility(
@@ -90,7 +82,7 @@ fun NavGraph() {
         ) {
             BottomBar(
                 items = items,
-                selectedItem = selectedItem,
+                selectedItem = selectedTab,
                 onItemClick = { item ->
                     navigateToTab(navController, item.route)
                 }
@@ -218,3 +210,15 @@ private fun navigateToTab(navController: NavController, route: Route) {
         }
     }
 }
+
+private fun updateSelectedNavItem(route: Route?) = when(route) {
+    Route.Home -> 0
+    Route.SearchNews -> 1
+    Route.Favorites -> 2
+    else -> 0
+}
+
+private fun checkBottomBarVisible(route: Route?) =
+    route == Route.Home ||
+    route == Route.SearchNews ||
+    route == Route.Favorites
