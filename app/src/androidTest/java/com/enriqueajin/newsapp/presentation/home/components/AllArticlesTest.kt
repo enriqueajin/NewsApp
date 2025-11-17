@@ -7,7 +7,6 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_ARTICLES_LIST

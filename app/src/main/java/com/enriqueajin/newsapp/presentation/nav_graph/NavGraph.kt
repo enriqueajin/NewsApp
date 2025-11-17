@@ -38,7 +38,7 @@ import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
-import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.toRoute
+import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.getRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
 import kotlinx.serialization.json.Json
 
@@ -68,27 +68,30 @@ fun NavGraph() {
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState().value
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    val currentRoute = backStackEntry?.toRoute()
+    val currentRoute = backStackEntry?.getRoute()
 
     selectedTab = updateSelectedNavItem(currentRoute)
 
     val isBottomBarVisible = remember(backStackEntry) { checkBottomBarVisible(currentRoute) }
 
-    Scaffold(bottomBar = {
-        AnimatedVisibility(
-            visible = isBottomBarVisible,
-            enter = slideInVertically(animationSpec = tween(600)) { it },
-            exit = slideOutVertically(animationSpec = tween(600)) { it }
-        ) {
-            BottomBar(
-                items = items,
-                selectedItem = selectedTab,
-                onItemClick = { item ->
-                    navigateToTab(navController, item.route)
-                }
-            )
+    Scaffold(
+        topBar = { AppTopBar(navController) },
+        bottomBar = {
+            AnimatedVisibility(
+                visible = isBottomBarVisible,
+                enter = slideInVertically(animationSpec = tween(600)) { it },
+                exit = slideOutVertically(animationSpec = tween(600)) { it }
+            ) {
+                BottomBar(
+                    items = items,
+                    selectedItem = selectedTab,
+                    onItemClick = { item ->
+                        navigateToTab(navController, item.route)
+                    }
+                )
+            }
         }
-    }) {
+    ) {
         NavigationHost(
             navController = navController,
             modifier = Modifier.padding(it),
@@ -120,10 +123,7 @@ fun NavGraph() {
             composable<Route.NewsDetail> { navBackStackEntry ->
                 val args = navBackStackEntry.toRoute<Route.NewsDetail>()
                 val article = Json.decodeFromString(Article.serializer(), args.article)
-                ArticleDetailRoute(
-                    article = article,
-                    onBackPressed = { navController.navigateUp() }
-                )
+                ArticleDetailRoute(article = article,)
             }
             composable<Route.SearchNews> {
                 SearchNewsRoute { item ->
