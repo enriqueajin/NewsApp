@@ -30,23 +30,6 @@ fun AllArticles(
     onSeeAllClicked: (String) -> Unit,
     onItemClicked: (Article) -> Unit,
 ) {
-    ArticlesLists(
-        latestArticles = state.latestArticles ?: emptyList(),
-        articlesByKeyword = state.articlesByKeyword ?: emptyList(),
-        keyword = state.keyword,
-        onSeeAllClicked = onSeeAllClicked,
-        onItemClicked = onItemClicked
-    )
-}
-
-@Composable
-fun ArticlesLists(
-    latestArticles: List<Article>,
-    articlesByKeyword: List<Article>,
-    keyword: String,
-    onSeeAllClicked: (String) -> Unit,
-    onItemClicked: (Article) -> Unit,
-) {
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .testTag(ALL_ARTICLES_ARTICLES_LIST)
@@ -59,7 +42,10 @@ fun ArticlesLists(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            LatestArticlesCarousel(articles = latestArticles, onItemClicked = onItemClicked)
+            LatestArticlesCarousel(
+                articles = state.latestArticles ?: emptyList(),
+                onItemClicked = onItemClicked
+            )
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier
@@ -69,7 +55,7 @@ fun ArticlesLists(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = keyword,
+                    text = state.keyword,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.testTag(ALL_ARTICLES_KEYWORD)
@@ -82,13 +68,16 @@ fun ArticlesLists(
                     modifier = Modifier
                         .padding(start = 30.dp)
                         .clickable {
-                            onSeeAllClicked(keyword)
+                            onSeeAllClicked(state.keyword)
                         }
                         .testTag(ALL_ARTICLES_SEE_ALL),
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            ArticlesByKeyword(articles = articlesByKeyword, onItemClicked = onItemClicked)
+            ArticlesByKeyword(
+                articles = state.articlesByKeyword ?: emptyList(),
+                onItemClicked = onItemClicked
+            )
             Spacer(modifier = Modifier.height(30.dp))
         }
     }
