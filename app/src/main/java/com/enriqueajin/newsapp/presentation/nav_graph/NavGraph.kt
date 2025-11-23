@@ -40,7 +40,7 @@ import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
-import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.toRoute
+import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.getRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
 import kotlinx.serialization.json.Json
 
@@ -70,7 +70,7 @@ fun NavGraph() {
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState().value
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    val currentRoute = backStackEntry?.toRoute()
+    val currentRoute = backStackEntry?.getRoute()
 
     selectedTab = updateSelectedNavItem(currentRoute)
 
@@ -91,7 +91,7 @@ fun NavGraph() {
                     }
                 )
         }
-    }) {
+    ) {
         NavigationHost(
             navController = navController,
             modifier = Modifier.padding(it),
