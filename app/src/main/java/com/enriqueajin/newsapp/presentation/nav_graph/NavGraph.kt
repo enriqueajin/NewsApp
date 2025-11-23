@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -30,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailContract
 import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
@@ -74,19 +76,20 @@ fun NavGraph() {
 
     val isBottomBarVisible = remember(backStackEntry) { checkBottomBarVisible(currentRoute) }
 
-    Scaffold(bottomBar = {
-        AnimatedVisibility(
-            visible = isBottomBarVisible,
-            enter = slideInVertically(animationSpec = tween(600)) { it },
-            exit = slideOutVertically(animationSpec = tween(600)) { it }
-        ) {
-            BottomBar(
-                items = items,
-                selectedItem = selectedTab,
-                onItemClick = { item ->
-                    navigateToTab(navController, item.route)
-                }
-            )
+    Scaffold(
+        bottomBar = {
+            AnimatedVisibility(
+                visible = isBottomBarVisible,
+                enter = slideInVertically(animationSpec = tween(600)) { it },
+                exit = slideOutVertically(animationSpec = tween(600)) { it }
+            ) {
+                BottomBar(
+                    items = items,
+                    selectedItem = selectedTab,
+                    onItemClick = { item ->
+                        navigateToTab(navController, item.route)
+                    }
+                )
         }
     }) {
         NavigationHost(
@@ -120,10 +123,12 @@ fun NavGraph() {
             composable<Route.NewsDetail> { navBackStackEntry ->
                 val args = navBackStackEntry.toRoute<Route.NewsDetail>()
                 val article = Json.decodeFromString(Article.serializer(), args.article)
-                ArticleDetailRoute(
-                    article = article,
-                    onBackPressed = { navController.navigateUp() }
-                )
+                ArticleDetailRoute { effect ->
+                    when (effect) {
+                        ArticleDetailContract.Effect.NavigateBack -> navController.navigateUp()
+                        is ArticleDetailContract.Effect.ShareArticleUrl -> {}
+                    }
+                }
             }
             composable<Route.SearchNews> {
                 SearchNewsRoute { item ->

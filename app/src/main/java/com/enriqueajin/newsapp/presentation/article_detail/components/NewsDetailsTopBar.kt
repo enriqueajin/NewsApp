@@ -19,8 +19,7 @@ import androidx.compose.ui.unit.dp
 fun NewsDetailsTopBar(
     isFavoriteArticle: Boolean,
     onShareArticle: () -> Unit,
-    onAddFavorite: () -> Unit,
-    onDeleteFavorite: () -> Unit,
+    onFavoriteIconClick: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     TopAppBar(
@@ -35,13 +34,7 @@ fun NewsDetailsTopBar(
             IconButton(onClick = onShareArticle) {
                 Icon(imageVector = Icons.Default.Share, contentDescription = null)
             }
-            IconButton(onClick = {
-                if (isFavoriteArticle) {
-                    onDeleteFavorite()
-                } else {
-                    onAddFavorite()
-                }
-            }) {
+            IconButton(onClick = onFavoriteIconClick) {
                 val icon = if (isFavoriteArticle) Icons.Default.Favorite else Icons.Default.FavoriteBorder
                 Icon(imageVector = icon, contentDescription = null)
             }
