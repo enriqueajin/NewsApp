@@ -2,10 +2,10 @@ package com.enriqueajin.newsapp.presentation.article_detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,9 +16,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +34,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
-import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailContract.Effect
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailContract.State
+import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailContract.UiEvent
+import com.enriqueajin.newsapp.presentation.article_detail.components.NewsDetailsTopBar
 import com.enriqueajin.newsapp.presentation.ui.theme.DarkGray
 import com.enriqueajin.newsapp.presentation.ui.theme.Purple80
 import com.enriqueajin.newsapp.util.Constants.NO_AUTHOR
@@ -41,29 +46,48 @@ import com.enriqueajin.newsapp.util.Constants.NO_DATE
 import com.enriqueajin.newsapp.util.Constants.NO_TITLE
 import com.enriqueajin.newsapp.util.DateUtils.formatDate
 import com.enriqueajin.newsapp.util.DummyDataProvider
+import com.enriqueajin.newsapp.util.collectAsEffect
 
 @Composable
 fun ArticleDetailRoute(
-    articleDetailViewModel: ArticleDetailViewModel = hiltViewModel(),
-    article: Article,
+    viewModel: ArticleDetailViewModel = hiltViewModel(),
+    onEffect: (Effect) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        articleDetailViewModel.checkArticleFavorite(article.url)
-    }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    viewModel.uiEffect.collectAsEffect { onEffect(it) }
 
-    ArticleDetailScreen(article = article)
+    when {
+        state.loading -> CircularProgressIndicator()
+        state.error.isNotBlank() -> Text("There was an error")
+        else -> {
+            ArticleDetailScreen(
+                state = state,
+                onPushEvent = viewModel::onPushEvent,
+            )
+        }
+    }
 }
 
 @Composable
 fun ArticleDetailScreen(
-    article: Article,
+    state: State,
+    onPushEvent: (UiEvent) -> Unit,
 ) {
-    Box(modifier = Modifier
-        .padding(horizontal = 30.dp)
-        .fillMaxSize()
-    ) {
+    Scaffold(
+        topBar = {
+            NewsDetailsTopBar(
+                isFavoriteArticle = state.isFavorite,
+                onShareArticle = { onPushEvent(UiEvent.OnShareIconClick(state.article.url)) },
+                onFavoriteIconClick = { onPushEvent(UiEvent.OnFavoriteIconClick) },
+                onBackPressed = { onPushEvent(UiEvent.OnBackPressed) }
+            )
+        },
+    ) { innerPadding ->
         Column(modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .padding(innerPadding)
+            .consumeWindowInsets(innerPadding)
+            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -73,7 +97,7 @@ fun ArticleDetailScreen(
                 AssistChip(
                     onClick = {},
                     label = {
-                        val text = article.author ?: NO_AUTHOR
+                        val text = state.article.author ?: NO_AUTHOR
                         val maxLength = 30
                         Text(
                             text = if (text.length <= maxLength) text else text.substring(0, maxLength),
@@ -87,7 +111,7 @@ fun ArticleDetailScreen(
                     )
                 )
                 Text(
-                    text = formatDate(article.publishedAt ?: NO_DATE),
+                    text = formatDate(state.article.publishedAt ?: NO_DATE),
                     color = DarkGray,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
@@ -95,13 +119,13 @@ fun ArticleDetailScreen(
             }
             Spacer(modifier = Modifier.height(25.dp))
             Text(
-                text = article.title ?: NO_TITLE,
+                text = state.article.title ?: NO_TITLE,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 40.sp
             )
             Spacer(modifier = Modifier.height(25.dp))
-            if (article.urlToImage == null) {
+            if (state.article.urlToImage == null) {
                 Image(
                     painter = painterResource(id = R.drawable.no_image_available),
                     contentDescription = null,
@@ -114,7 +138,7 @@ fun ArticleDetailScreen(
 
             } else {
                 AsyncImage(
-                    model = article.urlToImage,
+                    model = state.article.urlToImage,
                     error = painterResource(id = R.drawable.no_image_available),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -126,7 +150,7 @@ fun ArticleDetailScreen(
             }
             Spacer(modifier = Modifier.height(25.dp))
             Text(
-                text = article.content ?: NO_CONTENT,
+                text = state.article.content ?: NO_CONTENT,
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(30.dp))
@@ -138,6 +162,9 @@ fun ArticleDetailScreen(
 @Composable
 fun NewsDetailScreenPreview() {
     ArticleDetailScreen(
-        article = DummyDataProvider.getLatestNewsItems().first() ,
+        state = State.EMPTY(
+            article = DummyDataProvider.getLatestNewsItems().first()
+        ),
+        onPushEvent = {},
     )
 }
