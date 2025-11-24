@@ -28,6 +28,7 @@ import com.enriqueajin.newsapp.util.DummyDataProvider
  */
 @Composable
 fun PagingStateHandler(
+    modifier: Modifier = Modifier,
     articles: LazyPagingItems<Article>,
     onItemClicked: (Article) -> Unit,
     query: String? = null
@@ -71,14 +72,18 @@ fun PagingStateHandler(
         else -> {
             if (query != null) {
                 if (query.isNotBlank()) {
-                    ArticleList(articles) { article ->
-                        onItemClicked(article)
-                    }
+                    ArticleList(
+                        modifier = modifier,
+                        articles = articles,
+                        onItemClicked = onItemClicked,
+                    )
                 }
             } else {
-                ArticleList(articles) { article ->
-                    onItemClicked(article)
-                }
+                ArticleList(
+                    modifier = modifier,
+                    articles = articles,
+                    onItemClicked = onItemClicked,
+                )
             }
         }
     }
@@ -86,10 +91,11 @@ fun PagingStateHandler(
 
 @Composable
 fun ArticleList(
+    modifier: Modifier = Modifier,
     articles: LazyPagingItems<Article>,
     onItemClicked: (Article) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(articles.itemCount) {
             articles[it]?.let { article ->
                 ArticleItem(article) { newsItem -> onItemClicked(newsItem) }
