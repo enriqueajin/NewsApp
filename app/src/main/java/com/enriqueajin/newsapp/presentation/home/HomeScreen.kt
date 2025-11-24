@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -57,39 +59,40 @@ fun HomeScreen(
 ) {
     val pagingItems = uiState.newsByCategory?.collectAsLazyPagingItems()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag(HOME)
-    ) {
-        CategoryGroup(
-            scrollPosition = 0,
-            categories = CATEGORIES,
-            selected = uiState.category,
-            onChipSelected = {
-                event(Event.OnCategoryChange(it))
-            },
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        if(uiState.category == CATEGORIES_INITIAL_VALUE) {
-            AllArticles(
-                state = uiState,
-                onSeeAllClicked = { keyword ->
-                    event(Event.OnSeeAllClick(keyword))
-                },
-            ) { article ->
-                event(Event.OnItemClick(article))
-            }
-
-        } else {
-            ArticlesByCategory(
-                modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
-                articles = pagingItems,
-                onItemClicked = { article ->
-                    event(Event.OnItemClick(article))
+    Scaffold(
+        modifier = Modifier.testTag(HOME)
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            CategoryGroup(
+                scrollPosition = 0,
+                categories = CATEGORIES,
+                selected = uiState.category,
+                onChipSelected = {
+                    event(Event.OnCategoryChange(it))
                 },
             )
+            Spacer(modifier = Modifier.height(5.dp))
+            if(uiState.category == CATEGORIES_INITIAL_VALUE) {
+                AllArticles(
+                    state = uiState,
+                    onSeeAllClicked = { keyword ->
+                        event(Event.OnSeeAllClick(keyword))
+                    },
+                ) { article ->
+                    event(Event.OnItemClick(article))
+                }
+
+            } else {
+                ArticlesByCategory(
+                    modifier = Modifier.testTag(HOME_ARTICLES_BY_CATEGORY),
+                    articles = pagingItems,
+                    onItemClicked = { article ->
+                        event(Event.OnItemClick(article))
+                    },
+                )
+            }
         }
+
     }
 }
 

@@ -1,8 +1,9 @@
 package com.enriqueajin.newsapp.presentation.keyword_news
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.PagingStateHandler
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract.Effect
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract.UiEvent
+import com.enriqueajin.newsapp.presentation.keyword_news.components.KeywordNewsTopBarApp
 import com.enriqueajin.newsapp.util.DummyDataProvider
 import com.enriqueajin.newsapp.util.collectAsEffect
 
@@ -34,6 +36,7 @@ internal fun KeywordScreenRoute(
             val articles = state.articles.collectAsLazyPagingItems()
             KeywordNewsScreen(
                 articles = articles,
+                keyword = state.keyword,
                 onPushEvent = keywordNewsViewModel::onPushEvent,
             )
         }
@@ -43,13 +46,20 @@ internal fun KeywordScreenRoute(
 @Composable
 fun KeywordNewsScreen(
     articles: LazyPagingItems<Article>,
+    keyword: String,
     onPushEvent: (UiEvent) -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            KeywordNewsTopBarApp(
+                title = keyword,
+                onBackPressed = { onPushEvent(UiEvent.OnBackPressed) }
+            )
+        }
+    ) { innerPadding ->
         PagingStateHandler(
+            modifier = Modifier.padding(innerPadding),
             articles = articles,
             onItemClicked = { article ->
                 onPushEvent(UiEvent.OnItemClick(article))
@@ -64,6 +74,7 @@ fun KeywordNewsScreenPreview() {
     val items = DummyDataProvider.getAllNewsItems()
     KeywordNewsScreen(
         articles = DummyDataProvider.getFakeLazyPagingItems(items),
+        keyword = "Recipes",
         onPushEvent = {}
     )
 }
