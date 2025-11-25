@@ -104,10 +104,7 @@ fun NavGraph() {
                 ArticleDetailRoute(navController = navController)
             }
             composable<Route.SearchNews> {
-                SearchNewsRoute { item ->
-                    val article = Json.encodeToString(Article.serializer(), item)
-                    navController.navigateToDetail { Route.NewsDetail(article) }
-                }
+                SearchNewsRoute(navController = navController)
             }
             composable<Route.Favorites> {
                 FavoritesRoute { item ->
