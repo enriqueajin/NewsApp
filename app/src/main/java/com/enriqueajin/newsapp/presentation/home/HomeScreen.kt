@@ -18,12 +18,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
 import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
+import com.enriqueajin.newsapp.presentation.nav_graph.Route
+import com.enriqueajin.newsapp.presentation.nav_graph.navigateToDetail
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES_INITIAL_VALUE
 import com.enriqueajin.newsapp.util.DummyDataProvider
@@ -31,14 +36,26 @@ import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_CIRCULAR_PROGRESS
 import com.enriqueajin.newsapp.util.TestTags.HOME
 import com.enriqueajin.newsapp.util.TestTags.HOME_ARTICLES_BY_CATEGORY
 import com.enriqueajin.newsapp.util.collectAsEffect
+import kotlinx.serialization.json.Json
 
 @Composable
 internal fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    onNavigationEffect: (HomeContract.Effect) -> Unit
+    navController: NavController,
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    homeViewModel.uiEffects.collectAsEffect { onNavigationEffect(it) }
+
+    homeViewModel.uiEffects.collectAsEffect { effect ->
+        when (effect) {
+            is Effect.NavigateToArticleDetail -> {
+                navController.navigateToDetail {
+                    val article = Json.encodeToString(Article.serializer(), effect.article)
+                    Route.NewsDetail(article)
+                }
+            }
+            is Effect.NavigateToArticlesWithKeyword -> navController.navigateToDetail { Route.KeywordNews(effect.keyword) }
+        }
+    }
 
     when {
         uiState.loading -> Loading()

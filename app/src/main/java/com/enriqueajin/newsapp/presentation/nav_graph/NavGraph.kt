@@ -22,23 +22,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailContract
 import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
 import com.enriqueajin.newsapp.presentation.favorites.FavoritesRoute
-import com.enriqueajin.newsapp.presentation.home.HomeContract
 import com.enriqueajin.newsapp.presentation.home.HomeRoute
-import com.enriqueajin.newsapp.presentation.keyword_news.KeywordNewsContract
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
 import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.getRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
@@ -88,7 +83,7 @@ fun NavGraph() {
                     items = items,
                     selectedItem = selectedTab,
                     onItemClick = { item ->
-                        navigateToTab(navController, item.route)
+                        navController.navigateToTab( item.route)
                     }
                 )
             }
@@ -100,52 +95,24 @@ fun NavGraph() {
             startDestination = Route.Home
         ) {
             composable<Route.Home> {
-                HomeRoute(
-                    onNavigationEffect = { effect ->
-                        navigate(
-                            navController = navController,
-                            effect = effect
-                        )
-                    }
-                )
+                HomeRoute(navController = navController)
             }
             composable<Route.KeywordNews> { navBackStackEntry ->
-                KeywordScreenRoute { effect ->
-                    when(effect) {
-                        KeywordNewsContract.Effect.NavigateBack -> navController.navigateUp()
-                        is KeywordNewsContract.Effect.NavigateToArticleDetail -> {
-                            navigateToDetail(navController) {
-                                val article = Json.encodeToString(Article.serializer(), effect.article)
-                                Route.NewsDetail(article)
-                            }
-                        }
-                    }
-                }
+                KeywordScreenRoute(navController = navController)
             }
             composable<Route.NewsDetail> { navBackStackEntry ->
-                val args = navBackStackEntry.toRoute<Route.NewsDetail>()
-                val article = Json.decodeFromString(Article.serializer(), args.article)
-                ArticleDetailRoute { effect ->
-                    when (effect) {
-                        ArticleDetailContract.Effect.NavigateBack -> navController.navigateUp()
-                        is ArticleDetailContract.Effect.ShareArticleUrl -> {}
-                    }
-                }
+                ArticleDetailRoute(navController = navController)
             }
             composable<Route.SearchNews> {
                 SearchNewsRoute { item ->
                     val article = Json.encodeToString(Article.serializer(), item)
-                    navigateToDetail(navController) {
-                        Route.NewsDetail(article)
-                    }
+                    navController.navigateToDetail { Route.NewsDetail(article) }
                 }
             }
             composable<Route.Favorites> {
                 FavoritesRoute { item ->
                     val article = Json.encodeToString(Article.serializer(), item)
-                    navigateToDetail(navController) {
-                        Route.NewsDetail(article)
-                    }
+                    navController.navigateToDetail { Route.NewsDetail(article) }
                 }
             }
         }
@@ -189,33 +156,6 @@ fun NavigationHost(
         },
         builder = content
     )
-}
-
-private fun navigate(navController: NavController, effect: HomeContract.Effect) = when(effect) {
-    is HomeContract.Effect.NavigateToArticleDetail -> navigateToDetail(navController) {
-        val article = Json.encodeToString(Article.serializer(), effect.article)
-        Route.NewsDetail(article)
-    }
-    is HomeContract.Effect.NavigateToArticlesWithKeyword -> navigateToDetail(navController) { Route.KeywordNews(effect.keyword) }
-}
-
-private fun navigateToDetail(navController: NavController, routeBuilder: () -> Route) {
-    navController.navigate(routeBuilder()) {
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-private fun navigateToTab(navController: NavController, route: Route) {
-    navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let { screenRoute ->
-            popUpTo(screenRoute) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
 }
 
 private fun updateSelectedNavItem(route: Route?) = when(route) {
