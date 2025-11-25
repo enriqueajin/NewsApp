@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.enriqueajin.newsapp.R
 import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailContract.Effect
@@ -52,10 +53,15 @@ import com.enriqueajin.newsapp.util.collectAsEffect
 @Composable
 fun ArticleDetailRoute(
     viewModel: ArticleDetailViewModel = hiltViewModel(),
-    onEffect: (Effect) -> Unit
+    navController: NavController,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    viewModel.uiEffect.collectAsEffect { onEffect(it) }
+    viewModel.uiEffect.collectAsEffect { effect ->
+        when (effect) {
+            Effect.NavigateBack -> navController.navigateUp()
+            is Effect.ShareArticleUrl -> {} // TODO: implement article sharing on third-arty apps via Intent
+        }
+    }
 
     when {
         state.loading -> CircularProgressIndicator()
