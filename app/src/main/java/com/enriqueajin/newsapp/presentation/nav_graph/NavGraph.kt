@@ -28,7 +28,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.article_detail.ArticleDetailRoute
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBar
 import com.enriqueajin.newsapp.presentation.bottom_bar.BottomBarItem
@@ -37,7 +36,6 @@ import com.enriqueajin.newsapp.presentation.home.HomeRoute
 import com.enriqueajin.newsapp.presentation.keyword_news.KeywordScreenRoute
 import com.enriqueajin.newsapp.presentation.nav_graph.Route.Companion.getRoute
 import com.enriqueajin.newsapp.presentation.search_news.SearchNewsRoute
-import kotlinx.serialization.json.Json
 
 @Composable
 fun NavGraph() {
@@ -107,10 +105,7 @@ fun NavGraph() {
                 SearchNewsRoute(navController = navController)
             }
             composable<Route.Favorites> {
-                FavoritesRoute { item ->
-                    val article = Json.encodeToString(Article.serializer(), item)
-                    navController.navigateToDetail { Route.NewsDetail(article) }
-                }
+                FavoritesRoute(navController = navController)
             }
         }
     }
