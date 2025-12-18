@@ -61,11 +61,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getLatestArticles() {
-        _uiState.updateState { it.copy(loading = true) }
         viewModelScope.launch {
             when(val result = getNewsByCategoryUseCase.getFixedSizeNewsByCategory()) {
                 is Result.Error -> {
                     val errorMessage = result.error.asUiText()
+                    _uiState.updateState { it.copy(error = errorMessage, loading = false) }
                 }
                 is Result.Success -> _uiState.updateState { it.copy(latestArticles = result.data, loading = false) }
             }
@@ -93,11 +93,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getArticlesByKeyword(keyword: String) {
-        _uiState.updateState { it.copy(loading = true) }
         viewModelScope.launch {
             when(val result = getNewsByKeywordUseCase.getFixedSizeNewsByKeyword(keyword)) {
                 is Result.Error -> {
                     val errorMessage = result.error.asUiText()
+                    _uiState.updateState { it.copy(error = errorMessage, loading = false) }
                 }
                 is Result.Success -> {
                     _uiState.updateState {

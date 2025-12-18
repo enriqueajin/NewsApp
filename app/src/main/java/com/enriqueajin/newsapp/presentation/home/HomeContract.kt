@@ -2,7 +2,7 @@ package com.enriqueajin.newsapp.presentation.home
 
 import androidx.paging.PagingData
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.StateContract
+import com.enriqueajin.newsapp.presentation.UiText
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES_INITIAL_VALUE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -18,19 +18,19 @@ interface HomeContract {
     }
 
     data class State(
-        override val loading: Boolean,
-        override val error: String,
+        val loading: Boolean,
+        val error: UiText,
         val latestArticles: List<Article>,
         val articlesByKeyword: List<Article>,
         val newsByCategory: Flow<PagingData<Article>>,
         val keyword: String,
         val category: String,
-    ): StateContract {
+    ) {
 
         companion object {
             fun empty() = State(
                 loading = true,
-                error = "",
+                error = UiText.DynamicString(""),
                 latestArticles = emptyList(),
                 articlesByKeyword = emptyList(),
                 newsByCategory = flowOf(PagingData.empty()),
