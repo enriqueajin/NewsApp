@@ -19,7 +19,6 @@ import com.enriqueajin.newsapp.util.Constants.PAGE_SIZE
 import com.enriqueajin.newsapp.util.Constants.PREFETCH_ITEMS
 import com.enriqueajin.newsapp.util.Constants.REMOVED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import java.io.IOException
@@ -53,6 +52,21 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFixedSizeNewsByKeyword(keyword: String): Result<List<Article>, DataError.Network> {
+        return try {
+            val data = api.getArticlesByKeyword(keyword = keyword, page = 1, pageSize = ALL_NEWS_PAGE_SIZE)
+            val articles = data.articles
+                .map { it.toDomain() }
+                .filter { it.title != REMOVED }
+            Result.Success(articles)
+
+        } catch (e: HttpException) {
+            Result.Error(e.code().asErrorResult())
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
     /**
      * Get articles by category from Api with pagination
      * @param category category for which articles will be sorted
@@ -66,22 +80,6 @@ class NewsRepositoryImpl @Inject constructor(
                     category = category,
                 )
             }).flow
-    }
-
-    /**
-     * Get articles by keyword from Api for HomeScreen (without pagination)
-     * @param keyword Keyword for which articles will be searched
-     * @return Flow with the list of articles
-     */
-    override fun getArticlesByKeyword(keyword: String): Flow<List<Article>> = flow {
-        val data = api.getArticlesByKeyword(
-            keyword = keyword,
-            page = 1,
-            pageSize = ALL_NEWS_PAGE_SIZE
-        )
-        val articles = data.articles.map { it.toDomain() }
-        val filteredArticles = articles.filter { it.title != REMOVED }
-        emit(filteredArticles)
     }
 
     /**

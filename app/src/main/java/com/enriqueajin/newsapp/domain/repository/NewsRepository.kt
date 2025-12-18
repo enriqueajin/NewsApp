@@ -11,9 +11,9 @@ interface NewsRepository {
 
     suspend fun getFixedSizeNewsByCategory(category: String): Result<List<Article>, DataError.Network>
 
-    fun getPagingArticlesByCategory(category: String): Flow<PagingData<Article>>
+    suspend fun getFixedSizeNewsByKeyword(keyword: String): Result<List<Article>, DataError.Network>
 
-    fun getArticlesByKeyword(keyword: String): Flow<List<Article>>
+    fun getPagingArticlesByCategory(category: String): Flow<PagingData<Article>>
 
     fun getPagingArticlesByKeyword(keyword: String): Flow<PagingData<Article>>
 

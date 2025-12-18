@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -96,13 +95,18 @@ class HomeViewModel @Inject constructor(
     private fun getArticlesByKeyword(keyword: String) {
         _uiState.updateState { it.copy(loading = true) }
         viewModelScope.launch {
-            getNewsByKeywordUseCase.getArticlesByKeyword(keyword).distinctUntilChanged().collect { articles ->
-                _uiState.updateState {
-                    it.copy(
-                        articlesByKeyword = articles,
-                        keyword = keyword,
-                        loading = false
-                    )
+            when(val result = getNewsByKeywordUseCase.getFixedSizeNewsByKeyword(keyword)) {
+                is Result.Error -> {
+                    val errorMessage = result.error.asUiText()
+                }
+                is Result.Success -> {
+                    _uiState.updateState {
+                        it.copy(
+                            articlesByKeyword = result.data,
+                            keyword = keyword,
+                            loading = false,
+                        )
+                    }
                 }
             }
         }
