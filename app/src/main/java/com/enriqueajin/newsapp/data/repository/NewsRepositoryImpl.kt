@@ -9,6 +9,9 @@ import com.enriqueajin.newsapp.data.local.toDomain
 import com.enriqueajin.newsapp.data.network.NewsApiClient
 import com.enriqueajin.newsapp.data.network.NewsPagingSource
 import com.enriqueajin.newsapp.data.network.dto.toDomain
+import com.enriqueajin.newsapp.domain.DataError
+import com.enriqueajin.newsapp.domain.Result
+import com.enriqueajin.newsapp.domain.asErrorResult
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.domain.repository.NewsRepository
 import com.enriqueajin.newsapp.util.Constants.ALL_NEWS_PAGE_SIZE
@@ -18,6 +21,8 @@ import com.enriqueajin.newsapp.util.Constants.REMOVED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,20 +32,25 @@ class NewsRepositoryImpl @Inject constructor(
     private val dao: ArticleDao
 ): NewsRepository {
 
-    /**
-     * Get articles by category from Api for HomeScreen (without pagination)
-     * @param category category for which articles will be sorted
-     * @return Flow with the list of articles
-     */
-    override fun getArticlesByCategory(category: String): Flow<List<Article>> = flow {
-        val data = api.getArticlesByCategory(
-            category = category,
-            page = 1,
-            pageSize = ALL_NEWS_PAGE_SIZE
-        )
-        val articles = data.articles.map { it.toDomain() }
-        val filteredArticles = articles.filter { it.title != REMOVED }
-        emit(filteredArticles)
+    override suspend fun getFixedSizeNewsByCategory(category: String): Result<List<Article>, DataError.Network> {
+        return try {
+            val data = api.getArticlesByCategory(
+                category = category,
+                page = 1,
+                pageSize = ALL_NEWS_PAGE_SIZE
+            )
+            val articles = data.articles
+                .map { it.toDomain() }
+                .filter { it.title != REMOVED }
+
+            Result.Success(articles)
+
+        } catch (e: HttpException) {
+            val error = e.code().asErrorResult()
+            Result.Error(error)
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
     }
 
     /**

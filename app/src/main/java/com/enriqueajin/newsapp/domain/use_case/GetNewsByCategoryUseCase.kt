@@ -2,6 +2,8 @@ package com.enriqueajin.newsapp.domain.use_case
 
 import androidx.paging.PagingData
 import com.enriqueajin.newsapp.data.repository.NewsRepositoryImpl
+import com.enriqueajin.newsapp.domain.DataError
+import com.enriqueajin.newsapp.domain.Result
 import com.enriqueajin.newsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -13,7 +15,7 @@ class GetNewsByCategoryUseCase @Inject constructor(
         return newsRepositoryImpl.getPagingArticlesByCategory(category)
     }
 
-    fun getArticlesByCategory(category: String = "general"):Flow<List<Article>> {
-        return newsRepositoryImpl.getArticlesByCategory(category)
+    suspend fun getFixedSizeNewsByCategory(category: String = "general"): Result<List<Article>, DataError.Network> {
+        return newsRepositoryImpl.getFixedSizeNewsByCategory(category)
     }
 }

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">NewsApp</string>
+
+    <string name="error_unauthorized">Your session has expired. Please log in again.</string>
+    <string name="error_forbidden">You do not have permission to access this resource.</string>
+    <string name="error_not_found">The requested information could not be found.</string>
+    <string name="error_request_timeout">The server took too long to respond. Please try again.</string>
+    <string name="error_too_many_requests">Too many requests. Please wait a moment before trying again.</string>
+    <string name="error_service_unavailable">The server is temporarily down for maintenance. Please check back later.</string>
+    <string name="error_client_generic">There was an issue with the request. Please update your app and try again.</string>
+    <string name="error_server_generic">We\'re having trouble connecting to our servers. Please try again later.</string>
+    <string name="error_unknown">An unexpected error occurred. Please try again.</string>
+    <string name="no_internet_connection">No internet connection. Please try again.</string>
 </resources>

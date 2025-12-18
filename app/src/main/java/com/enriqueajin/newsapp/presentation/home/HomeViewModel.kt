@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.enriqueajin.newsapp.domain.Result
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByCategoryUseCase
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.presentation.asUiText
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
@@ -62,11 +64,11 @@ class HomeViewModel @Inject constructor(
     private fun getLatestArticles() {
         _uiState.updateState { it.copy(loading = true) }
         viewModelScope.launch {
-            getNewsByCategoryUseCase.getArticlesByCategory().distinctUntilChanged().collect { articles ->
-                _uiState.value = _uiState.value.copy(
-                    latestArticles = articles,
-                    loading = false
-                )
+            when(val result = getNewsByCategoryUseCase.getFixedSizeNewsByCategory()) {
+                is Result.Error -> {
+                    val errorMessage = result.error.asUiText()
+                }
+                is Result.Success -> _uiState.updateState { it.copy(latestArticles = result.data, loading = false) }
             }
         }
     }
