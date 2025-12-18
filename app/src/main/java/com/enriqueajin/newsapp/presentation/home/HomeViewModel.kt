@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
     private val getNewsByKeywordUseCase: GetNewsByKeywordUseCase
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<State> = MutableStateFlow(State())
+    private val _uiState: MutableStateFlow<State> = MutableStateFlow(State.empty())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEffects: MutableSharedFlow<Effect> = MutableSharedFlow()

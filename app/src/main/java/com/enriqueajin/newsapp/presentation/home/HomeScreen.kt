@@ -21,9 +21,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
-import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
 import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
@@ -74,7 +74,7 @@ fun HomeScreen(
     uiState: State,
     event: (Event) -> Unit,
 ) {
-    val pagingItems = uiState.newsByCategory?.collectAsLazyPagingItems()
+    val pagingItems = uiState.newsByCategory.collectAsLazyPagingItems()
 
     Scaffold(
         modifier = Modifier.testTag(HOME)
@@ -136,10 +136,10 @@ fun Error(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
-    val state = State(
+    val state = State.empty().copy(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
-        keyword = "Recipes"
+        keyword = "Recipes",
     )
     HomeScreen(
         uiState = state,
