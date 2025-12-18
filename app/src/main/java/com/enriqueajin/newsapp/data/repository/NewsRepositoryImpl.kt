@@ -67,34 +67,28 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * Get articles by category from Api with pagination
-     * @param category category for which articles will be sorted
-     * @return Flow with the list of articles
-     */
     override fun getPagingArticlesByCategory(category: String): Flow<PagingData<Article>> {
-        return Pager(config = PagingConfig(pageSize = PAGE_SIZE, prefetchDistance = PREFETCH_ITEMS),
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, prefetchDistance = PREFETCH_ITEMS),
             pagingSourceFactory = {
                 NewsPagingSource(
                     api = api,
                     category = category,
                 )
-            }).flow
+            }
+        ).flow
     }
 
-    /**
-     * Get articles by keyword from Api with pagination
-     * @param keyword Keyword for which articles will be searched
-     * @return Flow with the list of articles
-     */
     override fun getPagingArticlesByKeyword(keyword: String, ): Flow<PagingData<Article>> {
-        return Pager(config = PagingConfig(pageSize = PAGE_SIZE, prefetchDistance = PREFETCH_ITEMS),
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, prefetchDistance = PREFETCH_ITEMS),
             pagingSourceFactory = {
                 NewsPagingSource(
                     api = api,
                     keyword = keyword,
                 )
-            }).flow
+            }
+        ).flow
     }
 
     override fun getFavorites(): Flow<List<Article>> {
