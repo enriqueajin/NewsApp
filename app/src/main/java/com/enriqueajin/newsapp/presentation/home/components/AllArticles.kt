@@ -43,7 +43,7 @@ fun AllArticles(
             )
             Spacer(modifier = Modifier.height(20.dp))
             LatestArticlesCarousel(
-                articles = state.latestArticles ?: emptyList(),
+                articles = state.latestArticles,
                 onItemClicked = onItemClicked
             )
             Spacer(modifier = Modifier.height(30.dp))
@@ -75,7 +75,7 @@ fun AllArticles(
             }
             Spacer(modifier = Modifier.height(20.dp))
             ArticlesByKeyword(
-                articles = state.articlesByKeyword ?: emptyList(),
+                articles = state.articlesByKeyword,
                 onItemClicked = onItemClicked
             )
             Spacer(modifier = Modifier.height(30.dp))

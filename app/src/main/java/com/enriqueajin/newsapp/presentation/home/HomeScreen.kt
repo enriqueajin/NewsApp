@@ -4,11 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,9 +22,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
+import com.enriqueajin.newsapp.presentation.UiText
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
-import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.components.AllArticles
 import com.enriqueajin.newsapp.presentation.home.components.ArticlesByCategory
 import com.enriqueajin.newsapp.presentation.home.components.CategoryGroup
@@ -32,7 +34,6 @@ import com.enriqueajin.newsapp.presentation.nav_graph.navigateToDetail
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES
 import com.enriqueajin.newsapp.util.Constants.CATEGORIES_INITIAL_VALUE
 import com.enriqueajin.newsapp.util.DummyDataProvider
-import com.enriqueajin.newsapp.util.TestTags.ALL_ARTICLES_CIRCULAR_PROGRESS
 import com.enriqueajin.newsapp.util.TestTags.HOME
 import com.enriqueajin.newsapp.util.TestTags.HOME_ARTICLES_BY_CATEGORY
 import com.enriqueajin.newsapp.util.collectAsEffect
@@ -59,7 +60,12 @@ internal fun HomeRoute(
 
     when {
         uiState.loading -> Loading()
-        uiState.error.isNotBlank() -> Error()
+        uiState.error.asString().isNotEmpty() -> {
+            Error(
+                message = uiState.error,
+                event = homeViewModel::onEvent
+            )
+        }
         else -> {
             HomeScreen(
                 uiState = uiState,
@@ -70,11 +76,11 @@ internal fun HomeRoute(
 }
 
 @Composable
-fun HomeScreen(
+private fun HomeScreen(
     uiState: State,
     event: (Event) -> Unit,
 ) {
-    val pagingItems = uiState.newsByCategory?.collectAsLazyPagingItems()
+    val pagingItems = uiState.newsByCategory.collectAsLazyPagingItems()
 
     Scaffold(
         modifier = Modifier.testTag(HOME)
@@ -114,32 +120,37 @@ fun HomeScreen(
 }
 
 @Composable
-fun Loading(modifier: Modifier = Modifier) {
+private fun Loading(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         CircularProgressIndicator(modifier = Modifier
             .align(Alignment.Center)
-            .testTag(ALL_ARTICLES_CIRCULAR_PROGRESS)
         )
     }
 }
 
 @Composable
-fun Error(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        CircularProgressIndicator(modifier = Modifier
-            .align(Alignment.Center)
-            .testTag(ALL_ARTICLES_CIRCULAR_PROGRESS)
-        )
+private fun Error(message: UiText, event: (Event) -> Unit,) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = message.asString())
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(onClick = { event(Event.OnRetryClick) }) {
+                Text(text = "Retry")
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
-    val state = State(
+    val state = State.empty().copy(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
-        keyword = "Recipes"
+        keyword = "Recipes",
     )
     HomeScreen(
         uiState = state,
