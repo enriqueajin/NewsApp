@@ -7,8 +7,10 @@ import androidx.paging.cachedIn
 import com.enriqueajin.newsapp.domain.Result
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByCategoryUseCase
 import com.enriqueajin.newsapp.domain.use_case.GetNewsByKeywordUseCase
+import com.enriqueajin.newsapp.presentation.UiText
 import com.enriqueajin.newsapp.presentation.asUiText
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
+import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect.*
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
 import com.enriqueajin.newsapp.util.KeywordProvider
@@ -35,17 +37,20 @@ class HomeViewModel @Inject constructor(
     private val _uiEffects: MutableSharedFlow<Effect> = MutableSharedFlow()
     val uiEffects = _uiEffects.asSharedFlow()
 
+    private var lastEventAttempted: Event? = null
+
     init {
         onEvent(Event.OnInit)
     }
 
     fun onEvent(event: Event) {
         when (event) {
-            Event.OnInit -> getInitialArticles()
+            Event.OnInit -> getInitialArticles(event)
             is Event.OnCategoryChange -> getArticlesByCategory(category = event.category)
             is Event.OnKeywordChange -> getArticlesByKeyword(keyword = event.keyword)
-            is Event.OnItemClick -> emitEffect(Effect.NavigateToArticleDetail(event.article))
-            is Event.OnSeeAllClick -> emitEffect(Effect.NavigateToArticlesWithKeyword(event.keyword))
+            is Event.OnItemClick -> emitEffect(NavigateToArticleDetail(event.article))
+            is Event.OnSeeAllClick -> emitEffect(NavigateToArticlesWithKeyword(event.keyword))
+            Event.OnRetryClick -> lastEventAttempted?.let { onEvent(it) }
         }
     }
 
@@ -55,19 +60,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getInitialArticles() {
+    private fun getInitialArticles(event: Event) {
+        lastEventAttempted = event
         getLatestArticles()
         getArticlesByKeyword(KeywordProvider.getRandomKeyword())
     }
 
     private fun getLatestArticles() {
         viewModelScope.launch {
+            _uiState.updateState { it.copy(loading = true) }
             when(val result = getNewsByCategoryUseCase.getFixedSizeNewsByCategory()) {
                 is Result.Error -> {
                     val errorMessage = result.error.asUiText()
                     _uiState.updateState { it.copy(error = errorMessage, loading = false) }
                 }
-                is Result.Success -> _uiState.updateState { it.copy(latestArticles = result.data, loading = false) }
+                is Result.Success -> {
+                    _uiState.updateState {
+                        it.copy(
+                            latestArticles = result.data,
+                            loading = false,
+                            error = UiText.empty()
+                        )
+                    }
+                }
             }
         }
     }
@@ -105,6 +120,7 @@ class HomeViewModel @Inject constructor(
                             articlesByKeyword = result.data,
                             keyword = keyword,
                             loading = false,
+                            error = UiText.empty(),
                         )
                     }
                 }

@@ -15,6 +15,7 @@ interface HomeContract {
         data class OnKeywordChange(val keyword: String): Event()
         data class OnItemClick(val article: Article): Event()
         data class OnSeeAllClick(val keyword: String): Event()
+        data object OnRetryClick: Event()
     }
 
     data class State(

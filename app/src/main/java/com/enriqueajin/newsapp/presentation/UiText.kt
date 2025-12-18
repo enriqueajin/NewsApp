@@ -26,4 +26,8 @@ sealed class UiText {
             is StringResource -> context.getString(id, *args)
         }
     }
+
+    companion object {
+        fun empty() = DynamicString("")
+    }
 }

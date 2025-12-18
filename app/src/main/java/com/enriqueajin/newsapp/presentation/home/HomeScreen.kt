@@ -60,7 +60,12 @@ internal fun HomeRoute(
 
     when {
         uiState.loading -> Loading()
-        uiState.error.asString().isNotEmpty() -> Error(uiState.error)
+        uiState.error.asString().isNotEmpty() -> {
+            Error(
+                message = uiState.error,
+                event = homeViewModel::onEvent
+            )
+        }
         else -> {
             HomeScreen(
                 uiState = uiState,
@@ -71,7 +76,7 @@ internal fun HomeRoute(
 }
 
 @Composable
-fun HomeScreen(
+private fun HomeScreen(
     uiState: State,
     event: (Event) -> Unit,
 ) {
@@ -115,7 +120,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun Loading(modifier: Modifier = Modifier) {
+private fun Loading(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         CircularProgressIndicator(modifier = Modifier
             .align(Alignment.Center)
@@ -124,7 +129,7 @@ fun Loading(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Error(message: UiText) {
+private fun Error(message: UiText, event: (Event) -> Unit,) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.align(Alignment.Center),
@@ -132,7 +137,7 @@ fun Error(message: UiText) {
         ) {
             Text(text = message.asString())
             Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = {}) {
+            Button(onClick = { event(Event.OnRetryClick) }) {
                 Text(text = "Retry")
             }
         }
