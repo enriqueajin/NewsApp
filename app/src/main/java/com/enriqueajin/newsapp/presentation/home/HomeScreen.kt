@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
 import com.enriqueajin.newsapp.presentation.UiText
@@ -45,6 +46,7 @@ internal fun HomeRoute(
     navController: NavController,
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val pagingItems = homeViewModel.lazyArticlesByCategory.collectAsLazyPagingItems()
 
     homeViewModel.uiEffects.collectAsEffect { effect ->
         when (effect) {
@@ -69,6 +71,7 @@ internal fun HomeRoute(
         else -> {
             HomeScreen(
                 uiState = uiState,
+                pagingItems = pagingItems,
                 event = homeViewModel::onEvent
             )
         }
@@ -78,10 +81,9 @@ internal fun HomeRoute(
 @Composable
 private fun HomeScreen(
     uiState: State,
+    pagingItems: LazyPagingItems<Article>,
     event: (Event) -> Unit,
 ) {
-    val pagingItems = uiState.newsByCategory.collectAsLazyPagingItems()
-
     Scaffold(
         modifier = Modifier.testTag(HOME)
     ) { innerPadding ->
@@ -137,7 +139,7 @@ private fun Error(message: UiText, event: (Event) -> Unit,) {
         ) {
             Text(text = message.asString())
             Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = { event(Event.OnRetryClick) }) {
+            Button(onClick = { event(Event.OnRetry) }) {
                 Text(text = "Retry")
             }
         }
@@ -147,13 +149,14 @@ private fun Error(message: UiText, event: (Event) -> Unit,) {
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
-    val state = State.empty().copy(
+    val state = State(
         latestArticles = DummyDataProvider.getLatestNewsItems(),
         articlesByKeyword = DummyDataProvider.getAllNewsItems(),
         keyword = "Recipes",
     )
     HomeScreen(
         uiState = state,
+        pagingItems = DummyDataProvider.getFakeLazyPagingItems(emptyList()),
         event = {},
     )
 }
