@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">NewsApp</string>
 
+    <string name="error_retry_button">Retry</string>
+
     <string name="error_unauthorized">Your session has expired. Please log in again.</string>
     <string name="error_forbidden">You do not have permission to access this resource.</string>
     <string name="error_not_found">The requested information could not be found.</string>
