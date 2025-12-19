@@ -1,18 +1,12 @@
 package com.enriqueajin.newsapp.presentation.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +17,8 @@ import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enriqueajin.newsapp.domain.model.Article
-import com.enriqueajin.newsapp.presentation.UiText
+import com.enriqueajin.newsapp.presentation.Error
+import com.enriqueajin.newsapp.presentation.Loading
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Effect
 import com.enriqueajin.newsapp.presentation.home.HomeContract.Event
 import com.enriqueajin.newsapp.presentation.home.HomeContract.State
@@ -64,8 +59,8 @@ internal fun HomeRoute(
         uiState.loading -> Loading()
         uiState.error.asString().isNotEmpty() -> {
             Error(
-                message = uiState.error,
-                event = homeViewModel::onEvent
+                errorMessage = uiState.error,
+                onRetryAction = { homeViewModel.onEvent(Event.OnRetry) }
             )
         }
         else -> {
@@ -118,31 +113,6 @@ private fun HomeScreen(
             }
         }
 
-    }
-}
-
-@Composable
-private fun Loading(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize()) {
-        CircularProgressIndicator(modifier = Modifier
-            .align(Alignment.Center)
-        )
-    }
-}
-
-@Composable
-private fun Error(message: UiText, event: (Event) -> Unit,) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = message.asString())
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = { event(Event.OnRetry) }) {
-                Text(text = "Retry")
-            }
-        }
     }
 }
 
